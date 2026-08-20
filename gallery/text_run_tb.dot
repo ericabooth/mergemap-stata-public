@@ -1,0 +1,74 @@
+// mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP
+// mergemap data-flow map of journal_run.tsv
+digraph mergemap {
+  rankdir=TB;
+  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontcolor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP"];
+  node  [shape=box, fontname="Helvetica", fontsize=10, color="#606060", fontcolor="#202020"];
+  edge  [fontname="Helvetica", fontsize=9, color="#606060", fontcolor="#202020"];
+  subgraph cluster_1 {
+    label="01_build.do";
+    color="#909090";
+    d6 [label="raw/cps_2019.dta\n52,431 x 24"];
+    d7 [label="x3: raw/cps_2020.dta ... raw/cps_2022.dta\n157,203 x 24"];
+    s2 [label="work\n209,634 x 24"];
+    d13 [label="xwalk/county_key.dta\n254 x 3"];
+    s3 [label="work\n209,634 x 26\n2 using-only dropped by keep(1 3)"];
+    s4 [label="drop if missing(wage)\n!! removed 6,519 rows (3.1%), 203,115 remaining", style=rounded, color="#4a6d8c", penwidth=2];
+    s5 [label="collapse (mean) wage hours, by(county year)\n203,115 -> 3,048 obs"];
+    d2 [label="built/county_panel.dta [saved]\n3,048 x 6"];
+  }
+  subgraph cluster_2 {
+    label="02_panel.do";
+    color="#909090";
+    d8 [label="raw/participants.dta\n8,914 x 12"];
+    s8 [label="duplicates drop pid\n8,914 -> 8,902 obs\n!! 12 duplicate pid obs dropped", color="#4a6d8c", penwidth=2];
+    d11 [label="raw/visits.dta\n41,210 x 6"];
+    s9 [label="work\n41,520 x 17\n310 master-only kept (no visits)"];
+    d12 [label="tempfile:__visits [tempfile]\n41,520 x 17"];
+    s12 [label="reshape wide wage hours, i(county) j(year)\n3,048 -> 762 obs"];
+    d3 [label="built/county_wide.dta [saved]\n762 x 9"];
+  }
+  subgraph cluster_3 {
+    label="03_analyze.do";
+    color="#909090";
+    s15 [label="work\n41,520 x 25\n95 master-only kept"];
+    d10 [label="raw/staff_assign.dta\n118 x 4"];
+    s16 [label="work\n44,873 x 28\n!! row multiplication x1.08", color="#4a6d8c", penwidth=2];
+    d5 [label="raw/corrections.dta\n400 x 5"];
+    s17 [label="work\n44,873 x 28\n!! 50 nonmissing conflicts overwritten", color="#4a6d8c", penwidth=2];
+    d4 [label="frame:counties\n254 x 7"];
+    s18 [label="work\n44,873 x 29\n95 obs unmatched to frame"];
+    s19 [label="work\n44,873 x 31"];
+    s20 [label="keep if inrange(year, 2019, 2022)\nremoved 753 rows (1.7%), 44,120 remaining", style=rounded];
+    d9 [label="raw/schedules.dta\n560 x 6"];
+    s21 [label="work\n44,120 x 33\n!! stop\n!! m:m pairs rows by order within key (not a join)\n!! force: schednote str8 vs byte\n!! key type mismatch: schednote: byte vs str8", color="#4a6d8c", penwidth=3];
+    d1 [label="built/analysis_file.dta [saved]\n44,120 x 33"];
+  }
+  d6 -> s2 [label="append\n+157,203 obs from 3 files"];
+  d7 -> s2;
+  s2 -> s3 [label="merge m:1 county\nkeep(1 3) nogenerate\nmatched 209,101, master-only 533\n99.7% of master matched"];
+  d13 -> s3 [label="using-only (2 dropped)\n99.2% of using used", style=dashed];
+  s3 -> s4 [color="#4a6d8c"];
+  s4 -> s5;
+  s5 -> d2;
+  d8 -> s8 [color="#4a6d8c"];
+  s8 -> s9 [label="merge 1:m pid\nmatched 41,210, master-only 310\n96.5% of master matched"];
+  d11 -> s9 [label="100.0% of using used"];
+  s9 -> d12;
+  d2 -> s12;
+  s12 -> d3;
+  d12 -> s15 [label="merge m:1 county\nkeep(1 3) nogenerate\nmatched 41,425, master-only 95\n99.8% of master matched"];
+  d3 -> s15 [label="94.1% of using used"];
+  s15 -> s16 [label="joinby m:m staff\nunmatched(none)\n100.0% of master matched", color="#4a6d8c"];
+  d10 -> s16 [label="100.0% of using used", color="#4a6d8c"];
+  s16 -> s17 [label="merge 1:1 pid visitid\nupdate replace\nmatched 0, master-only 44,473, updated 350 missing, 50 conflicts overwritten\n0.9% of master matched", color="#4a6d8c"];
+  d5 -> s17 [label="100.0% of using used", color="#4a6d8c"];
+  s17 -> s18 [label="frlink m:1 county\nframe(counties)\nmatched 44,778, master-only 95\n99.8% of master matched"];
+  d4 -> s18 [label="93.7% of using used", style=dashed];
+  s18 -> s19 [label="frget\npovrate slots, from(cnty)"];
+  d4 -> s19 [style=dashed];
+  s19 -> s20;
+  s20 -> s21 [label="merge m:m staff\nforce\nmatched 43,906, master-only 210\n99.5% of master matched", color="#4a6d8c"];
+  d9 -> s21 [label="using-only 4\n99.3% of using used", color="#4a6d8c"];
+  s21 -> d1;
+}

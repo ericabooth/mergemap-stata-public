@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- This is a Stata 19.5 generated SVG file (http://www.stata.com) -->
+
+<svg version="1.1" width="18.040in" height="20.000in" viewBox="0 0 12989 14400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - _rtw</desc>
+	<rect x="0" y="0" width="12989" height="14400" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="12989.00" height="14400.00" style="fill:#FFFFFF"/>
+	<rect x="12.99" y="12.99" width="12963.02" height="14374.02" style="fill:none;stroke:#FFFFFF;stroke-width:25.98"/>
+	<line x1="1158.32" y1="1399.50" x2="7725.72" y2="1399.50" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="2415.60" x2="7725.72" y2="2415.60" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="1399.50" x2="1158.32" y2="2415.60" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="1399.50" x2="7725.72" y2="2415.60" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="3183.30" x2="7725.72" y2="3183.30" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="4199.40" x2="7725.72" y2="4199.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="3183.30" x2="1158.32" y2="4199.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="3183.30" x2="7725.72" y2="4199.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="3006.45" x2="12182.59" y2="3006.45" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="4376.70" x2="12182.59" y2="4376.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="3006.45" x2="8429.53" y2="4376.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="12182.59" y1="3006.45" x2="12182.59" y2="4376.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8570.38" y1="2864.70" x2="12323.44" y2="2864.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="12323.44" y1="2864.70" x2="12323.44" y2="4234.95" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="4967.10" x2="7725.72" y2="4967.10" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="7400.70" x2="7725.72" y2="7400.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="4967.10" x2="1158.32" y2="7400.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="4967.10" x2="7725.72" y2="7400.70" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="5676.30" x2="12182.59" y2="5676.30" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="6691.95" x2="12182.59" y2="6691.95" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="5676.30" x2="8429.53" y2="6691.95" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="12182.59" y1="5676.30" x2="12182.59" y2="6691.95" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="9952.65" x2="7725.72" y2="9952.65" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="11322.90" x2="7725.72" y2="11322.90" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="9952.65" x2="1158.32" y2="11322.90" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="9952.65" x2="7725.72" y2="11322.90" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="11913.30" x2="7725.72" y2="11913.30" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="12929.40" x2="7725.72" y2="12929.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1158.32" y1="11913.30" x2="1158.32" y2="12929.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="11913.30" x2="7725.72" y2="12929.40" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="1744.68" y1="7991.55" x2="7139.36" y2="7991.55" style="stroke:#606060;stroke-width:25.98"/>
+	<line x1="1744.68" y1="9361.80" x2="7139.36" y2="9361.80" style="stroke:#606060;stroke-width:25.98"/>
+	<line x1="1744.68" y1="7991.55" x2="1744.68" y2="9361.80" style="stroke:#606060;stroke-width:25.98"/>
+	<line x1="7139.36" y1="7991.55" x2="7139.36" y2="9361.80" style="stroke:#606060;stroke-width:25.98"/>
+	<line x1="8429.53" y1="3691.35" x2="7725.72" y2="3691.35" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="4442.02" y1="2415.60" x2="4442.02" y2="3183.30" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="8429.53" y1="6183.90" x2="7725.72" y2="6183.90" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="4442.02" y1="4199.40" x2="4442.02" y2="4967.10" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="4442.02" y1="7400.70" x2="4442.02" y2="7991.55" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="4442.02" y1="9361.80" x2="4442.02" y2="9952.65" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="4442.02" y1="11322.90" x2="4442.02" y2="11913.30" style="stroke:#000000;stroke-width:32.47"/>
+	<line x1="7725.72" y1="3691.35" x2="7862.52" y2="3616.65" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="7725.72" y1="3691.35" x2="7862.52" y2="3766.05" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="3183.30" x2="4367.32" y2="3046.50" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="3183.30" x2="4516.72" y2="3046.50" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="7725.72" y1="6183.90" x2="7862.52" y2="6109.20" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="7725.72" y1="6183.90" x2="7862.52" y2="6258.60" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="4967.10" x2="4367.32" y2="4830.30" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="4967.10" x2="4516.72" y2="4830.30" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="7991.55" x2="4367.32" y2="7854.75" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="7991.55" x2="4516.72" y2="7854.75" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="9952.65" x2="4367.32" y2="9815.85" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="9952.65" x2="4516.72" y2="9815.85" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="11913.30" x2="4367.32" y2="11776.50" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<line x1="4442.02" y1="11913.30" x2="4516.72" y2="11776.50" stroke-linecap="round" style="stroke:#000000;stroke-width:25.98"/>
+	<text x="1295.12" y="1140.91" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#606060" text-anchor="middle">01_build.do</text>
+	<text x="4442.02" y="1825.81" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">use raw/cps_2019.dta</text>
+	<text x="4442.02" y="2180.41" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">52,431 obs × 24 vars</text>
+	<text x="994.52" y="1787.69" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">1</text>
+	<text x="4442.02" y="3609.61" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">append</text>
+	<text x="4442.02" y="3964.21" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">obs 52,431 → 209,634</text>
+	<text x="994.52" y="3571.49" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">2</text>
+	<text x="10306.06" y="3432.76" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">raw/cps_ˋy'.dta</text>
+	<text x="10306.06" y="3786.91" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">×3: cps_2020 … cps_2022</text>
+	<text x="10306.06" y="4141.51" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">157,203 obs total</text>
+	<text x="4442.02" y="5393.41" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">merge m:1 county</text>
+	<text x="4442.02" y="5736.67" style="font-family:'Helvetica';font-size:240.30px;fill:#707070" text-anchor="middle">keep(1 3) nogenerate</text>
+	<text x="4442.02" y="6102.61" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">matched 209,101 · master 533</text>
+	<text x="4442.02" y="6456.76" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">using (2 dropped)</text>
+	<text x="4442.02" y="6811.36" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">cover 99.7% master / 99.2% using</text>
+	<text x="4442.02" y="7154.17" style="font-family:'Helvetica';font-size:240.30px;fill:#707070" text-anchor="middle">2 using-only dropped by keep(1 3)</text>
+	<text x="994.52" y="5355.29" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">3</text>
+	<text x="10306.06" y="6102.61" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">xwalk/county_key.dta</text>
+	<text x="10306.06" y="6456.76" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">254 obs × 3 vars</text>
+	<text x="4442.02" y="8417.86" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">drop if missing(wage)</text>
+	<text x="4442.02" y="8772.01" style="font-family:'Helvetica';font-size:272.70px;fill:#4A6D8c" text-anchor="middle">!! removed 6,519 rows (3.1%),</text>
+	<text x="4442.02" y="9126.61" style="font-family:'Helvetica';font-size:272.70px;fill:#4A6D8c" text-anchor="middle">203,115 remaining</text>
+	<text x="994.52" y="8379.74" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">4</text>
+	<text x="4442.02" y="10378.96" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">collapse</text>
+	<text x="4442.02" y="10721.77" style="font-family:'Helvetica';font-size:240.30px;fill:#707070" text-anchor="middle">(mean) wage hours, by(county year)</text>
+	<text x="4442.02" y="11087.71" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">obs 203,115 → 3,048 · vars 26 → 6</text>
+	<text x="994.52" y="10340.84" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">5</text>
+	<text x="4442.02" y="12340.06" style="font-family:'Helvetica';font-weight:bold;font-size:272.70px;fill:#000000" text-anchor="middle">built/county_panel.dta  [saved]</text>
+	<text x="4442.02" y="12694.21" style="font-family:'Helvetica';font-size:272.70px;fill:#000000" text-anchor="middle">3,048 obs × 6 vars</text>
+	<text x="994.52" y="12301.94" style="font-family:'Helvetica';font-size:163.80px;fill:#A0A0a0" text-anchor="middle">6</text>
+	<text x="3560.45" y="13778.03" style="font-family:'Helvetica';font-size:196.20px;fill:#909090" text-anchor="middle">mergemap · 19 Aug 2026 23:51 · Stata 19.5 MP · journal_run.tsv</text>
+</svg>

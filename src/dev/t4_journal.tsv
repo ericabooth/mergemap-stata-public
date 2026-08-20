@@ -1,0 +1,10 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t4_tempfile.do	2	source	use	.	.	.	raw/visits.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t4_tempfile.do	4	save	save	tempfile	.	work	.	tempfile:v	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	create	tempfile
+3	t4_tempfile.do	5	source	use	.	.	.	raw/participants.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+4	t4_tempfile.do	6	transform	duplicates	drop	pid	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	1	force	.	.	.	warn	.	.	.	.	duplicate rows on the key will be dropped
+5	t4_tempfile.do	7	join	merge	1:m	pid	work	tempfile:v	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	keep(3)	.	.	.	note	.	.	.	.	keep(3): master-only and using-only will be dropped; tempfile from t4_tempfile.do line 4
+6	t4_tempfile.do	8	flow	preserve	.	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+7	t4_tempfile.do	9	join	merge	m:1	county	work	raw/county_key.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	update replace	.	.	.	warn	.	.	.	.	update replace
+8	t4_tempfile.do	10	flow	restore	.	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+9	t4_tempfile.do	11	save	save	.	.	work	.	built/t4_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

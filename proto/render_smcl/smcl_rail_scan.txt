@@ -1,0 +1,43 @@
+
+mergemap diagram: ../journal_scan.tsv
+(scan mode - nothing executed; style: rail)
+
+01_build.do -------------------------------------------------------------------
++-- raw/cps_2019.dta
+|-- append  x3: raw/cps_2020.dta ... raw/cps_2022.dta
+|-- merge m:1 county <- xwalk/county_key.dta
+|      keep(1 3) nogenerate
+|      keep(1 3): using-only will be dropped
+|   [ drop if missing(wage) ]
+|   collapse (mean) wage hours, by(county year)
++-- built/county_panel.dta  [saved]
+
+02_panel.do -------------------------------------------------------------------
++-- raw/participants.dta
+|   duplicates drop pid
+|-- merge 1:m pid <- raw/visits.dta
++-- tempfile:__visits  [tempfile]
+
+-- new chain ---------------------------
++-- built/county_panel.dta
+|   reshape wide wage hours, i(county) j(year)
++-- built/county_wide.dta  [saved]
+
+03_analyze.do -----------------------------------------------------------------
++-- tempfile:__visits
+|      tempfile from 02_panel.do line 16
+|-- merge m:1 county <- built/county_wide.dta
+|      keep(1 3) nogenerate
+|-- joinby m:m staff <- raw/staff_assign.dta
+|      unmatched(none)
+|-- merge 1:1 pid visitid <- raw/corrections.dta
+|      !! update replace
+|-- frlink m:1 county <- frame:counties
+|      frame(counties)
+|   frget povrate slots, from(cnty)  <- frame:counties
+|   [ keep if inrange(year, 2019, 2022) ]
+|-- merge m:m staff <- raw/schedules.dta
+|      !! m:m pairs rows by row order within key (not a join)
+|      !! force used
++-- built/analysis_file.dta  [saved]
+

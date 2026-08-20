@@ -1,0 +1,8 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t9_macropath.do	3	flow	cd	.	.	.	sub	.	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	working directory now sub/ ; later relative paths resolve there
+2	t9_macropath.do	4	source	use	.	.	.	`path'/b.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	path built from a macro; run mode resolves it
+3	t9_macropath.do	5	join	merge	1:1	id	work	c.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	nogenerate	.	.	.	note	.	.	.	.	.
+4	t9_macropath.do	6	flow	cd	.	.	.	..	.	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	working directory reset; later relative paths resolve as written
+5	t9_macropath.do	8	flow	cd	.	.	.	`d'	.	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	cd path built from a macro; later relative paths cannot be resolved
+6	t9_macropath.do	9	source	use	.	.	.	d.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+7	t9_macropath.do	10	save	save	.	.	work	.	built/t9_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

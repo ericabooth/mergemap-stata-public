@@ -1,0 +1,88 @@
+
+. rendersmcl using ../journal_scan.tsv
+
+mergemap diagram: ../journal_scan.tsv
+(scan mode - nothing executed; 12 join/transform/filter events)
+
+note: 12 join/transform/filter events exceed maxnodes(8);
+      the diagram is deferred to the HTML renderer (renderhtml).
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. rendersmcl using ../journal_run.tsv
+
+mergemap diagram: ../journal_run.tsv
+(run mode; 12 join/transform/filter events)
+
+note: 12 join/transform/filter events exceed maxnodes(8);
+      the diagram is deferred to the HTML renderer (renderhtml).
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. rendersmcl using ../journal_run.tsv, style(rail)
+
+mergemap diagram: ../journal_run.tsv
+(run mode; 12 join/transform/filter events)
+
+note: 12 join/transform/filter events exceed maxnodes(8);
+      the diagram is deferred to the HTML renderer (renderhtml).
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. rendersmcl using ../journal_run.tsv, layout(horizontal) forcesmcl
+
+mergemap diagram: ../journal_run.tsv
+(run mode; 12 join/transform/filter events)
+
+note: layout(horizontal) cannot be drawn in SMCL;
+      the diagram is deferred to the HTML renderer (renderhtml).
+
+. rendersmcl using ../journal_run.tsv, maxnodes(20) style(rail) nocounts
+
+mergemap diagram: ../journal_run.tsv
+(run mode; style: rail)
+
+01_build.do -------------------------------------------------------------------
++-- raw/cps_2019.dta
+|-- append  x3: raw/cps_2020.dta ... raw/cps_2022.dta
+|-- merge m:1 county <- xwalk/county_key.dta
+|      keep(1 3) nogenerate
+|      2 using-only dropped by keep(1 3)
+|   [ drop if missing(wage) ]
+|   collapse (mean) wage hours, by(county year)
++-- built/county_panel.dta  [saved]
+
+02_panel.do -------------------------------------------------------------------
++-- raw/participants.dta
+|   duplicates drop pid
+|      !! 12 duplicate pid obs dropped
+|-- merge 1:m pid <- raw/visits.dta
+|      310 master-only kept (no visits)
++-- tempfile:__visits  [tempfile]
+
+-- new chain ---------------------------
++-- built/county_panel.dta
+|   reshape wide wage hours, i(county) j(year)
++-- built/county_wide.dta  [saved]
+
+03_analyze.do -----------------------------------------------------------------
++-- tempfile:__visits
+|      tempfile from 02_panel.do line 16
+|-- merge m:1 county <- built/county_wide.dta
+|      keep(1 3) nogenerate
+|      95 master-only kept
+|-- joinby m:m staff <- raw/staff_assign.dta
+|      unmatched(none)
+|      !! row multiplication x1.08
+|-- merge 1:1 pid visitid <- raw/corrections.dta
+|      update replace
+|      !! 50 nonmissing conflicts overwritten
+|-- frlink m:1 county <- frame:counties
+|      frame(counties)
+|      95 obs unmatched to frame
+|   frget povrate slots, from(cnty)  <- frame:counties
+|   [ keep if inrange(year, 2019, 2022) ]
+|-- merge m:m staff <- raw/schedules.dta
+|      !! m:m pairs rows by order within key (not a join)
+|      !! force: schednote str8 vs byte
++-- built/analysis_file.dta  [saved]
+
+
+. log close _mm

@@ -1,0 +1,317 @@
+
+. set sortseed 20260820
+
+. capture noisily _mm_run 00_master.do, ///
+>     out("../../gallery/journals/journal_runmode.tsv") noreceipt
+
+mergemap run: executing 00_master.do with instrumentation
+
+
+. * 00_master.do -- run the mergemap test pipeline end to end
+. * Usage (from tests/pipeline/):  /usr/local/bin/stata-mp -b do 00_master.do
+. * Requires tests/raw/ built by ../maketestdata.do (or via ../runall.do,
+. * which runs everything).
+. *
+. * Hand-off design: the visit-level file passes from 02_panel.do to
+. * 03_analyze.do through a real tempfile whose path is published in global
+. * MM_VISITS. The tempfile is declared HERE, not in 02, because Stata
+. * erases a tempfile when the do-file that declared it ends -- declared in
+. * 02 it would be gone before 03 runs; declared here it lives until this
+. * master finishes. Chosen over re-saving to ../out/ because all three
+. * do-files run inside this single Stata session, so a true tempfile works
+. * and exercises tempfile provenance end to end.
+. 
+. clear all
+
+. tempfile __visits
+
+. global MM_VISITS "`__visits'"
+
+. 
+. _mm_do #1:19:d2# 01_build.do
+mergemap: do 01_build.do   (00_master.do line 19)
+
+. * 01_build.do -- pool the CPS extracts, attach the county key, collapse to
+. * a county-year panel. Part of the mergemap test pipeline; run via
+. * 00_master.do from tests/pipeline/. Reads ../raw/, writes ../out/ (the
+. * sample journal's built/ maps to ../out/ here).
+. *
+. * Deviation from the sample journal: the journal shows this append without
+. * force, but cps_2022.dta stores hours as str3 (the type-clash file for
+. * the append-force scenarios), so pooling all four years needs force;
+. * hours arrives missing on the 2022 rows and collapse handles it.
+. 
+. * ---- pool the four CPS years --------------------------------------------
+. _mm_use #2:12# ../raw/cps_2019.dta, clear
+(synthetic CPS extract 2019)
+mergemap: use ../raw/cps_2019.dta   (01_build.do line 12)
+    loaded 484 obs, 7 vars
+
+. 
+. forvalues y = 2020/2022 {
+  2.     _mm_append #2:15# using ../raw/cps_`y'.dta, force
+  3. }
+mergemap: append using ../raw/cps_2020.dta   (01_build.do line 15)
+    484 + 481 = 965 obs
+    !! force used
+mergemap: append using ../raw/cps_2021.dta   (01_build.do line 15)
+    965 + 483 = 1,448 obs
+    !! force used
+(note: variable hours was str3 in the using data, but will be byte now)
+mergemap: append using ../raw/cps_2022.dta   (01_build.do line 15)
+    1,448 + 488 = 1,936 obs
+    !! force used
+
+. 
+. * ---- attach the county key (m:1) -----------------------------------------
+. * keep(1 3): counties that appear only in the key are dropped; stray
+. * counties in the data (48997/48999) stay as master-only rows.
+. 
+. _mm_merge #2:22# m:1 county using ../raw/county_key.dta, keep(1 3) nogenerate
+mergemap: merge m:1 county using ../raw/county_key.dta   (01_build.do line 22)
+    key: county   county: str5 vs str5
+    master 1,936 | using 42 | matched 1,919 | result 1,936
+    coverage: 99.1% of master matched, 95.2% of using used
+    top unmatched keys: 48999 (17)
+    2 using-only dropped by keep(1 3); 17 master-only kept
+
+. 
+. * ---- drop the rows the forced append left without hours ------------------
+. * cps_2022.dta stores hours as str3, so the forced append above leaves hours
+. * missing on every 2022 row. Dropping them here keeps the county-year panel
+. * from carrying a whole year of missing means -- and it is exactly the kind
+. * of row loss mergemap records as a filter event, so that the attrition is
+. * not misread as something one of the merges did.
+. 
+. _mm_dropif #2:31# if missing(hours)
+(488 observations deleted)
+mergemap: drop if missing(hours)   (01_build.do line 31)
+    removed 488 rows (25.2%), 1,448 remaining
+
+. 
+. * ---- collapse to the county-year panel -----------------------------------
+. * One row per county-year; hours2022 will be all missing (see the force
+. * note above), which collapse tolerates.
+. 
+. 
+. 
+. 
+. _mm_collapse #2:40# (mean) wage hours, by(county year)
+mergemap: collapse (mean) wage hours, by(county year)   (01_build.do line 40)
+    1,448 x 10 -> 123 x 4
+
+. 
+. _mm_save #2:42# ../out/county_panel.dta, replace
+file ../out/county_panel.dta saved
+mergemap: save ../out/county_panel.dta   (01_build.do line 42)
+    overwrite, 123 obs, 4 vars
+
+. 
+end of do-file
+
+. _mm_do #1:20:d3# 02_panel.do
+mergemap: do 02_panel.do   (00_master.do line 20)
+
+. * 02_panel.do -- participants + visits, then reshape the county panel wide.
+. * Run via 00_master.do from tests/pipeline/. Reads ../raw/ and ../out/.
+. * Hand-off to 03_analyze.do: the visit-level file is saved to the tempfile
+. * path in global MM_VISITS, declared by 00_master.do. The master declares
+. * it because Stata deletes a tempfile when the do-file that DECLARED it
+. * ends (verified: one declared here vanished before 03 ran); one declared
+. * by the master survives the whole pipeline.
+. _mm_use #3:8# ../raw/participants.dta, clear
+(participants: 12 duplicate pids, stray counties)
+mergemap: use ../raw/participants.dta   (02_panel.do line 8)
+    loaded 792 obs, 6 vars
+
+. 
+. * a few pids were entered twice; keep the first occurrence
+. _mm_duplicates #3:11# drop pid, force
+
+Duplicates in terms of pid
+
+(12 observations deleted)
+mergemap: duplicates drop pid, force   (02_panel.do line 11)
+    792 x 6 -> 780 x 6
+    12 duplicate pid obs dropped
+
+. 
+. * attach visits (1:m fan-out), then park the result at the tempfile path
+. _mm_merge #3:14# 1:m pid using ../raw/visits.dta
+mergemap: merge 1:m pid using ../raw/visits.dta   (02_panel.do line 14)
+    key: pid   pid: long vs long
+    master 780 | using 1,860 | matched 1,860 | result 1,908
+    coverage: 93.8% of master matched, 100.0% of using used
+    top unmatched keys: 10672 (1), 10496 (1), 10736 (1)
+    48 master-only kept; row multiplication x2.45
+
+. _mm_dropif #3:15# _merge
+mergemap: drop _merge   (02_panel.do line 15)
+    removed 1 variables, 9 remaining
+
+. _mm_save #3:16# "$MM_VISITS"
+file /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St64952.000002 saved as .dta format
+mergemap: save tempfile:St64952.000002   (02_panel.do line 16)
+    create, 1,908 obs, 9 vars
+
+. 
+. 
+. _mm_use #3:19# ../out/county_panel.dta, clear
+(synthetic CPS extract 2019)
+mergemap: use ../out/county_panel.dta   (02_panel.do line 19)
+    loaded 123 obs, 4 vars
+
+. 
+. * one row per county: years spread into wageYYYY / hoursYYYY
+. 
+. _mm_reshape #3:23# wide wage hours, i(county) j(year)
+(j = 2019 2020 2021)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations              123   ->   41          
+Number of variables                   4   ->   7           
+j variable (3 values)              year   ->   (dropped)
+xij variables:
+                                   wage   ->   wage2019 wage2020 wage2021
+                                  hours   ->   hours2019 hours2020 hours2021
+-----------------------------------------------------------------------------
+mergemap: reshape wide wage hours, i(county) j(year)   (02_panel.do line 23)
+    123 x 4 -> 41 x 7
+
+. 
+. 
+. _mm_save #3:26# ../out/county_wide.dta, replace
+file ../out/county_wide.dta saved
+mergemap: save ../out/county_wide.dta   (02_panel.do line 26)
+    overwrite, 41 obs, 7 vars
+
+. 
+end of do-file
+
+. _mm_do #1:21:d4# 03_analyze.do
+mergemap: do 03_analyze.do   (00_master.do line 21)
+
+. * 03_analyze.do -- assemble the analysis file. Run via 00_master.do from
+. * tests/pipeline/ (needs global MM_VISITS published by 02_panel.do).
+. if `"$MM_VISITS"' == "" {
+.     display as error "global MM_VISITS is not set -- run 00_master.do"
+.     error 459
+. }
+
+. _mm_use #4:7# "$MM_VISITS", clear
+(participants: 12 duplicate pids, stray counties)
+mergemap: use tempfile:St64952.000002   (03_analyze.do line 7)
+    loaded 1,908 obs, 9 vars
+
+. 
+. * ---- attach the wide county panel ----------------------------------------
+. 
+. 
+. _mm_merge #4:12# m:1 county using ../out/county_wide.dta, keep(1 3) nogenerate
+mergemap: merge m:1 county using ../out/county_wide.dta   (03_analyze.do line 12)
+    key: county   county: str5 vs str5
+    master 1,908 | using 41 | matched 1,892 | result 1,908
+    coverage: 99.2% of master matched, 100.0% of using used
+    top unmatched keys: 48997 (16)
+    16 master-only kept
+
+. 
+. * ---- fan visits out across staff assignments (true many-to-many) ---------
+. * unmatched(none): rows whose staff has no assignment are dropped
+. 
+. 
+. _mm_joinby #4:18# staff using ../raw/staff_assign.dta, unmatched(none)
+mergemap: joinby staff using ../raw/staff_assign.dta   (03_analyze.do line 18)
+    master 1,908 | using 62 | result 4,235
+    coverage: 96.1% of master matched, 90.3% of using used
+    row multiplication x2.22
+
+. 
+. * ---- apply corrections -----------------------------------------------------
+. * The sample journal shows 1:1 here, but the joinby above duplicates
+. * (pid, visitid) in the master, so m:1 against the unique corrections
+. * file is the form that runs; update replace semantics match per row.
+. _mm_merge #4:24# m:1 pid visitid using ../raw/corrections.dta, update replace
+mergemap: merge m:1 pid visitid using ../raw/corrections.dta   (03_analyze.do line 24)
+    key: pid visitid   pid: long vs long; visitid: int vs int
+    master 4,235 | using 274 | matched 626 | result 4,243
+    coverage: 14.8% of master matched, 97.1% of using used
+    top unmatched keys: 10173 3 (3), 10481 2 (3), 10254 2 (3)
+    153 nonmissing conflicts overwritten; 3,609 master-only kept
+
+. _mm_dropif #4:25# _merge
+mergemap: drop _merge   (03_analyze.do line 25)
+    removed 1 variables, 18 remaining
+
+. capture frame drop counties
+
+. frame create counties
+
+. frame counties: use ../raw/counties_frame.dta
+(county-level frame data: povrate + slots)
+
+. _mm_frlink #4:29# m:1 county, frame(counties) generate(cnty)
+(278 observations in frame default unmatched)
+mergemap: frlink m:1 county to frame counties   (03_analyze.do line 29)
+    coverage: 93.4% of master linked
+    278 obs unmatched to frame
+
+. _mm_frget #4:30# povrate slots, from(cnty)
+(278 missing values generated)
+(278 missing values generated)
+(2 variables copied from linked frame)
+mergemap: frget povrate slots, from(cnty)   (03_analyze.do line 30)
+    19 -> 21 variables
+
+. 
+. * ---- restrict to first-half visits -----------------------------------------
+. * A row filter, recorded as its own event: without it the row count change
+. * here would look like something the joins did.
+. 
+. _mm_keepif #4:36# if date <= mdy(6, 30, 2024)
+(2,149 observations deleted)
+mergemap: keep if date <= mdy(6, 30, 2024)   (03_analyze.do line 36)
+    removed 2,149 rows (50.6%), 2,094 remaining
+
+. 
+. * ---- staff schedules: m:m + force ------------------------------------------
+. * Duplicate staff keys on both sides: m:m pairs rows by order within
+. * staff (not a join). schednote is str8 in schedules vs byte in the
+. * master, hence force.
+. _mm_merge #4:42# m:m staff using ../raw/schedules.dta, force
+(note: variable schednote was str8 in the using data, but will be byte now)
+mergemap: merge m:m staff using ../raw/schedules.dta   (03_analyze.do line 42)
+    key: staff   staff: int vs int
+    master 2,094 | using 102 | matched 2,094 | result 2,100
+    coverage: 100.0% of master matched, 94.1% of using used
+    !! m:m pairs rows by row order within key (not a join); !! force used
+
+. _mm_dropif #4:43# _merge
+mergemap: drop _merge   (03_analyze.do line 43)
+    removed 1 variables, 23 remaining
+
+. 
+. 
+. _mm_save #4:46# ../out/analysis_file.dta, replace
+file ../out/analysis_file.dta saved
+mergemap: save ../out/analysis_file.dta   (03_analyze.do line 46)
+    overwrite, 2,100 obs, 23 vars
+
+. 
+end of do-file
+
+. 
+. global MM_VISITS ""
+
+. display as txt "pipeline complete: see ../out/analysis_file.dta"
+pipeline complete: see ../out/analysis_file.dta
+
+. 
+end of do-file
+
+mergemap run: 30 events, 11 joins, journal ../../gallery/journals/journal_runmode.tsv
+mergemap run: 1 stop, 10 warn -- see the flags column
+mergemap run: 1 event(s) breached the stop threshold
+
+. log close _g

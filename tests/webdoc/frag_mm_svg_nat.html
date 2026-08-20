@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 2367" width="880" height="2367">
+<defs>
+<marker id="mmB-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mmB-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="mm-dof"> 01_build.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="mm-hl" />
+<rect x="40" y="38" width="310" height="46" class="mm-bx" />
+<text x="10" y="54" class="mm-bn"> #1</text>
+<text x="48" y="59" class="mm-bh"> raw/cps_2019.dta</text>
+<text x="48" y="75" class="mm-bl"> 52,431 &#215; 24</text>
+<line x1="195" y1="84" x2="195" y2="201" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="103" class="mm-cc"> #2 append</text>
+<text x="215" y="118" class="mm-cl"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="215" y="133" class="mm-cl"> +157,203 obs from 3 files</text>
+<text x="215" y="148" class="mm-cl"> &#8594; 209,634 &#215; 24</text>
+<line x1="520" y1="161" x2="203" y2="161" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="530" y="120" width="340" height="62" class="mm-bstk" />
+<rect x="525" y="125" width="340" height="62" class="mm-bstk" />
+<rect x="520" y="130" width="340" height="62" class="mm-bu" />
+<text x="528" y="151" class="mm-bh"> raw/cps_&#96;y'.dta</text>
+<text x="528" y="167" class="mm-bn"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="528" y="183" class="mm-bl"> 157,203 &#215; 24</text>
+<rect x="40" y="202" width="310" height="46" class="mm-bw" />
+<text x="48" y="223" class="mm-bl"> work (after append)</text>
+<text x="48" y="239" class="mm-bn"> 209,634 &#215; 24</text>
+<line x1="195" y1="248" x2="195" y2="387" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="267" class="mm-cc"> #3 merge m:1 county</text>
+<text x="215" y="282" class="mm-cl"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="215" y="297" class="mm-cl"> &#160;&#160;using-only (2 dropped)</text>
+<text x="215" y="312" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="327" class="mm-cl"> &#8594; 209,634 &#215; 26</text>
+<text x="215" y="342" class="mm-cn"> 2 using-only dropped by keep(1 3)</text>
+<line x1="520" y1="355" x2="203" y2="355" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="332" width="340" height="46" class="mm-bu" />
+<text x="528" y="353" class="mm-bh"> xwalk/county_key.dta</text>
+<text x="528" y="369" class="mm-bl"> 254 &#215; 3 &#183; key: county</text>
+<rect x="40" y="388" width="310" height="62" class="mm-bx" />
+<text x="10" y="404" class="mm-bn"> #4</text>
+<text x="48" y="409" class="mm-bh"> collapse</text>
+<text x="48" y="425" class="mm-bl"> (mean) wage hours, by(county year)</text>
+<text x="48" y="441" class="mm-bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="195" y1="450" x2="195" y2="475" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="476" width="310" height="46" class="mm-bx" />
+<text x="10" y="492" class="mm-bn"> #5</text>
+<text x="48" y="497" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="513" class="mm-bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="40" y="542" class="mm-dof"> 02_panel.do</text>
+<line x1="40" y1="548" x2="860" y2="548" class="mm-hl" />
+<rect x="40" y="574" width="310" height="46" class="mm-bx" />
+<text x="10" y="590" class="mm-bn"> #6</text>
+<text x="48" y="595" class="mm-bh"> raw/participants.dta</text>
+<text x="48" y="611" class="mm-bl"> 8,914 &#215; 12</text>
+<line x1="195" y1="620" x2="195" y2="645" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="646" width="310" height="78" class="mm-bx" />
+<text x="10" y="662" class="mm-bn"> #7</text>
+<text x="48" y="667" class="mm-bh"> duplicates drop</text>
+<text x="48" y="683" class="mm-bl"> keys: pid</text>
+<text x="48" y="699" class="mm-bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="48" y="715" class="mm-bn"> 12 duplicate pid obs dropped</text>
+<line x1="195" y1="724" x2="195" y2="863" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="743" class="mm-cc"> #8 merge 1:m pid</text>
+<text x="215" y="758" class="mm-cl"> matched 41,210 &#183; master-only 310 &#183;</text>
+<text x="215" y="773" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="788" class="mm-cn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="215" y="803" class="mm-cl"> &#8594; 41,520 &#215; 17</text>
+<text x="215" y="818" class="mm-cn"> 310 master-only kept (no visits)</text>
+<line x1="520" y1="831" x2="203" y2="831" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="808" width="340" height="46" class="mm-bu" />
+<text x="528" y="829" class="mm-bh"> raw/visits.dta</text>
+<text x="528" y="845" class="mm-bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<rect x="40" y="864" width="310" height="46" class="mm-bt" />
+<text x="10" y="880" class="mm-bn"> #9</text>
+<text x="48" y="885" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="901" class="mm-bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="40" y="924" width="310" height="46" class="mm-bx" />
+<text x="10" y="940" class="mm-bn"> #10</text>
+<text x="48" y="945" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="961" class="mm-bl"> 3,048 &#215; 6</text>
+<line x1="195" y1="970" x2="195" y2="995" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="996" width="310" height="62" class="mm-bx" />
+<text x="10" y="1012" class="mm-bn"> #11</text>
+<text x="48" y="1017" class="mm-bh"> reshape wide</text>
+<text x="48" y="1033" class="mm-bl"> wage hours, i(county) j(year)</text>
+<text x="48" y="1049" class="mm-bn"> 3,048 &#8594; 762 obs</text>
+<line x1="195" y1="1058" x2="195" y2="1083" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="1084" width="310" height="46" class="mm-bx" />
+<text x="10" y="1100" class="mm-bn"> #12</text>
+<text x="48" y="1105" class="mm-bh"> built/county_wide.dta</text>
+<text x="48" y="1121" class="mm-bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="40" y="1150" class="mm-dof"> 03_analyze.do</text>
+<line x1="40" y1="1156" x2="860" y2="1156" class="mm-hl" />
+<rect x="40" y="1182" width="310" height="78" class="mm-bt" />
+<text x="10" y="1198" class="mm-bn"> #13</text>
+<text x="48" y="1203" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="1219" class="mm-bn"> [tempfile]</text>
+<text x="48" y="1235" class="mm-bl"> 41,520 &#215; 17</text>
+<text x="48" y="1251" class="mm-bn"> tempfile from 02_panel.do line 16</text>
+<line x1="195" y1="1260" x2="195" y2="1399" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1279" class="mm-cc"> #14 merge m:1 county</text>
+<text x="215" y="1294" class="mm-cl"> matched 41,425 &#183; master-only 95 &#183;</text>
+<text x="215" y="1309" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="1324" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="1339" class="mm-cl"> &#8594; 41,520 &#215; 25</text>
+<text x="215" y="1354" class="mm-cn"> 95 master-only kept</text>
+<line x1="520" y1="1367" x2="203" y2="1367" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1344" width="340" height="46" class="mm-bu" />
+<text x="528" y="1365" class="mm-bh"> built/county_wide.dta</text>
+<text x="528" y="1381" class="mm-bl"> 762 &#215; 9 &#183; key: county</text>
+<rect x="40" y="1400" width="310" height="46" class="mm-bw" />
+<text x="48" y="1421" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1437" class="mm-bn"> 41,520 &#215; 25</text>
+<line x1="195" y1="1446" x2="195" y2="1570" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1465" class="mm-cc"> #15 joinby m:m staff</text>
+<text x="215" y="1480" class="mm-cn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="215" y="1495" class="mm-cn"> opts: unmatched(none)</text>
+<text x="215" y="1510" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1525" class="mm-cn"> row multiplication x1.08</text>
+<line x1="520" y1="1538" x2="203" y2="1538" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1515" width="340" height="46" class="mm-bu" />
+<text x="528" y="1536" class="mm-bh"> raw/staff_assign.dta</text>
+<text x="528" y="1552" class="mm-bl"> 118 &#215; 4 &#183; key: staff</text>
+<rect x="40" y="1571" width="310" height="46" class="mm-bw" />
+<text x="48" y="1592" class="mm-bl"> work (after joinby)</text>
+<text x="48" y="1608" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1617" x2="195" y2="1771" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1636" class="mm-cc"> #16 merge 1:1 pid visitid</text>
+<text x="215" y="1651" class="mm-cl"> matched 0 &#183; master-only 44,473 &#183; using-only</text>
+<text x="215" y="1666" class="mm-cl"> &#160;&#160;0</text>
+<text x="215" y="1681" class="mm-cl"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="215" y="1696" class="mm-cn"> opts: update replace</text>
+<text x="215" y="1711" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1726" class="mm-cn"> 50 nonmissing conflicts overwritten</text>
+<line x1="520" y1="1739" x2="203" y2="1739" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1716" width="340" height="46" class="mm-bu" />
+<text x="528" y="1737" class="mm-bh"> raw/corrections.dta</text>
+<text x="528" y="1753" class="mm-bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<rect x="40" y="1772" width="310" height="46" class="mm-bw" />
+<text x="48" y="1793" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1809" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1818" x2="195" y2="1942" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1837" class="mm-cc"> #17 frlink m:1 county</text>
+<text x="215" y="1852" class="mm-cl"> matched 44,778 &#183; master-only 95</text>
+<text x="215" y="1867" class="mm-cn"> opts: frame(counties)</text>
+<text x="215" y="1882" class="mm-cl"> &#8594; 44,873 &#215; 29</text>
+<text x="215" y="1897" class="mm-cn"> 95 obs unmatched to frame</text>
+<line x1="520" y1="1910" x2="203" y2="1910" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1887" width="340" height="46" class="mm-bu" />
+<text x="528" y="1908" class="mm-bh"> frame:counties</text>
+<text x="528" y="1924" class="mm-bl"> 254 &#215; 7 &#183; key: county</text>
+<rect x="40" y="1943" width="310" height="46" class="mm-bw" />
+<text x="48" y="1964" class="mm-bl"> work (after frlink)</text>
+<text x="48" y="1980" class="mm-bn"> 44,873 &#215; 29</text>
+<line x1="195" y1="1989" x2="195" y2="2075" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="2008" class="mm-cc"> #18 frget</text>
+<text x="215" y="2023" class="mm-cn"> opts: povrate slots, from(cnty)</text>
+<text x="215" y="2038" class="mm-cl"> &#8594; 44,873 &#215; 31</text>
+<line x1="520" y1="2051" x2="203" y2="2051" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="2036" width="340" height="30" class="mm-bu" />
+<text x="528" y="2057" class="mm-bh"> frame:counties</text>
+<rect x="40" y="2076" width="310" height="46" class="mm-bw" />
+<text x="48" y="2097" class="mm-bl"> work (after frget)</text>
+<text x="48" y="2113" class="mm-bn"> 44,873 &#215; 31</text>
+<line x1="195" y1="2122" x2="195" y2="2306" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="2141" class="mm-cc"> #19 merge m:m staff, force</text>
+<text x="215" y="2156" class="mm-cl"> matched 44,663 &#183; master-only 210 &#183;</text>
+<text x="215" y="2171" class="mm-cl"> &#160;&#160;using-only 4</text>
+<text x="215" y="2186" class="mm-cn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="215" y="2201" class="mm-cn"> opts: force</text>
+<text x="215" y="2216" class="mm-cl"> &#8594; 44,873 &#215; 33</text>
+<text x="215" y="2231" class="mm-cf"> !! m:m pairs rows by order within key (not</text>
+<text x="215" y="2246" class="mm-cf"> &#160;&#160;a join)</text>
+<text x="215" y="2261" class="mm-cf"> !! force: schednote str8 vs byte</text>
+<line x1="520" y1="2274" x2="203" y2="2274" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="2251" width="340" height="46" class="mm-bu" />
+<text x="528" y="2272" class="mm-bh"> raw/schedules.dta</text>
+<text x="528" y="2288" class="mm-bl"> 560 &#215; 6 &#183; key: staff</text>
+<rect x="40" y="2307" width="310" height="46" class="mm-bx" />
+<text x="10" y="2323" class="mm-bn"> #20</text>
+<text x="48" y="2328" class="mm-bh"> built/analysis_file.dta</text>
+<text x="48" y="2344" class="mm-bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>

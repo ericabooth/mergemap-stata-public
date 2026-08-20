@@ -1,0 +1,4 @@
+v 3
+d mergemap: map the merges, appends and joins across your do-files
+d Eric Booth
+p mergemap

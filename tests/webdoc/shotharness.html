@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>shot harness</title>
+<style>
+  html, body { margin: 0; padding: 0; overflow: hidden; background: #fff; }
+  iframe { width: 1280px; height: 900px; border: 0; display: block; }
+</style>
+</head>
+<body>
+<!--
+  Screenshot harness for tests/webdoc.
+
+  Headless Chrome captures the viewport at scroll 0, ignores #anchor scrolling,
+  and enlarging the window to capture a tall page would change every vh-based
+  height on it.  Scrolling the framed report also proved unreliable: the report
+  keeps growing while its images and nested iframes settle, so scrollTo clamps.
+
+  So the harness frames the report at a fixed 1280x900 viewport and HIDES every
+  block outside the requested section, which needs no scrolling at all.  The
+  viewport stays 900px, so vh units render exactly as they do in a real window.
+
+      shotharness.html?src=mergemap_report.html&sec=b3-wdiframe-sized-by-a-css-class
+      shotharness.html?src=collision_demo.html
+-->
+<iframe id="f"></iframe>
+<script>
+  var p = new URLSearchParams(location.search);
+  var f = document.getElementById('f');
+
+  function isolate() {
+    var sec = p.get('sec');
+    if (!sec) return true;
+    var d = f.contentDocument;
+    if (!d) return false;
+    var el = d.getElementById(sec);
+    if (!el) return false;
+    var page = el.parentElement;
+    var kids = [].slice.call(page.children);
+    var start = kids.indexOf(el);
+    var keep = {};
+    keep[start] = 1;
+    for (var i = start + 1; i < kids.length; i++) {
+      var tag = kids[i].tagName;
+      if (tag === 'H1' || tag === 'H2') break;
+      keep[i] = 1;
+    }
+    for (var j = 0; j < kids.length; j++) {
+      if (!keep[j]) kids[j].style.display = 'none';
+    }
+    f.contentWindow.scrollTo(0, 0);
+    return true;
+  }
+
+  f.addEventListener('load', function () {
+    var n = 0;
+    var t = setInterval(function () {
+      var done = false;
+      try { done = isolate(); } catch (e) { done = true; }
+      if (done || ++n > 60) clearInterval(t);
+    }, 80);
+  });
+  f.src = p.get('src') || 'mergemap_report.html';
+</script>
+</body>
+</html>

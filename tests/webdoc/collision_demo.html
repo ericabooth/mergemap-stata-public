@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>collision_demo.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     webdoc2 default theme header
+     Injected into <head> via:  wdinit myfile, replace
+     (or manually: webdoc init myfile, replace header2(include("header.html")))
+
+     To customise: copy this file, edit freely, then point wdinit at it:
+         wdinit myfile, replace headerfile("my_custom_header.html")
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<!-- Bootstrap 5.3 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Bootstrap Icons (chevron for back-to-top button) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+<style>
+/* ── Theme tokens — override here to change the colour scheme ────────────── */
+:root {
+  --wd-primary:    #1B2D55;   /* navbar / headings / accents */
+  --wd-accent:     #D44500;   /* h2 underline, hover highlights */
+  --wd-link:       #2B6CB0;   /* body link colour */
+  --wd-light-bg:   #F5F7FA;   /* code blocks, TOC, accordion bg */
+  --wd-border:     #DEE2E6;
+  --wd-text:       #1A1A2E;
+  --wd-muted:      #6C7A8D;
+  --wd-page-width: 90%;       /* default content width; override with wdwidth command */
+}
+
+/* ── Always reserve scrollbar space; offset anchors below sticky navbar ──── */
+html {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;   /* matches navbar height so anchors aren't hidden */
+}
+
+/* ── Base typography ──────────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--wd-text);
+  background-color: #ffffff;
+}
+
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  background-color: var(--wd-primary) !important;
+  padding: 0.55rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+.navbar-brand {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+.navbar-toggler        { border-color: rgba(255,255,255,0.4); }
+.navbar-toggler-icon   { filter: invert(1) brightness(2); }
+.navbar-nav .nav-link  {
+  font-size: 0.80rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.78) !important;
+  padding: 0.5rem 1.05rem !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+}
+.navbar-nav .nav-link.active {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+  font-weight: 600;
+}
+
+/* ── Navbar dropdowns ─────────────────────────────────────────────────────── */
+.navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: 1px solid var(--wd-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  margin-top: 0.25rem;
+  min-width: 180px;
+}
+.navbar .dropdown-item {
+  font-size: 0.85rem;
+  color: var(--wd-text);
+  padding: 0.45rem 1rem;
+}
+.navbar .dropdown-item:hover {
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary);
+}
+.navbar .dropdown-toggle::after { vertical-align: 0.1em; }
+
+/* ── Headings ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--wd-primary);
+  margin-top: 1.75rem;
+  margin-bottom: 0.55rem;
+}
+h1 { font-size: 1.85rem; }
+h2 {
+  font-size: 1.35rem;
+  border-bottom: 3px solid var(--wd-accent);
+  padding-bottom: 0.28rem;
+}
+h3 { font-size: 1.12rem; }
+h4 { font-size: 1rem; color: var(--wd-muted); }
+
+/* ── Links ────────────────────────────────────────────────────────────────── */
+a       { color: var(--wd-link);   text-decoration: none; }
+a:hover { color: var(--wd-accent); text-decoration: underline; }
+
+/* ── Stata log blocks ─────────────────────────────────────────────────────── */
+pre.stlog {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.2rem;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+  margin-bottom: 1.1rem;
+}
+.stinp { color: var(--wd-primary); font-weight: 600; }
+.stres { color: #145A32; }
+.stcmt { font-style: italic; opacity: 0.55; }
+
+/* ── Bootstrap accordion (button.ado / graphbutton.ado) ───────────────────── */
+.accordion, .accordion-item, .accordion-body { max-width: 100%; }
+.accordion-item {
+  border: 1px solid var(--wd-border);
+  border-radius: 6px !important;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.accordion-button {
+  font-size: 0.82rem;
+  font-weight: 500;
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary) !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: var(--wd-primary);
+  color: #ffffff !important;
+  box-shadow: none;
+}
+.accordion-button:not(.collapsed)::after { filter: invert(1) brightness(2); }
+.accordion-body { padding: 1rem 1.2rem; background-color: #ffffff; overflow-x: auto; }
+
+/* ── Lists ────────────────────────────────────────────────────────────────── */
+/* wdlist (dashed) — LaTeX-like em-dash markers via ::before. */
+ul.wd-list-dashed {
+  list-style: none;
+  padding-left: 1.2rem;
+}
+ul.wd-list-dashed > li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 0.15rem;
+}
+ul.wd-list-dashed > li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--wd-primary);
+  font-weight: 600;
+}
+/* wditemize (round) and wdenumerate (numbers) use default browser markers. */
+ul:not(.wd-list-dashed) > li,
+ol > li { margin-bottom: 0.15rem; }
+
+/* ── Figures ──────────────────────────────────────────────────────────────── */
+figure { margin: 0.8rem 0; }
+figure img {
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── In-page Table of Contents ────────────────────────────────────────────── */
+.wd-toc-wrap {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  min-width: 220px;
+  max-width: 480px;
+}
+.wd-toc-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--wd-primary);
+  margin-bottom: 0.45rem;
+}
+.wd-toc-list { margin: 0; padding: 0; list-style: none; }
+.wd-toc-list a {
+  display: block;
+  color: var(--wd-primary);
+  font-size: 0.87rem;
+  line-height: 1.95;
+  text-decoration: none;
+  transition: color 0.14s;
+}
+.wd-toc-list a:hover    { color: var(--wd-accent); }
+.wd-toc-h2              { padding-left: 0.8rem; }
+.wd-toc-h3              { padding-left: 1.6rem; font-size: 0.81rem; }
+.wd-toc-h4              { padding-left: 2.4rem; font-size: 0.78rem; }
+.wd-toc-h5              { padding-left: 3.2rem; font-size: 0.75rem; }
+.wd-toc-h6              { padding-left: 4.0rem; font-size: 0.72rem; }
+
+/* ── Page width — controlled by --wd-page-width; use wdwidth command to change */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: var(--wd-page-width) !important;
+}
+
+/* ── Misc spacing ─────────────────────────────────────────────────────────── */
+p { margin-bottom: 0.85rem; }
+.container, .container-fluid { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+/* ── Back-to-top button ───────────────────────────────────────────────────── */
+#wd-back-to-top {
+  display: none;
+  position: fixed;
+  bottom: 2rem;  right: 2rem;
+  z-index: 9999;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background-color: var(--wd-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 46px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+  transition: background-color 0.18s;
+  padding: 0;
+}
+#wd-back-to-top:hover { background-color: var(--wd-accent); }
+</style>
+
+<!-- Bootstrap 5.3 JS Bundle — enables navbar toggler + accordion collapse -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ── Back-to-top floating button ──────────────────────────────────────── */
+  var btn = document.createElement('button');
+  btn.id = 'wd-back-to-top';
+  btn.title = 'Back to top';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '<i class="bi bi-chevron-up"></i>';
+  document.body.appendChild(btn);
+  window.addEventListener('scroll', function () {
+    btn.style.display = (window.scrollY > 320) ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ── Auto-generate in-page TOC from headings ──────────────────────────── */
+  // Finds every element with class "wd-toc-wrap" and fills it with heading links.
+  // wdtoc.ado writes the container; this script fills it in.
+  // Depth controlled per-wrap via data-wd-depth (1..6, default 3).
+  document.querySelectorAll('.wd-toc-wrap').forEach(function (wrap) {
+    var depth = parseInt(wrap.getAttribute('data-wd-depth') || '3', 10);
+    if (isNaN(depth) || depth < 1) depth = 3;
+    if (depth > 6) depth = 6;
+    var selectors = [];
+    for (var d = 1; d <= depth; d++) selectors.push('h' + d);
+
+    var headings = Array.prototype.slice.call(
+      document.querySelectorAll(selectors.join(','))
+    ).filter(function (h) {
+      // Skip headings inside navbar and accordion headers
+      return !h.closest('.navbar') && !h.classList.contains('accordion-header');
+    });
+
+    if (headings.length === 0) return;
+
+    var ul = document.createElement('ul');
+    ul.className = 'wd-toc-list';
+
+    headings.forEach(function (h, i) {
+      if (!h.id) h.id = 'wdtoc-h-' + i;
+      var li = document.createElement('li');
+      li.className = 'wd-toc-' + h.tagName.toLowerCase();
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent.trim();
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+
+    wrap.appendChild(ul);
+  });
+
+  /* ── Remove stray closing-command echoes from Stata log output ──────────── */
+  var _wdClosingCmds = ['wdclose', 'buttonclose', 'graphbuttonclose',
+                        'wdnavbarclose', 'wdnavdropdownclose'];
+  document.querySelectorAll('span.stinp').forEach(function (span) {
+    var txt = span.textContent.replace(/^\s*\.\s*/, '').trim();
+    if (_wdClosingCmds.indexOf(txt) !== -1) {
+      var pre = span.closest('pre.stlog');
+      span.remove();
+      if (pre && pre.textContent.trim() === '') pre.remove();
+    }
+  });
+
+});
+</script>
+<style>
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<div class="mm-page">
+<h1 id="collision-demo-do-not-copy-this">Collision demo, do not copy this</h1>
+<h2 id="a-second-level-heading-for-comparison-with-the-report">A second-level heading, for comparison with the report</h2>
+<p>This page injects mergemap prototype HTML verbatim. Compare the heading sizes and the page width against mergemap_report.html, which prefixes and scopes the same stylesheet.</p>
+<p id="probe-para">Probe paragraph.</p>
+<style type="text/css">
+body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #222; background: #ffffff; margin: 24px; }
+body { max-width: 920px; } svg { max-width: 100%; height: auto; }
+h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
+p.sub { font-size: 12px; color: #666; margin: 0 0 4px 0; }
+p.legend { font-size: 11px; color: #888; margin: 0 0 14px 0; }
+p.legend b { color: #4a6d8c; }
+svg text { font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; }
+.bh  { font-size: 12px; font-weight: bold; fill: #111; }
+.bl  { font-size: 12px; fill: #333; }
+.bn  { font-size: 11px; fill: #666; }
+.bf  { font-size: 11px; font-weight: bold; fill: #4a6d8c; }
+.cc  { font-size: 11px; font-weight: bold; fill: #111; }
+.cl  { font-size: 11px; fill: #333; }
+.cn  { font-size: 11px; fill: #666; }
+.cf  { font-size: 11px; font-weight: bold; fill: #4a6d8c; }
+.dof { font-size: 13px; font-weight: bold; fill: #222; }
+.hc { font-size: 10px; fill: #333; } .hn { font-size: 10px; fill: #666; } .hb { font-size: 10px; font-weight: bold; fill: #111; } .hf { font-size: 10px; font-weight: bold; fill: #4a6d8c; }
+.bx { fill: #f7f7f7; stroke: #333; stroke-width: 1.1; }
+.bu { fill: #fcfcfc; stroke: #666; stroke-width: 1; }
+.bt { fill: #ffffff; stroke: #666; stroke-width: 1; stroke-dasharray: 5 3; }
+.bstk { fill: #ffffff; stroke: #999; stroke-width: 1; }
+.bw { fill: #ffffff; stroke: #999; stroke-width: 1; }
+.sp { stroke: #444; stroke-width: 1.2; fill: none; }
+.spd { stroke: #777; stroke-width: 1.1; fill: none; stroke-dasharray: 4 3; }
+.hl { stroke: #cccccc; stroke-width: 1; }
+details { margin: 6px 0; border: 1px solid #ddd; }
+summary { font-size: 12px; font-family: "SF Mono", Menlo, Consolas, monospace; padding: 5px 8px; cursor: pointer; background: #f7f7f7; }
+details pre { font-size: 12px; margin: 0; padding: 8px 12px; overflow-x: auto; }
+pre span.flag { font-weight: bold; color: #4a6d8c; }
+h2 { font-size: 15px; margin: 22px 0 8px 0; }
+p.foot { font-size: 10px; color: #999; margin-top: 18px; }
+</style>
+<h2 id="first-diagram-vertical">First diagram, vertical</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 2367" width="880" height="2367">
+<defs>
+<marker id="ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="dof"> 01_build.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="hl" />
+<rect x="40" y="38" width="310" height="46" class="bx" />
+<text x="10" y="54" class="bn"> #1</text>
+<text x="48" y="59" class="bh"> raw/cps_2019.dta</text>
+<text x="48" y="75" class="bl"> 52,431 &#215; 24</text>
+<line x1="195" y1="84" x2="195" y2="201" class="sp" marker-end="url(#ag)" />
+<text x="215" y="103" class="cc"> #2 append</text>
+<text x="215" y="118" class="cl"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="215" y="133" class="cl"> +157,203 obs from 3 files</text>
+<text x="215" y="148" class="cl"> &#8594; 209,634 &#215; 24</text>
+<line x1="520" y1="161" x2="203" y2="161" class="sp" marker-end="url(#aa)" />
+<rect x="530" y="120" width="340" height="62" class="bstk" />
+<rect x="525" y="125" width="340" height="62" class="bstk" />
+<rect x="520" y="130" width="340" height="62" class="bu" />
+<text x="528" y="151" class="bh"> raw/cps_&#96;y'.dta</text>
+<text x="528" y="167" class="bn"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="528" y="183" class="bl"> 157,203 &#215; 24</text>
+<rect x="40" y="202" width="310" height="46" class="bw" />
+<text x="48" y="223" class="bl"> work (after append)</text>
+<text x="48" y="239" class="bn"> 209,634 &#215; 24</text>
+<line x1="195" y1="248" x2="195" y2="387" class="sp" marker-end="url(#ag)" />
+<text x="215" y="267" class="cc"> #3 merge m:1 county</text>
+<text x="215" y="282" class="cl"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="215" y="297" class="cl"> &#160;&#160;using-only (2 dropped)</text>
+<text x="215" y="312" class="cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="327" class="cl"> &#8594; 209,634 &#215; 26</text>
+<text x="215" y="342" class="cn"> 2 using-only dropped by keep(1 3)</text>
+<line x1="520" y1="355" x2="203" y2="355" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="332" width="340" height="46" class="bu" />
+<text x="528" y="353" class="bh"> xwalk/county_key.dta</text>
+<text x="528" y="369" class="bl"> 254 &#215; 3 &#183; key: county</text>
+<rect x="40" y="388" width="310" height="62" class="bx" />
+<text x="10" y="404" class="bn"> #4</text>
+<text x="48" y="409" class="bh"> collapse</text>
+<text x="48" y="425" class="bl"> (mean) wage hours, by(county year)</text>
+<text x="48" y="441" class="bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="195" y1="450" x2="195" y2="475" class="sp" marker-end="url(#ag)" />
+<rect x="40" y="476" width="310" height="46" class="bx" />
+<text x="10" y="492" class="bn"> #5</text>
+<text x="48" y="497" class="bh"> built/county_panel.dta</text>
+<text x="48" y="513" class="bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="40" y="542" class="dof"> 02_panel.do</text>
+<line x1="40" y1="548" x2="860" y2="548" class="hl" />
+<rect x="40" y="574" width="310" height="46" class="bx" />
+<text x="10" y="590" class="bn"> #6</text>
+<text x="48" y="595" class="bh"> raw/participants.dta</text>
+<text x="48" y="611" class="bl"> 8,914 &#215; 12</text>
+<line x1="195" y1="620" x2="195" y2="645" class="sp" marker-end="url(#ag)" />
+<rect x="40" y="646" width="310" height="78" class="bx" />
+<text x="10" y="662" class="bn"> #7</text>
+<text x="48" y="667" class="bh"> duplicates drop</text>
+<text x="48" y="683" class="bl"> keys: pid</text>
+<text x="48" y="699" class="bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="48" y="715" class="bn"> 12 duplicate pid obs dropped</text>
+<line x1="195" y1="724" x2="195" y2="863" class="sp" marker-end="url(#ag)" />
+<text x="215" y="743" class="cc"> #8 merge 1:m pid</text>
+<text x="215" y="758" class="cl"> matched 41,210 &#183; master-only 310 &#183;</text>
+<text x="215" y="773" class="cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="788" class="cn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="215" y="803" class="cl"> &#8594; 41,520 &#215; 17</text>
+<text x="215" y="818" class="cn"> 310 master-only kept (no visits)</text>
+<line x1="520" y1="831" x2="203" y2="831" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="808" width="340" height="46" class="bu" />
+<text x="528" y="829" class="bh"> raw/visits.dta</text>
+<text x="528" y="845" class="bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<rect x="40" y="864" width="310" height="46" class="bt" />
+<text x="10" y="880" class="bn"> #9</text>
+<text x="48" y="885" class="bh"> tempfile:__visits</text>
+<text x="48" y="901" class="bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="40" y="924" width="310" height="46" class="bx" />
+<text x="10" y="940" class="bn"> #10</text>
+<text x="48" y="945" class="bh"> built/county_panel.dta</text>
+<text x="48" y="961" class="bl"> 3,048 &#215; 6</text>
+<line x1="195" y1="970" x2="195" y2="995" class="sp" marker-end="url(#ag)" />
+<rect x="40" y="996" width="310" height="62" class="bx" />
+<text x="10" y="1012" class="bn"> #11</text>
+<text x="48" y="1017" class="bh"> reshape wide</text>
+<text x="48" y="1033" class="bl"> wage hours, i(county) j(year)</text>
+<text x="48" y="1049" class="bn"> 3,048 &#8594; 762 obs</text>
+<line x1="195" y1="1058" x2="195" y2="1083" class="sp" marker-end="url(#ag)" />
+<rect x="40" y="1084" width="310" height="46" class="bx" />
+<text x="10" y="1100" class="bn"> #12</text>
+<text x="48" y="1105" class="bh"> built/county_wide.dta</text>
+<text x="48" y="1121" class="bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="40" y="1150" class="dof"> 03_analyze.do</text>
+<line x1="40" y1="1156" x2="860" y2="1156" class="hl" />
+<rect x="40" y="1182" width="310" height="78" class="bt" />
+<text x="10" y="1198" class="bn"> #13</text>
+<text x="48" y="1203" class="bh"> tempfile:__visits</text>
+<text x="48" y="1219" class="bn"> [tempfile]</text>
+<text x="48" y="1235" class="bl"> 41,520 &#215; 17</text>
+<text x="48" y="1251" class="bn"> tempfile from 02_panel.do line 16</text>
+<line x1="195" y1="1260" x2="195" y2="1399" class="sp" marker-end="url(#ag)" />
+<text x="215" y="1279" class="cc"> #14 merge m:1 county</text>
+<text x="215" y="1294" class="cl"> matched 41,425 &#183; master-only 95 &#183;</text>
+<text x="215" y="1309" class="cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="1324" class="cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="1339" class="cl"> &#8594; 41,520 &#215; 25</text>
+<text x="215" y="1354" class="cn"> 95 master-only kept</text>
+<line x1="520" y1="1367" x2="203" y2="1367" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="1344" width="340" height="46" class="bu" />
+<text x="528" y="1365" class="bh"> built/county_wide.dta</text>
+<text x="528" y="1381" class="bl"> 762 &#215; 9 &#183; key: county</text>
+<rect x="40" y="1400" width="310" height="46" class="bw" />
+<text x="48" y="1421" class="bl"> work (after merge)</text>
+<text x="48" y="1437" class="bn"> 41,520 &#215; 25</text>
+<line x1="195" y1="1446" x2="195" y2="1570" class="sp" marker-end="url(#ag)" />
+<text x="215" y="1465" class="cc"> #15 joinby m:m staff</text>
+<text x="215" y="1480" class="cn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="215" y="1495" class="cn"> opts: unmatched(none)</text>
+<text x="215" y="1510" class="cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1525" class="cn"> row multiplication x1.08</text>
+<line x1="520" y1="1538" x2="203" y2="1538" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="1515" width="340" height="46" class="bu" />
+<text x="528" y="1536" class="bh"> raw/staff_assign.dta</text>
+<text x="528" y="1552" class="bl"> 118 &#215; 4 &#183; key: staff</text>
+<rect x="40" y="1571" width="310" height="46" class="bw" />
+<text x="48" y="1592" class="bl"> work (after joinby)</text>
+<text x="48" y="1608" class="bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1617" x2="195" y2="1771" class="sp" marker-end="url(#ag)" />
+<text x="215" y="1636" class="cc"> #16 merge 1:1 pid visitid</text>
+<text x="215" y="1651" class="cl"> matched 0 &#183; master-only 44,473 &#183; using-only</text>
+<text x="215" y="1666" class="cl"> &#160;&#160;0</text>
+<text x="215" y="1681" class="cl"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="215" y="1696" class="cn"> opts: update replace</text>
+<text x="215" y="1711" class="cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1726" class="cn"> 50 nonmissing conflicts overwritten</text>
+<line x1="520" y1="1739" x2="203" y2="1739" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="1716" width="340" height="46" class="bu" />
+<text x="528" y="1737" class="bh"> raw/corrections.dta</text>
+<text x="528" y="1753" class="bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<rect x="40" y="1772" width="310" height="46" class="bw" />
+<text x="48" y="1793" class="bl"> work (after merge)</text>
+<text x="48" y="1809" class="bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1818" x2="195" y2="1942" class="sp" marker-end="url(#ag)" />
+<text x="215" y="1837" class="cc"> #17 frlink m:1 county</text>
+<text x="215" y="1852" class="cl"> matched 44,778 &#183; master-only 95</text>
+<text x="215" y="1867" class="cn"> opts: frame(counties)</text>
+<text x="215" y="1882" class="cl"> &#8594; 44,873 &#215; 29</text>
+<text x="215" y="1897" class="cn"> 95 obs unmatched to frame</text>
+<line x1="520" y1="1910" x2="203" y2="1910" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="1887" width="340" height="46" class="bu" />
+<text x="528" y="1908" class="bh"> frame:counties</text>
+<text x="528" y="1924" class="bl"> 254 &#215; 7 &#183; key: county</text>
+<rect x="40" y="1943" width="310" height="46" class="bw" />
+<text x="48" y="1964" class="bl"> work (after frlink)</text>
+<text x="48" y="1980" class="bn"> 44,873 &#215; 29</text>
+<line x1="195" y1="1989" x2="195" y2="2075" class="sp" marker-end="url(#ag)" />
+<text x="215" y="2008" class="cc"> #18 frget</text>
+<text x="215" y="2023" class="cn"> opts: povrate slots, from(cnty)</text>
+<text x="215" y="2038" class="cl"> &#8594; 44,873 &#215; 31</text>
+<line x1="520" y1="2051" x2="203" y2="2051" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="2036" width="340" height="30" class="bu" />
+<text x="528" y="2057" class="bh"> frame:counties</text>
+<rect x="40" y="2076" width="310" height="46" class="bw" />
+<text x="48" y="2097" class="bl"> work (after frget)</text>
+<text x="48" y="2113" class="bn"> 44,873 &#215; 31</text>
+<line x1="195" y1="2122" x2="195" y2="2306" class="sp" marker-end="url(#ag)" />
+<text x="215" y="2141" class="cc"> #19 merge m:m staff, force</text>
+<text x="215" y="2156" class="cl"> matched 44,663 &#183; master-only 210 &#183;</text>
+<text x="215" y="2171" class="cl"> &#160;&#160;using-only 4</text>
+<text x="215" y="2186" class="cn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="215" y="2201" class="cn"> opts: force</text>
+<text x="215" y="2216" class="cl"> &#8594; 44,873 &#215; 33</text>
+<text x="215" y="2231" class="cf"> !! m:m pairs rows by order within key (not</text>
+<text x="215" y="2246" class="cf"> &#160;&#160;a join)</text>
+<text x="215" y="2261" class="cf"> !! force: schednote str8 vs byte</text>
+<line x1="520" y1="2274" x2="203" y2="2274" class="sp" marker-end="url(#aa)" />
+<rect x="520" y="2251" width="340" height="46" class="bu" />
+<text x="528" y="2272" class="bh"> raw/schedules.dta</text>
+<text x="528" y="2288" class="bl"> 560 &#215; 6 &#183; key: staff</text>
+<rect x="40" y="2307" width="310" height="46" class="bx" />
+<text x="10" y="2323" class="bn"> #20</text>
+<text x="48" y="2328" class="bh"> built/analysis_file.dta</text>
+<text x="48" y="2344" class="bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+<h2 id="second-diagram-horizontal-same-marker-ids">Second diagram, horizontal, same marker ids</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6802 439" width="6802" height="439">
+<defs>
+<marker id="ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="24" y="26" class="dof"> 01_build.do</text>
+<line x1="24" y1="32" x2="24" y2="210" class="hl" stroke-dasharray="2 4" />
+<rect x="24" y="210" width="230" height="78" class="bx" />
+<text x="27" y="205" class="bn"> #1</text>
+<text x="32" y="230" class="bh"> raw/cps_2019.dta</text>
+<text x="32" y="246" class="bl"> 52,431 &#215; 24</text>
+<line x1="254" y1="249" x2="522" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="228" y="306" class="hb"> #2 append</text>
+<text x="228" y="319" class="hc"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="228" y="332" class="hc"> +157,203 obs from 3 files</text>
+<text x="228" y="345" class="hc"> &#8594; 209,634 &#215; 24</text>
+<rect x="274" y="106" width="250" height="62" class="bstk" />
+<rect x="269" y="111" width="250" height="62" class="bstk" />
+<rect x="264" y="116" width="250" height="62" class="bu" />
+<text x="272" y="137" class="bh"> raw/cps_&#96;y'.dta</text>
+<text x="272" y="153" class="bn"> &#215;3: raw/c&#8230;20.dta &#8230; raw/c&#8230;22.dta</text>
+<text x="272" y="169" class="bl"> 157,203 &#215; 24</text>
+<line x1="389" y1="178" x2="389" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="524" y="210" width="230" height="78" class="bw" />
+<text x="532" y="230" class="bl"> work (after append)</text>
+<text x="532" y="246" class="bn"> 209,634 &#215; 24</text>
+<line x1="754" y1="249" x2="1022" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="728" y="306" class="hb"> #3 merge m:1 county</text>
+<text x="728" y="319" class="hc"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="728" y="332" class="hc"> &#160;&#160;using-only (2 dropped)</text>
+<text x="728" y="345" class="hn"> opts: keep(1 3) nogenerate</text>
+<text x="728" y="358" class="hc"> &#8594; 209,634 &#215; 26</text>
+<text x="728" y="371" class="hn"> 2 using-only dropped by keep(1 3)</text>
+<rect x="764" y="132" width="250" height="46" class="bu" />
+<text x="772" y="153" class="bh"> xwalk/county_key.dta</text>
+<text x="772" y="169" class="bl"> 254 &#215; 3 &#183; key: county</text>
+<line x1="889" y1="178" x2="889" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="1024" y="210" width="230" height="78" class="bx" />
+<text x="1027" y="205" class="bn"> #4</text>
+<text x="1032" y="230" class="bh"> collapse</text>
+<text x="1032" y="246" class="bl"> (mean) wage ho&#8230;by(county year)</text>
+<text x="1032" y="262" class="bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="1254" y1="249" x2="1316" y2="249" class="sp" marker-end="url(#ag)" />
+<rect x="1318" y="210" width="230" height="78" class="bx" />
+<text x="1321" y="205" class="bn"> #5</text>
+<text x="1326" y="230" class="bh"> built/county_panel.dta</text>
+<text x="1326" y="246" class="bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="1558" y="26" class="dof"> 02_panel.do</text>
+<line x1="1558" y1="32" x2="1558" y2="210" class="hl" stroke-dasharray="2 4" />
+<rect x="1604" y="210" width="230" height="78" class="bx" />
+<text x="1607" y="205" class="bn"> #6</text>
+<text x="1612" y="230" class="bh"> raw/participants.dta</text>
+<text x="1612" y="246" class="bl"> 8,914 &#215; 12</text>
+<line x1="1834" y1="249" x2="1896" y2="249" class="sp" marker-end="url(#ag)" />
+<rect x="1898" y="210" width="230" height="78" class="bx" />
+<text x="1901" y="205" class="bn"> #7</text>
+<text x="1906" y="230" class="bh"> duplicates drop</text>
+<text x="1906" y="246" class="bl"> keys: pid</text>
+<text x="1906" y="262" class="bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="1906" y="278" class="bn"> 12 duplicate pid obs dropped</text>
+<line x1="2128" y1="249" x2="2396" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="2102" y="306" class="hb"> #8 merge 1:m pid</text>
+<text x="2102" y="319" class="hc"> matched 41,210 &#183; master-only 310 &#183; using-only</text>
+<text x="2102" y="332" class="hc"> &#160;&#160;0</text>
+<text x="2102" y="345" class="hn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="2102" y="358" class="hc"> &#8594; 41,520 &#215; 17</text>
+<text x="2102" y="371" class="hn"> 310 master-only kept (no visits)</text>
+<rect x="2138" y="132" width="250" height="46" class="bu" />
+<text x="2146" y="153" class="bh"> raw/visits.dta</text>
+<text x="2146" y="169" class="bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<line x1="2263" y1="178" x2="2263" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="2398" y="210" width="230" height="78" class="bt" />
+<text x="2401" y="205" class="bn"> #9</text>
+<text x="2406" y="230" class="bh"> tempfile:__visits</text>
+<text x="2406" y="246" class="bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="2674" y="210" width="230" height="78" class="bx" />
+<text x="2677" y="205" class="bn"> #10</text>
+<text x="2682" y="230" class="bh"> built/county_panel.dta</text>
+<text x="2682" y="246" class="bl"> 3,048 &#215; 6</text>
+<line x1="2904" y1="249" x2="2966" y2="249" class="sp" marker-end="url(#ag)" />
+<rect x="2968" y="210" width="230" height="78" class="bx" />
+<text x="2971" y="205" class="bn"> #11</text>
+<text x="2976" y="230" class="bh"> reshape wide</text>
+<text x="2976" y="246" class="bl"> wage hours, i(county) j(year)</text>
+<text x="2976" y="262" class="bn"> 3,048 &#8594; 762 obs</text>
+<line x1="3198" y1="249" x2="3260" y2="249" class="sp" marker-end="url(#ag)" />
+<rect x="3262" y="210" width="230" height="78" class="bx" />
+<text x="3265" y="205" class="bn"> #12</text>
+<text x="3270" y="230" class="bh"> built/county_wide.dta</text>
+<text x="3270" y="246" class="bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="3502" y="26" class="dof"> 03_analyze.do</text>
+<line x1="3502" y1="32" x2="3502" y2="210" class="hl" stroke-dasharray="2 4" />
+<rect x="3548" y="210" width="230" height="78" class="bt" />
+<text x="3551" y="205" class="bn"> #13</text>
+<text x="3556" y="230" class="bh"> tempfile:__visits</text>
+<text x="3556" y="246" class="bn"> [tempfile]</text>
+<text x="3556" y="262" class="bl"> 41,520 &#215; 17</text>
+<line x1="3778" y1="249" x2="4046" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="3752" y="306" class="hb"> #14 merge m:1 county</text>
+<text x="3752" y="319" class="hc"> matched 41,425 &#183; master-only 95 &#183; using-only 0</text>
+<text x="3752" y="332" class="hn"> opts: keep(1 3) nogenerate</text>
+<text x="3752" y="345" class="hc"> &#8594; 41,520 &#215; 25</text>
+<text x="3752" y="358" class="hn"> 95 master-only kept</text>
+<rect x="3788" y="132" width="250" height="46" class="bu" />
+<text x="3796" y="153" class="bh"> built/county_wide.dta</text>
+<text x="3796" y="169" class="bl"> 762 &#215; 9 &#183; key: county</text>
+<line x1="3913" y1="178" x2="3913" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="4048" y="210" width="230" height="78" class="bw" />
+<text x="4056" y="230" class="bl"> work (after merge)</text>
+<text x="4056" y="246" class="bn"> 41,520 &#215; 25</text>
+<line x1="4278" y1="249" x2="4546" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="4252" y="306" class="hb"> #15 joinby m:m staff</text>
+<text x="4252" y="319" class="hn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="4252" y="332" class="hn"> opts: unmatched(none)</text>
+<text x="4252" y="345" class="hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4252" y="358" class="hn"> row multiplication x1.08</text>
+<rect x="4288" y="132" width="250" height="46" class="bu" />
+<text x="4296" y="153" class="bh"> raw/staff_assign.dta</text>
+<text x="4296" y="169" class="bl"> 118 &#215; 4 &#183; key: staff</text>
+<line x1="4413" y1="178" x2="4413" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="4548" y="210" width="230" height="78" class="bw" />
+<text x="4556" y="230" class="bl"> work (after joinby)</text>
+<text x="4556" y="246" class="bn"> 44,873 &#215; 28</text>
+<line x1="4778" y1="249" x2="5046" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="4752" y="306" class="hb"> #16 merge 1:1 pid visitid</text>
+<text x="4752" y="319" class="hc"> matched 0 &#183; master-only 44,473 &#183; using-only 0</text>
+<text x="4752" y="332" class="hc"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="4752" y="345" class="hn"> opts: update replace</text>
+<text x="4752" y="358" class="hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4752" y="371" class="hn"> 50 nonmissing conflicts overwritten</text>
+<rect x="4788" y="132" width="250" height="46" class="bu" />
+<text x="4796" y="153" class="bh"> raw/corrections.dta</text>
+<text x="4796" y="169" class="bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<line x1="4913" y1="178" x2="4913" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="5048" y="210" width="230" height="78" class="bw" />
+<text x="5056" y="230" class="bl"> work (after merge)</text>
+<text x="5056" y="246" class="bn"> 44,873 &#215; 28</text>
+<line x1="5278" y1="249" x2="5546" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="5252" y="306" class="hb"> #17 frlink m:1 county</text>
+<text x="5252" y="319" class="hc"> matched 44,778 &#183; master-only 95</text>
+<text x="5252" y="332" class="hn"> opts: frame(counties)</text>
+<text x="5252" y="345" class="hc"> &#8594; 44,873 &#215; 29</text>
+<text x="5252" y="358" class="hn"> 95 obs unmatched to frame</text>
+<rect x="5288" y="132" width="250" height="46" class="bu" />
+<text x="5296" y="153" class="bh"> frame:counties</text>
+<text x="5296" y="169" class="bl"> 254 &#215; 7 &#183; key: county</text>
+<line x1="5413" y1="178" x2="5413" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="5548" y="210" width="230" height="78" class="bw" />
+<text x="5556" y="230" class="bl"> work (after frlink)</text>
+<text x="5556" y="246" class="bn"> 44,873 &#215; 29</text>
+<line x1="5778" y1="249" x2="6046" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="5752" y="306" class="hb"> #18 frget</text>
+<text x="5752" y="319" class="hn"> opts: povrate slots, from(cnty)</text>
+<text x="5752" y="332" class="hc"> &#8594; 44,873 &#215; 31</text>
+<rect x="5788" y="148" width="250" height="30" class="bu" />
+<text x="5796" y="169" class="bh"> frame:counties</text>
+<line x1="5913" y1="178" x2="5913" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="6048" y="210" width="230" height="78" class="bw" />
+<text x="6056" y="230" class="bl"> work (after frget)</text>
+<text x="6056" y="246" class="bn"> 44,873 &#215; 31</text>
+<line x1="6278" y1="249" x2="6546" y2="249" class="sp" marker-end="url(#ag)" />
+<text x="6252" y="306" class="hb"> #19 merge m:m staff, force</text>
+<text x="6252" y="319" class="hc"> matched 44,663 &#183; master-only 210 &#183; using-only</text>
+<text x="6252" y="332" class="hc"> &#160;&#160;4</text>
+<text x="6252" y="345" class="hn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="6252" y="358" class="hn"> opts: force</text>
+<text x="6252" y="371" class="hc"> &#8594; 44,873 &#215; 33</text>
+<text x="6252" y="384" class="hf"> !! m:m pairs rows by order within key (not a</text>
+<text x="6252" y="397" class="hf"> &#160;&#160;join)</text>
+<text x="6252" y="410" class="hf"> !! force: schednote str8 vs byte</text>
+<rect x="6288" y="132" width="250" height="46" class="bu" />
+<text x="6296" y="153" class="bh"> raw/schedules.dta</text>
+<text x="6296" y="169" class="bl"> 560 &#215; 6 &#183; key: staff</text>
+<line x1="6413" y1="178" x2="6413" y2="245" class="sp" marker-end="url(#aa)" />
+<rect x="6548" y="210" width="230" height="78" class="bx" />
+<text x="6551" y="205" class="bn"> #20</text>
+<text x="6556" y="230" class="bh"> built/analysis_file.dta</text>
+<text x="6556" y="246" class="bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+</div>
+</body>
+</html>

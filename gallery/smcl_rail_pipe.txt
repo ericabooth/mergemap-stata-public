@@ -1,0 +1,52 @@
+
+mergemap diagram: journals/journal_pipeline.tsv
+(scan mode - nothing executed; style: rail)
+
+01_build.do -------------------------------------------------------------------
++-- ../raw/cps_2019.dta
+|-- append  x3: ../raw/cps_2020.dta ... ../raw/cps_2022.dta
+|      !! force used
+|-- merge m:1 county <- ../raw/county_key.dta
+|      keep(1 3) nogenerate
+|      keep(1 3): using-only will be dropped
+|   [ drop if missing(hours) ]
+|   collapse (mean) wage hours, by(county year)
++-- ../out/county_panel.dta  [saved]
+
+02_panel.do -------------------------------------------------------------------
++-- ../raw/participants.dta
+|   duplicates drop pid force
+|      !! duplicate rows on the key will be dropped
+|-- merge 1:m pid <- ../raw/visits.dta
+|   [ drop _merge ]
++-- $MM_VISITS  [saved]
+       path built from a macro
+       run mode resolves it
+
+-- new chain ---------------------------
++-- ../out/county_panel.dta
+|   reshape wide wage hours, i(county) j(year)
++-- ../out/county_wide.dta  [saved]
+
+03_analyze.do -----------------------------------------------------------------
++-- $MM_VISITS
+|      path built from a macro
+|      run mode resolves it
+|-- merge m:1 county <- ../out/county_wide.dta
+|      keep(1 3) nogenerate
+|      keep(1 3): using-only will be dropped
+|-- joinby m:m staff <- ../raw/staff_assign.dta
+|      unmatched(none)
+|-- merge m:1 pid visitid <- ../raw/corrections.dta
+|      !! update replace
+|   [ drop _merge ]
+|-- frlink m:1 county <- frame:counties
+|      frame(counties) generate(cnty)
+|   frget povrate slots, from(cnty)  <- frame:counties
+|   [ keep if date <= mdy(6, 30, 2024) ]
+|-- merge m:m staff <- ../raw/schedules.dta
+|      !! m:m pairs rows by row order within key (not a join)
+|      !! force used
+|   [ drop _merge ]
++-- ../out/analysis_file.dta  [saved]
+

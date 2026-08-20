@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>file:// probe</title>
+<style>
+  body { font: 14px/1.5 -apple-system, system-ui, sans-serif; margin: 24px; max-width: 900px; }
+  h1 { font-size: 18px; }
+  table { border-collapse: collapse; width: 100%; }
+  td, th { border: 1px solid #ccc; padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #f2f4f7; }
+  .ok   { color: #14663a; font-weight: 700; }
+  .bad  { color: #a11; font-weight: 700; }
+  iframe, img { border: 1px solid #ccc; }
+  #frame { width: 620px; height: 200px; }
+  #shot  { width: 300px; height: auto; }
+</style>
+</head>
+<body>
+<!--
+  Probes the things that behave differently when a webdoc2 report is opened by
+  double-clicking it (file://) instead of being served over http://.
+  Open this file directly from Finder, or screenshot it with headless Chrome
+  pointed at its file:// URL.
+-->
+<h1>file:// probe for mergemap embeds</h1>
+<table id="t"><tbody>
+  <tr><th style="width:38%">check</th><th>result</th></tr>
+</tbody></table>
+
+<p>Live iframe of the mergemap HTML (proves the frame still renders at file://):</p>
+<iframe id="frame" src="../../proto/render_html/html_vert_run.html"></iframe>
+
+<p>Relative-path image (what <code>wdimg</code> emits):</p>
+<img id="shot" src="../../proto/render_twoway/tw_horiz_run.png" alt="twoway png">
+
+<script>
+function row(label, ok, detail) {
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td>' + label + '</td><td class="' + (ok ? 'ok' : 'bad') + '">' +
+                 (ok ? 'PASS' : 'FAIL') + ' &mdash; <span style="font-weight:400;color:#333">' +
+                 detail + '</span></td>';
+  document.querySelector('#t tbody').appendChild(tr);
+}
+window.addEventListener('load', function () {
+  row('protocol', true, location.protocol);
+
+  var f = document.getElementById('frame');
+  var same = false, detail = '';
+  try {
+    var d = f.contentDocument;
+    same = !!(d && d.documentElement);
+    detail = same ? ('contentDocument readable, inner height ' +
+                     d.documentElement.scrollHeight + 'px')
+                  : 'contentDocument is null';
+  } catch (e) { detail = 'blocked: ' + e.name; }
+  row('iframe same-origin script access (needed for any JS auto-height)',
+      same, detail);
+
+  var img = document.getElementById('shot');
+  row('relative-path &lt;img&gt; loads', img.complete && img.naturalWidth > 0,
+      'naturalWidth ' + img.naturalWidth);
+
+  row('iframe element rendered', f.getBoundingClientRect().height > 0,
+      Math.round(f.getBoundingClientRect().width) + 'x' +
+      Math.round(f.getBoundingClientRect().height));
+});
+</script>
+</body>
+</html>

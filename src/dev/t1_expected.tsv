@@ -1,0 +1,6 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t1_ugly.do	2	source	use	.	.	.	raw/base.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t1_ugly.do	5	join	merge	1:1	id	work	raw/lookup.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	keep(1 3) nogenerate	.	.	.	note	.	.	.	.	keep(1 3): using-only will be dropped
+3	t1_ugly.do	9	join	append	.	.	work	raw/extra.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+4	t1_ugly.do	10	join	merge	m:m	id	work	raw/dups.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	1	force	.	.	.	warn	.	.	.	.	!! m:m pairs rows by row order within key (not a join); !! force used
+5	t1_ugly.do	11	save	save	.	.	work	.	built/t1_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

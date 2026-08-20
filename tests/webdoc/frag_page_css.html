@@ -1,0 +1,25 @@
+<style>
+/* webdoc2 emits a bare <body> with no container: give the report a column */
+.mm-page   { max-width: 960px; margin: 0 auto; padding: 0 1rem 4rem 1rem; }
+/* a bounded viewport for a diagram taller than the screen           */
+.mm-scroll { max-height: 70vh; overflow: auto; border: 1px solid #dee2e6;
+             border-radius: 6px; padding: .5rem; background: #fff; margin: 1rem 0; }
+/* horizontal diagrams: never stretch, scroll sideways instead        */
+.mm-xscroll{ overflow-x: auto; overflow-y: hidden; border: 1px solid #dee2e6;
+             border-radius: 6px; padding: .5rem; margin: 1rem 0; }
+/* mergemap ships svg{max-width:100%}, which cancels the sideways     */
+/* scroller: inside .mm-xscroll the svg must keep its natural width.  */
+.mm-xscroll svg { max-width: none !important; width: auto; height: auto; }
+/* an iframe height that a CSS rule can set (the height= attribute    */
+/* cannot take vh units, so wdiframe's height() option cannot either) */
+.mm-frame-vh { height: 78vh !important; width: 100%; }
+/* height:auto on an iframe does NOT shrink-wrap the document        */
+.mm-frame-auto { height: auto !important; width: 100%; }
+/* monospace receipt / ASCII diagram blocks                           */
+.mm-pre    { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 12.5px;
+             line-height: 1.35; background: #F5F7FA; border: 1px solid #DEE2E6;
+             border-left: 4px solid #1B2D55; border-radius: 0 6px 6px 0;
+             padding: .9rem 1.2rem; overflow-x: auto; }
+/* the inline-SVG wrapper the scoped mergemap CSS hangs off           */
+.mm-embed svg { display: block; }
+</style>

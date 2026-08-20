@@ -1,0 +1,58 @@
+*! version 0.3.1  20aug2026  Eric Booth
+*! _mm_list -- the journal as a table.  The receipt is the curated view; this
+*! is the data view: one line per event with the count columns run mode fills,
+*! and -full- for every column via -list- when you want to audit the record.
+
+program define _mm_list, rclass
+    version 16
+    syntax [anything(name=jspec)] [, FULL]
+    _mm_jresolve `jspec'
+    local jfile `"`s(jfile)'"'
+    _mm_jload using `"`jfile'"', frame(_mmlst)
+    frame _mmlst {
+        quietly count
+        local N = r(N)
+        if `N' == 0 {
+            di as txt "mergemap list: `jfile' has no events"
+            frame drop _mmlst
+            exit
+        }
+        if "`full'" != "" {
+            list, noobs abbreviate(12)
+        }
+        else {
+            di as txt ""
+            di as txt "mergemap list: " as res `"`jfile'"' as txt "  (`N' events)"
+            di as txt ""
+            di as txt %-4s "  #" %-16s "file" %5s "line" %-12s "command" ///
+                %-8s "type" %-14s "keys" %10s "n in" %10s "n out" %-6s "  sev"
+            di as txt "  {hline 88}"
+            forvalues i = 1/`N' {
+                local sq  = seq[`i']
+                local fl  = dofile[`i']
+                local ln  = line[`i']
+                local cm  = cmd[`i']
+                local st  = subtype[`i']
+                if "`st'" == "." local st ""
+                local ky  = keys[`i']
+                if "`ky'" == "." local ky ""
+                local ni  = n_in[`i']
+                local no  = n_out[`i']
+                if "`ni'" == "." local ni ""
+                if "`no'" == "." local no ""
+                local sv  = severity[`i']
+                if "`sv'" == "note" local sv ""
+                if strlen("`fl'") > 15 local fl = substr("`fl'", 1, 14) + "~"
+                if strlen("`ky'") > 13 local ky = substr("`ky'", 1, 12) + "~"
+                di as txt %-4s "  `sq'" %-16s "`fl'" %5s "`ln'" as res ///
+                    %-12s " `cm'" as txt %-8s "`st'" %-14s "`ky'" ///
+                    %10s "`ni'" %10s "`no'" as err %-6s "  `sv'"
+            }
+            di as txt "  {hline 88}"
+            di as txt `"  one event in depth: {stata mergemap detail 1:mergemap detail #} ; every column: mergemap list, full"'
+        }
+    }
+    frame drop _mmlst
+    return local journal `"`jfile'"'
+    return scalar N_events = `N'
+end

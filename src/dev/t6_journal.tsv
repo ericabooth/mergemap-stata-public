@@ -1,0 +1,16 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t6_cmds.do	2	source	import	delimited	.	.	raw/survey.csv	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t6_cmds.do	3	transform	isid	.	pid	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+3	t6_cmds.do	4	save	export	delimited	.	work	.	out/survey_clean.csv	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.
+4	t6_cmds.do	5	source	use	.	.	.	raw/scores.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+5	t6_cmds.do	6	transform	reshape	long	id year	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	score, i(id) j(year)	.	.	.	note	.	.	.	.	.
+6	t6_cmds.do	7	transform	contract	.	county year	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+7	t6_cmds.do	8	transform	xpose	.	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear varname	.	.	.	note	.	.	.	.	.
+8	t6_cmds.do	9	transform	fillin	.	county year	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+9	t6_cmds.do	10	transform	expand	.	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	2	.	.	.	note	.	.	.	.	.
+10	t6_cmds.do	11	link	frlink	m:1	county	work	frame:counties	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	frame(counties) generate(cnty)	.	.	.	note	.	.	.	.	.
+11	t6_cmds.do	12	link	frget	.	.	work	frame:counties	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	povrate slots, from(cnty)	.	.	.	note	.	.	.	.	.
+12	t6_cmds.do	13	link	fralias	.	.	work	frame:counties	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	add region, from(cnty)	.	.	.	note	.	.	.	.	.
+13	t6_cmds.do	14	join	joinby	m:m	staff	work	raw/staff_assign.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	unmatched(both)	.	.	.	note	.	.	.	.	.
+14	t6_cmds.do	15	join	cross	.	.	work	raw/grid.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+15	t6_cmds.do	16	save	saveold	.	.	work	.	built/t6_old.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

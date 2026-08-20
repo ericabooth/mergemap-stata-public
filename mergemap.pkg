@@ -1,0 +1,78 @@
+v 3
+d mergemap: map the merges, appends and joins across your do-files
+d
+d mergemap reads a sequence of do-files and reports every merge, append,
+d joinby, cross, frlink and frget in them, together with the reshaping and
+d filtering steps around them.  By default it executes nothing: it reads the
+d code the way you would read it and prints a numbered receipt of what it
+d found.  Run mode executes the do-files with instrumentation and adds what
+d actually happened -- observed cardinality, duplicate keys, the _merge
+d breakdown, coverage on each side, and the most common unmatched keys.
+d
+d It answers one question: how did this dataset get built?  Useful when you
+d inherit a project, when a merge has gone wrong and you need to find where,
+d and when you need a record of a data pipeline for an appendix.
+d
+d This version draws: mergemap draw renders the map in the Results
+d window, as self-contained HTML, as PNG/SVG through Stata graphs, or
+d as mermaid/DOT text; mergemap sql teaches each join form as a row
+d pairing.
+d
+d Start with: mergemap demo
+d
+d Requires: Stata version 16
+d
+d Author: Eric Booth
+d Support: email eric.a.booth@gmail.com
+d
+d Distribution-Date: 20260820
+f src/mergemap.sthlp
+f src/mergemap.ado
+f src/_mm_append.ado
+f src/_mm_clear.ado
+f src/_mm_collapse.ado
+f src/_mm_contract.ado
+f src/_mm_cross.ado
+f src/_mm_detail.ado
+f src/_mm_do.ado
+f src/_mm_draw.ado
+f src/_mm_dropif.ado
+f src/_mm_duplicates.ado
+f src/_mm_ex.ado
+f src/_mm_expand.ado
+f src/_mm_export.ado
+f src/_mm_fillin.ado
+f src/_mm_filter.ado
+f src/_mm_fold.ado
+f src/_mm_frget.ado
+f src/_mm_frlink.ado
+f src/_mm_import.ado
+f src/_mm_isid.ado
+f src/_mm_jload.ado
+f src/_mm_joinby.ado
+f src/_mm_jresolve.ado
+f src/_mm_keepif.ado
+f src/_mm_keys.ado
+f src/_mm_lbl.ado
+f src/_mm_list.ado
+f src/_mm_merge.ado
+f src/_mm_opt.ado
+f src/_mm_post.ado
+f src/_mm_pre.ado
+f src/_mm_rclear.ado
+f src/_mm_reg.ado
+f src/_mm_renderhtml.ado
+f src/_mm_rendersmcl.ado
+f src/_mm_rendertext.ado
+f src/_mm_rendertw.ado
+f src/_mm_reshape.ado
+f src/_mm_run.ado
+f src/_mm_rw.ado
+f src/_mm_save.ado
+f src/_mm_sev.ado
+f src/_mm_sql.ado
+f src/_mm_tag.ado
+f src/_mm_use.ado
+f src/_mm_using.ado
+f src/_mm_xpose.ado
+f tests/mergemap_pkgtest.do

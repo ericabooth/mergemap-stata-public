@@ -1,0 +1,28 @@
+
+mergemap sql: merge m:m staff using schedules.dta        !! warning case
+merge m:m does NOT form all key pairs -- it pairs rows by ROW ORDER within each key
+
+  master: work (staff A: 3 rows)        using: schedules.dta (staff A: 2 rows)
+  key: staff (duplicates)               key: staff (duplicates)
+  +------------------------+          +------------------------+
+  | staff    visit         |          | staff    slot          |
+  | A        v1     row 1  |          | A        s1     row 1  |
+  | A        v2     row 2  |          | A        s2     row 2  |
+  | A        v3     row 3  |          +------------------------+
+  +------------------------+
+        |
+        |  merge m:m staff
+        v
+  result: work (3 rows -- max of 3 and 2, NOT 3 x 2)
+  +--------------------------------------------------+
+  | staff    visit   slot                            |
+  | A        v1      s1                              |  row 1 <-> row 1
+  | A        v2      s2                              |  row 2 <-> row 2
+  | A        v3      (s2)                            |  row 3 <-> row 2  (last using row reused)
+  +--------------------------------------------------+
+  size rule: rows per key = max(rows master, rows using)   -- order-dependent
+  !! resorting either file changes the answer: merge m:m is not a join
+
+  the true many-to-many (all 3 x 2 = 6 pairs within staff A) is joinby:
+  SQL: INNER JOIN (cartesian per key)  |  dplyr: inner_join  |  pandas: how="inner"
+  merge m:m itself has no SQL equivalent (row-order dependent)

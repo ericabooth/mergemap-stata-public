@@ -1,0 +1,80 @@
+// mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP
+// mergemap data-flow map of journal_pipeline.tsv
+digraph mergemap {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontcolor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP"];
+  node  [shape=box, fontname="Helvetica", fontsize=10, color="#606060", fontcolor="#202020"];
+  edge  [fontname="Helvetica", fontsize=9, color="#606060", fontcolor="#202020"];
+  subgraph cluster_1 {
+    label="01_build.do";
+    color="#909090";
+    d7 [label="../raw/cps_2019.dta"];
+    d8 [label="x3: ../raw/cps_2020.dta ... ../raw/cps_2022.dta"];
+    s2 [label="work\n!! force used", color="#4a6d8c", penwidth=2];
+    d6 [label="../raw/county_key.dta"];
+    s3 [label="work\nkeep(1 3): using-only will be dropped"];
+    s4 [label="drop if missing(hours)", style=rounded];
+    s5 [label="collapse (mean) wage hours, by(county year)"];
+    d3 [label="../out/county_panel.dta [saved]"];
+  }
+  subgraph cluster_2 {
+    label="02_panel.do";
+    color="#909090";
+    d9 [label="../raw/participants.dta"];
+    s8 [label="duplicates drop force\n!! duplicate rows on the key will be dropped", color="#4a6d8c", penwidth=2];
+    d12 [label="../raw/visits.dta"];
+    s9 [label="work"];
+    s10 [label="drop vars _merge", style=rounded];
+    d1 [label="$MM_VISITS [saved]\npath built from a macro\nrun mode resolves it"];
+    s13 [label="reshape wide wage hours, i(county) j(year)"];
+    d4 [label="../out/county_wide.dta [saved]"];
+  }
+  subgraph cluster_3 {
+    label="03_analyze.do";
+    color="#909090";
+    s16 [label="work\nkeep(1 3): using-only will be dropped"];
+    d11 [label="../raw/staff_assign.dta"];
+    s17 [label="work"];
+    d5 [label="../raw/corrections.dta"];
+    s18 [label="work\n!! update replace", color="#4a6d8c", penwidth=2];
+    s19 [label="drop vars _merge", style=rounded];
+    d13 [label="frame:counties"];
+    s20 [label="work"];
+    s21 [label="work"];
+    s22 [label="keep if date <= mdy(6, 30, 2024)", style=rounded];
+    d10 [label="../raw/schedules.dta"];
+    s23 [label="work\n!! m:m pairs rows by row order within key (not a join)\n!! force used", color="#4a6d8c", penwidth=2];
+    s24 [label="drop vars _merge", style=rounded];
+    d2 [label="../out/analysis_file.dta [saved]"];
+  }
+  d7 -> s2 [label="append\nforce", color="#4a6d8c"];
+  d8 -> s2 [color="#4a6d8c"];
+  s2 -> s3 [label="merge m:1 county\nkeep(1 3) nogenerate"];
+  d6 -> s3 [label="using-only dropped by keep(1 3)", style=dashed];
+  s3 -> s4;
+  s4 -> s5;
+  s5 -> d3;
+  d9 -> s8 [color="#4a6d8c"];
+  s8 -> s9 [label="merge 1:m pid"];
+  d12 -> s9;
+  s9 -> s10;
+  s10 -> d1;
+  d3 -> s13;
+  s13 -> d4;
+  d1 -> s16 [label="merge m:1 county\nkeep(1 3) nogenerate"];
+  d4 -> s16 [label="using-only dropped by keep(1 3)", style=dashed];
+  s16 -> s17 [label="joinby m:m staff\nunmatched(none)"];
+  d11 -> s17;
+  s17 -> s18 [label="merge m:1 pid visitid", color="#4a6d8c"];
+  d5 -> s18 [color="#4a6d8c"];
+  s18 -> s19;
+  s19 -> s20 [label="frlink m:1 county\nframe(counties) generate(cnty)"];
+  d13 -> s20 [style=dashed];
+  s20 -> s21 [label="frget\npovrate slots, from(cnty)"];
+  d13 -> s21 [style=dashed];
+  s21 -> s22;
+  s22 -> s23 [label="merge m:m staff\nforce", color="#4a6d8c"];
+  d10 -> s23 [color="#4a6d8c"];
+  s23 -> s24;
+  s24 -> d2;
+}

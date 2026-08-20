@@ -1,0 +1,5 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	fx_err.do	2	source	use	.	.	.	fxdata/master.dta	work	.	.	74	6	74	6	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	fx_err.do	3	join	merge	1:1	id	work	fxdata/lookup.dta	work	74	6	66	2	80	7	14	6	60	0	0	0	0	0	nogenerate	.	.	.	warn	id: long vs long	81.1	90.9	.	14 master-only kept; row multiplication x1.08
+3	fx_err.do	4	save	save	.	.	work	.	fxdata/out_err1.dta	80	7	.	.	80	7	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	overwrite	.
+4	fx_err.do	5	join	merge	1:1	id	work	fxdata/no_such_file.dta	work	80	7	.	.	.	.	.	.	.	.	.	.	.	0	nogenerate	.	.	.	stop	id: long vs ?	.	.	.	!! merge failed with r(601) -- pipeline stopped here

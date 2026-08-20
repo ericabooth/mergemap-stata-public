@@ -1,0 +1,85 @@
+# mergemap: journal_scan.tsv - mermaid, horizontal
+
+Boxes are datasets; the spine is the dataset in memory. A slim rounded node is a row filter. `!!` marks an event that needs attention.
+
+*mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP*
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px','primaryColor':'#ffffff','primaryTextColor':'#202020','primaryBorderColor':'#606060','lineColor':'#606060','secondaryColor':'#f4f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%
+%% mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP
+flowchart LR
+  accTitle: mergemap data-flow map of journal_scan.tsv
+  accDescr {
+    3 do-files, 8 dataset events, 9 joins and 2 filters, of which 2 are flagged. Boxes are datasets or the dataset in memory; edges carry the command, its keys and its counts. Two exclamation marks flag an event that needs attention.
+  }
+  classDef default fill:#ffffff,stroke:#606060,color:#202020;
+  classDef mmfilter fill:#f4f4f4,stroke:#909090,color:#202020;
+  classDef mmnote fill:#fafafa,stroke:#b0b0b0,color:#404040;
+  classDef mmwarn fill:#ffffff,stroke:#4a6d8c,stroke-width:2.5px,color:#202020;
+  classDef mmstop fill:#ffffff,stroke:#4a6d8c,stroke-width:4px,color:#202020;
+  subgraph sg1["01_build.do"]
+    d6["raw/cps_2019.dta"]
+    d7["x3: raw/cps_2020.dta ... raw/cps_2022.dta"]
+    s2["work"]
+    d13["xwalk/county_key.dta"]
+    s3["work<br/>keep(1 3): using-only will be dropped"]
+    s4(["drop if missing(wage)"])
+    s5["collapse (mean) wage hours, by(county year)"]
+    d2["built/county_panel.dta [saved]"]
+  end
+  subgraph sg2["02_panel.do"]
+    d8["raw/participants.dta"]
+    s8["duplicates drop pid"]
+    d11["raw/visits.dta"]
+    s9["work"]
+    d12["tempfile:__visits [tempfile]"]
+    s12["reshape wide wage hours, i(county) j(year)"]
+    d3["built/county_wide.dta [saved]"]
+  end
+  subgraph sg3["03_analyze.do"]
+    s15["work"]
+    d10["raw/staff_assign.dta"]
+    s16["work"]
+    d5["raw/corrections.dta"]
+    s17["work<br/>!! update replace"]
+    d4["frame:counties"]
+    s18["work"]
+    s19["work"]
+    s20(["keep if inrange(year, 2019, 2022)"])
+    d9["raw/schedules.dta"]
+    s21["work<br/>!! m:m pairs rows by row order within key (not a join)<br/>!! force used"]
+    d1["built/analysis_file.dta [saved]"]
+  end
+  d6 -- "append" --> s2
+  d7 --> s2
+  s2 -- "merge m:1 county<br/>keep(1 3) nogenerate" --> s3
+  d13 -. "using-only dropped by keep(1 3)" .-> s3
+  s3 --> s4
+  s4 --> s5
+  s5 --> d2
+  d8 --> s8
+  s8 -- "merge 1:m pid" --> s9
+  d11 --> s9
+  s9 --> d12
+  d2 --> s12
+  s12 --> d3
+  d12 -- "merge m:1 county<br/>keep(1 3) nogenerate" --> s15
+  d3 -. "using-only dropped by keep(1 3)" .-> s15
+  s15 -- "joinby m:m staff<br/>unmatched(none)" --> s16
+  d10 --> s16
+  s16 -- "merge 1:1 pid visitid" --> s17
+  d5 --> s17
+  s17 -- "frlink m:1 county<br/>frame(counties)" --> s18
+  d4 -.-> s18
+  s18 -- "frget<br/>povrate slots, from(cnty)" --> s19
+  d4 -.-> s19
+  s19 --> s20
+  s20 -- "merge m:m staff<br/>force" --> s21
+  d9 --> s21
+  s21 --> d1
+  class s4 mmfilter;
+  class s17 mmwarn;
+  class s20 mmfilter;
+  class s21 mmwarn;
+  linkStyle 17,18,24,25 stroke:#4a6d8c,stroke-width:2px;
+```

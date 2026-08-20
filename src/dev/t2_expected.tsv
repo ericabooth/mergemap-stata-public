@@ -1,0 +1,7 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t2_loops.do	2	source	use	.	.	.	raw/cps_2019.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t2_loops.do	4	join	append	.	.	work	raw/cps_`y'.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	3	raw/cps_2020.dta	raw/cps_2022.dta	note	.	.	.	.	.
+3	t2_loops.do	7	join	append	.	.	work	`f'	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	3	raw/a.dta	raw/c.dta	note	.	.	.	.	.
+4	t2_loops.do	11	join	append	.	.	work	raw/`f'	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	unresolved runtime list
+5	t2_loops.do	14	join	merge	1:1	id	work	raw/part`k'.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	nogenerate	3	raw/part1.dta	raw/part3.dta	note	.	.	.	.	.
+6	t2_loops.do	16	save	save	.	.	work	.	built/t2_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

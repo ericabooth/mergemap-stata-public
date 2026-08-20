@@ -1,0 +1,6 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t3_delimit.do	2	source	use	.	.	.	raw/base.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t3_delimit.do	3	note	#delimit	.	.	.	.	.	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	#delimit region: best-effort parse
+3	t3_delimit.do	4	join	merge	m:1	county	work	xwalk/county_key.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	keep(1 3) nogenerate	.	.	.	note	.	.	.	.	keep(1 3): using-only will be dropped
+4	t3_delimit.do	7	transform	collapse	.	county	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	(mean) wage, by(county)	.	.	.	note	.	.	.	.	.
+5	t3_delimit.do	10	save	save	.	.	work	.	built/t3_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

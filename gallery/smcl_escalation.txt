@@ -1,0 +1,11 @@
+
+. _mm_rendersmcl using `RUNJ'
+
+mergemap diagram: ../proto/journal_run.tsv
+(run mode; 12 join/transform/filter events)
+
+note: 12 join/transform/filter events exceed maxnodes(8);
+      a diagram this size is written as HTML instead.
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. log close _g

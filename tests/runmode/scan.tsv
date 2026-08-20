@@ -1,0 +1,29 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	00_master.do	19	flow	do	.	.	work	01_build.do	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+2	01_build.do	12	source	use	.	.	.	../raw/cps_2019.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+3	01_build.do	15	join	append	.	.	work	../raw/cps_`y'.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	1	force	3	../raw/cps_2020.dta	../raw/cps_2022.dta	warn	.	.	.	.	!! force used
+4	01_build.do	22	join	merge	m:1	county	work	../raw/county_key.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	keep(1 3) nogenerate	.	.	.	note	.	.	.	.	keep(1 3): using-only will be dropped
+5	01_build.do	31	filter	drop	if	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	if missing(hours)	.	.	.	note	.	.	.	.	.
+6	01_build.do	40	transform	collapse	.	county year	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	(mean) wage hours, by(county year)	.	.	.	note	.	.	.	.	.
+7	01_build.do	42	save	save	.	.	work	.	../out/county_panel.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.
+8	00_master.do	20	flow	do	.	.	work	02_panel.do	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+9	02_panel.do	8	source	use	.	.	.	../raw/participants.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+10	02_panel.do	11	transform	duplicates	drop	pid	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	1	force	.	.	.	warn	.	.	.	.	duplicate rows on the key will be dropped
+11	02_panel.do	14	join	merge	1:m	pid	work	../raw/visits.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+12	02_panel.do	15	filter	drop	vars	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	_merge	.	.	.	note	.	.	.	.	.
+13	02_panel.do	16	save	save	.	.	work	.	$MM_VISITS	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	create	path built from a macro; run mode resolves it
+14	02_panel.do	19	source	use	.	.	.	../out/county_panel.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+15	02_panel.do	23	transform	reshape	wide	county year	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	wage hours, i(county) j(year)	.	.	.	note	.	.	.	.	.
+16	02_panel.do	26	save	save	.	.	work	.	../out/county_wide.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.
+17	00_master.do	21	flow	do	.	.	work	03_analyze.do	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
+18	03_analyze.do	7	source	use	.	.	.	$MM_VISITS	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	path built from a macro; run mode resolves it
+19	03_analyze.do	12	join	merge	m:1	county	work	../out/county_wide.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	keep(1 3) nogenerate	.	.	.	note	.	.	.	.	keep(1 3): using-only will be dropped
+20	03_analyze.do	18	join	joinby	m:m	staff	work	../raw/staff_assign.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	unmatched(none)	.	.	.	note	.	.	.	.	.
+21	03_analyze.do	24	join	merge	m:1	pid visitid	work	../raw/corrections.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	update replace	.	.	.	warn	.	.	.	.	update replace
+22	03_analyze.do	25	filter	drop	vars	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	_merge	.	.	.	note	.	.	.	.	.
+23	03_analyze.do	29	link	frlink	m:1	county	work	frame:counties	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	frame(counties) generate(cnty)	.	.	.	note	.	.	.	.	.
+24	03_analyze.do	30	link	frget	.	.	work	frame:counties	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	povrate slots, from(cnty)	.	.	.	note	.	.	.	.	.
+25	03_analyze.do	36	filter	keep	if	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	if date <= mdy(6, 30, 2024)	.	.	.	note	.	.	.	.	.
+26	03_analyze.do	42	join	merge	m:m	staff	work	../raw/schedules.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	1	force	.	.	.	warn	.	.	.	.	!! m:m pairs rows by row order within key (not a join); !! force used
+27	03_analyze.do	43	filter	drop	vars	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	_merge	.	.	.	note	.	.	.	.	.
+28	03_analyze.do	46	save	save	.	.	work	.	../out/analysis_file.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

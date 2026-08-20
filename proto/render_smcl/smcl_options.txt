@@ -1,0 +1,531 @@
+
+. rendersmcl using ../journal_run.tsv, style(boxes) forcesmcl compact
+
+mergemap diagram: ../journal_run.tsv
+(run mode; style: boxes)
+
+01_build.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/cps_2019.dta                 |
+  +----------------------------------+
+        |
+        |                                 +----------------------------------+
+        |                                +----------------------------------+|
+        |                                | x3: raw/cps_2020.dta             |+
+        |                                |   ... raw/cps_2022.dta           |
+        |                                +----------------------------------+
+        |                                  |
+        |  append  x3 files  <-------------+
+        |
+        |                                +----------------------------------+
+        |                                | xwalk/county_key.dta             |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1 county  <-------------+
+        |  2 using-only dropped by keep(1 3)
+        |
+        v
+  [ drop if missing(wage) ]
+        |
+        v
+  +---------------------------------------------+
+  | collapse (mean) wage hours, by(county year) |
+  +---------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_panel.dta           |  [saved]
+  +----------------------------------+
+
+02_panel.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/participants.dta             |
+  +----------------------------------+
+        |
+        v
+  +---------------------+
+  | duplicates drop pid |
+  +---------------------+
+      !! 12 duplicate pid obs dropped
+        |
+        |                                +----------------------------------+
+        |                                | raw/visits.dta                   |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:m pid  <----------------+
+        |  310 master-only kept (no visits)
+        |
+        v
+  +----------------------------------+
+  | tempfile:__visits                |  [tempfile]
+  +----------------------------------+
+
+  +----------------------------------+
+  | built/county_panel.dta           |
+  +----------------------------------+
+        |
+        v
+  +--------------------------------------------+
+  | reshape wide wage hours, i(county) j(year) |
+  +--------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_wide.dta            |  [saved]
+  +----------------------------------+
+
+03_analyze.do -----------------------------------------------------------------
+
+  +----------------------------------+
+  | tempfile:__visits                |
+  +----------------------------------+
+      tempfile from 02_panel.do line 16
+        |
+        |                                +----------------------------------+
+        |                                | built/county_wide.dta            |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1 county  <-------------+
+        |  95 master-only kept
+        |
+        |                                +----------------------------------+
+        |                                | raw/staff_assign.dta             |
+        |                                +----------------------------------+
+        |                                  |
+        |  joinby m:m staff  <-------------+
+        |  !! row multiplication x1.08
+        |
+        |                                +----------------------------------+
+        |                                | raw/corrections.dta              |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:1 pid visitid  <--------+
+        |  !! 50 nonmissing conflicts overwritten
+        |
+        |                                +----------------------------------+
+        |                                | frame:counties                   |
+        |                                +----------------------------------+
+        |                                  |
+        |  frlink m:1 county  <------------+
+        |  95 obs unmatched to frame
+        |
+        |  frget povrate slots, from(cnty)   <- frame:counties
+        |
+        v
+  [ keep if inrange(year, 2019, 2022) ]
+        |
+        |                                +----------------------------------+
+        |                                | raw/schedules.dta                |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:m staff  <--------------+
+        |  !! m:m pairs rows by order within key (not a join)
+        |  !! force: schednote str8 vs byte
+        |
+        v
+  +----------------------------------+
+  | built/analysis_file.dta          |  [saved]
+  +----------------------------------+
+
+
+. rendersmcl using ../journal_run.tsv, style(boxes) forcesmcl noellipsis nokeys
+
+mergemap diagram: ../journal_run.tsv
+(run mode; style: boxes)
+
+01_build.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/cps_2019.dta                 |  52,431 x 24
+  +----------------------------------+
+        |
+        |                                +----------------------------------+
+        |                                | raw/cps_`y'.dta                  |
+        |                                | raw/cps_2020.dta                 |
+        |                                |   (1 more)                       |
+        |                                | raw/cps_2022.dta                 |
+        |                                +----------------------------------+
+        |                                  |
+        |  append  x3 files  <-------------+
+        |    +157,203 obs
+        |    -> 209,634 x 24
+        |
+        |                                +----------------------------------+
+        |                                | xwalk/county_key.dta             |
+        |                                | 254 x 3                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1  <--------------------+
+        |    keep(1 3) nogenerate
+        |    matched 209,101; master-only 533; using-only (2 dropped)
+        |    coverage: 99.7% of master matched, 99.2% of using used
+        |    -> 209,634 x 26
+        |  2 using-only dropped by keep(1 3)
+        |
+        v
+  [ drop if missing(wage) ]
+      !! removed 6,519 rows (3.1%), 203,115 remaining
+        |
+        v
+  +---------------------------------------------+
+  | collapse (mean) wage hours, by(county year) |  203,115 -> 3,048 obs
+  +---------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_panel.dta           |  3,048 x 6  [saved]
+  +----------------------------------+
+
+02_panel.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/participants.dta             |  8,914 x 12
+  +----------------------------------+
+        |
+        v
+  +-----------------+
+  | duplicates drop |  8,914 -> 8,902 obs
+  +-----------------+
+      !! 12 duplicate pid obs dropped
+        |
+        |                                +----------------------------------+
+        |                                | raw/visits.dta                   |
+        |                                | 41,210 x 6                       |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:m  <--------------------+
+        |    matched 41,210; master-only 310
+        |    coverage: 96.5% of master matched, 100.0% of using used
+        |    -> 41,520 x 17
+        |  310 master-only kept (no visits)
+        |
+        v
+  +----------------------------------+
+  | tempfile:__visits                |  41,520 x 17  [tempfile]
+  +----------------------------------+
+
+  +----------------------------------+
+  | built/county_panel.dta           |  3,048 x 6
+  +----------------------------------+
+        |
+        v
+  +--------------------------------------------+
+  | reshape wide wage hours, i(county) j(year) |  3,048 -> 762 obs
+  +--------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_wide.dta            |  762 x 9  [saved]
+  +----------------------------------+
+
+03_analyze.do -----------------------------------------------------------------
+
+  +----------------------------------+
+  | tempfile:__visits                |  41,520 x 17
+  +----------------------------------+
+      tempfile from 02_panel.do line 16
+        |
+        |                                +----------------------------------+
+        |                                | built/county_wide.dta            |
+        |                                | 762 x 9                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1  <--------------------+
+        |    keep(1 3) nogenerate
+        |    matched 41,425; master-only 95
+        |    coverage: 99.8% of master matched, 94.1% of using used
+        |    -> 41,520 x 25
+        |  95 master-only kept
+        |
+        |                                +----------------------------------+
+        |                                | raw/staff_assign.dta             |
+        |                                | 118 x 4                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  joinby m:m  <-------------------+
+        |    unmatched(none)
+        |    coverage: 100.0% of master matched, 100.0% of using used
+        |    dup keys: using +74
+        |    -> 44,873 x 28
+        |  !! row multiplication x1.08
+        |
+        |                                +----------------------------------+
+        |                                | raw/corrections.dta              |
+        |                                | 400 x 5                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:1  <--------------------+
+        |    update replace
+        |    matched 0; master-only 44,473; missing-updated 350;
+        |    conflicts-updated 50
+        |    coverage: 0.9% of master matched, 100.0% of using used
+        |    -> 44,873 x 28
+        |  !! 50 nonmissing conflicts overwritten
+        |
+        |                                +----------------------------------+
+        |                                | frame:counties                   |
+        |                                | 254 x 7                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  frlink m:1  <-------------------+
+        |    frame(counties)
+        |    matched 44,778; unmatched 95
+        |    coverage: 99.8% of master matched, 93.7% of using used
+        |    -> 44,873 x 29
+        |  95 obs unmatched to frame
+        |
+        |  frget povrate slots, from(cnty)   <- frame:counties
+        |    -> 44,873 x 31
+        |
+        v
+  [ keep if inrange(year, 2019, 2022) ]
+      removed 753 rows (1.7%), 44,120 remaining
+        |
+        |                                +----------------------------------+
+        |                                | raw/schedules.dta                |
+        |                                | 560 x 6                          |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:m  <--------------------+
+        |    force
+        |    matched 43,906; master-only 210; using-only 4
+        |    coverage: 99.5% of master matched, 99.3% of using used
+        |    dup keys: master +3,110; using +102
+        |    -> 44,120 x 33
+        |  !! m:m pairs rows by order within key (not a join)
+        |  !! force: schednote str8 vs byte
+        |
+        v
+  +----------------------------------+
+  | built/analysis_file.dta          |  44,120 x 33  [saved]
+  +----------------------------------+
+
+
+. rendersmcl using ../journal_run.tsv, style(rail) forcesmcl nocounts notransfor
+> ms
+
+mergemap diagram: ../journal_run.tsv
+(run mode; style: rail)
+
+01_build.do -------------------------------------------------------------------
++-- raw/cps_2019.dta
+|-- append  x3: raw/cps_2020.dta ... raw/cps_2022.dta
+|-- merge m:1 county <- xwalk/county_key.dta
+|      keep(1 3) nogenerate
+|      2 using-only dropped by keep(1 3)
+|   [ drop if missing(wage) ]
++-- built/county_panel.dta  [saved]
+
+02_panel.do -------------------------------------------------------------------
++-- raw/participants.dta
+|-- merge 1:m pid <- raw/visits.dta
+|      310 master-only kept (no visits)
++-- tempfile:__visits  [tempfile]
+
+-- new chain ---------------------------
++-- built/county_panel.dta
++-- built/county_wide.dta  [saved]
+
+03_analyze.do -----------------------------------------------------------------
++-- tempfile:__visits
+|      tempfile from 02_panel.do line 16
+|-- merge m:1 county <- built/county_wide.dta
+|      keep(1 3) nogenerate
+|      95 master-only kept
+|-- joinby m:m staff <- raw/staff_assign.dta
+|      unmatched(none)
+|      !! row multiplication x1.08
+|-- merge 1:1 pid visitid <- raw/corrections.dta
+|      update replace
+|      !! 50 nonmissing conflicts overwritten
+|-- frlink m:1 county <- frame:counties
+|      frame(counties)
+|      95 obs unmatched to frame
+|   frget povrate slots, from(cnty)  <- frame:counties
+|   [ keep if inrange(year, 2019, 2022) ]
+|-- merge m:m staff <- raw/schedules.dta
+|      !! m:m pairs rows by order within key (not a join)
+|      !! force: schednote str8 vs byte
++-- built/analysis_file.dta  [saved]
+
+
+. rendersmcl using ../journal_scan.tsv, style(rail) forcesmcl wrap(20) maxnodes(
+> 20)
+
+mergemap diagram: ../journal_scan.tsv
+(scan mode - nothing executed; style: rail)
+
+01_build.do -------------------------------------------------------------------
++-- raw/cps_2019.dta
+|-- append  x3: raw/cps_2020.dta ... raw/cps_2022.dta
+|-- merge m:1 county <- xwalk/county_key.dta
+|      keep(1 3) nogenerate
+|      keep(1 3): using-only will be dropped
+|   [ drop if missing(wage) ]
+|   collapse (mean) wage hours, by(county year)
++-- built/county_panel.dta  [saved]
+
+02_panel.do -------------------------------------------------------------------
++-- raw/participants.dta
+|   duplicates drop pid
+|-- merge 1:m pid <- raw/visits.dta
++-- tempfile:__visits  [tempfile]
+
+-- new chain ---------------------------
++-- built/county_panel.dta
+|   reshape wide wage hours, i(county) j(year)
++-- built/county_wide.dta  [saved]
+
+03_analyze.do -----------------------------------------------------------------
++-- tempfile:__visits
+|      tempfile from 02_panel.do line 16
+|-- merge m:1 county <- built/county_wide.dta
+|      keep(1 3) nogenerate
+|-- joinby m:m staff <- raw/staff_assign.dta
+|      unmatched(none)
+|-- merge 1:1 pid visitid <- raw/corrections.dta
+|      !! update replace
+|-- frlink m:1 county <- frame:counties
+|      frame(counties)
+|   frget povrate slots, from(cnty)  <- frame:counties
+|   [ keep if inrange(year, 2019, 2022) ]
+|-- merge m:m staff <- raw/schedules.dta
+|      !! m:m pairs rows by row order within key (not a join)
+|      !! force used
++-- built/analysis_file.dta  [saved]
+
+
+. rendersmcl using ../journal_scan.tsv, style(boxes) forcesmcl wrap(60)
+
+mergemap diagram: ../journal_scan.tsv
+(scan mode - nothing executed; style: boxes)
+
+01_build.do -------------------------------------------------------------------
+
+  +------------------------------------+
+  | raw/cps_2019.dta                   |
+  +------------------------------------+
+        |
+        |                                 +------------------------------------+
+        |                                +------------------------------------+|
+        |                                | x3: raw/cps_2020.dta               |+
+        |                                |   ... raw/cps_2022.dta             |
+        |                                +------------------------------------+
+        |                                  |
+        |  append  x3 files  <-------------+
+        |
+        |                                +------------------------------------+
+        |                                | xwalk/county_key.dta               |
+        |                                +------------------------------------+
+        |                                  |
+        |  merge m:1 county  <-------------+
+        |    keep(1 3) nogenerate
+        |  keep(1 3): using-only will be dropped
+        |
+        v
+  [ drop if missing(wage) ]
+        |
+        v
+  +---------------------------------------------+
+  | collapse (mean) wage hours, by(county year) |
+  +---------------------------------------------+
+        |
+        v
+  +------------------------------------+
+  | built/county_panel.dta             |  [saved]
+  +------------------------------------+
+
+02_panel.do -------------------------------------------------------------------
+
+  +------------------------------------+
+  | raw/participants.dta               |
+  +------------------------------------+
+        |
+        v
+  +---------------------+
+  | duplicates drop pid |
+  +---------------------+
+        |
+        |                                +------------------------------------+
+        |                                | raw/visits.dta                     |
+        |                                +------------------------------------+
+        |                                  |
+        |  merge 1:m pid  <----------------+
+        |
+        v
+  +------------------------------------+
+  | tempfile:__visits                  |  [tempfile]
+  +------------------------------------+
+
+  +------------------------------------+
+  | built/county_panel.dta             |
+  +------------------------------------+
+        |
+        v
+  +--------------------------------------------+
+  | reshape wide wage hours, i(county) j(year) |
+  +--------------------------------------------+
+        |
+        v
+  +------------------------------------+
+  | built/county_wide.dta              |  [saved]
+  +------------------------------------+
+
+03_analyze.do -----------------------------------------------------------------
+
+  +------------------------------------+
+  | tempfile:__visits                  |
+  +------------------------------------+
+      tempfile from 02_panel.do line 16
+        |
+        |                                +------------------------------------+
+        |                                | built/county_wide.dta              |
+        |                                +------------------------------------+
+        |                                  |
+        |  merge m:1 county  <-------------+
+        |    keep(1 3) nogenerate
+        |
+        |                                +------------------------------------+
+        |                                | raw/staff_assign.dta               |
+        |                                +------------------------------------+
+        |                                  |
+        |  joinby m:m staff  <-------------+
+        |    unmatched(none)
+        |
+        |                                +------------------------------------+
+        |                                | raw/corrections.dta                |
+        |                                +------------------------------------+
+        |                                  |
+        |  merge 1:1 pid visitid  <--------+
+        |  !! update replace
+        |
+        |                                +------------------------------------+
+        |                                | frame:counties                     |
+        |                                +------------------------------------+
+        |                                  |
+        |  frlink m:1 county  <------------+
+        |    frame(counties)
+        |
+        |  frget povrate slots, from(cnty)   <- frame:counties
+        |
+        v
+  [ keep if inrange(year, 2019, 2022) ]
+        |
+        |                                +------------------------------------+
+        |                                | raw/schedules.dta                  |
+        |                                +------------------------------------+
+        |                                  |
+        |  merge m:m staff  <--------------+
+        |    force
+        |  !! m:m pairs rows by row order within key (not a join)
+        |  !! force used
+        |
+        v
+  +------------------------------------+
+  | built/analysis_file.dta            |  [saved]
+  +------------------------------------+
+
+
+. log close _mm

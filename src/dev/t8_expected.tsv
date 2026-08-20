@@ -1,0 +1,9 @@
+seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using	k_using	n_out	k_out	m1	m2	m3	m4	m5	dup_master	dup_using	force	opts	loop_n	loop_first	loop_last	severity	keytypes	cover_master	cover_using	lifecycle	flags
+1	t8_filters.do	2	source	use	.	.	.	raw/participants.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	.
+2	t8_filters.do	3	filter	drop	if	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	if missing(wage)	.	.	.	note	.	.	.	.	.
+3	t8_filters.do	4	filter	keep	if	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	if inrange(year, 2019, 2022)	.	.	.	note	.	.	.	.	.
+4	t8_filters.do	5	filter	drop	vars	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	_merge	.	.	.	note	.	.	.	.	.
+5	t8_filters.do	6	filter	keep	vars	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	pid county year wage	.	.	.	note	.	.	.	.	.
+6	t8_filters.do	7	filter	keep	in	.	work	.	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	in 1/100	.	.	.	note	.	.	.	.	.
+7	t8_filters.do	8	join	merge	1:1	pid	work	raw/lookup.dta	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	nogenerate	.	.	.	note	.	.	.	.	.
+8	t8_filters.do	9	save	save	.	.	work	.	built/t8_out.dta	.	.	.	.	.	.	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	create	.

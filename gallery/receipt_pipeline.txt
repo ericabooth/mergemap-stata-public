@@ -1,0 +1,44 @@
+
+. mergemap ../tests/pipeline/01_build.do ../tests/pipeline/02_panel.do ///
+>     ../tests/pipeline/03_analyze.do, out(`PIPEJ')
+
+3 of 7 joins flagged: 3 warn.
+plus 1 flagged event(s) outside the joins.
++---------------------------------------------------------------------------------------------------------------------+
+| mergemap receipt: 3 do-files  (25 events, scan mode - nothing executed)                                             |
++---------------------------------------------------------------------------------------------------------------------+
+  # file          line command         keys        using/result             F flags
+-----------------------------------------------------------------------------------------------------------------------
+  1 01_build.do     12 use                         ../raw/cps_2019.dta
+  2 01_build.do     15 append x3                   ../raw/cps_`y'.dta       F !! force used
+  3 01_build.do     22 merge m:1       county      ../raw/county_key.dta      keep(1 3): using-only will be dropped
+  4 01_build.do     31 drop if                     missing(hours)
+  5 01_build.do     40 collapse        county year
+  6 01_build.do     42 save                        ../out/county_panel.dta
+  7 02_panel.do      8 use                         ../raw/participants.dta
+  8 02_panel.do     11 duplicates drop pid                                  F duplicate rows on the key will be dropped
+  9 02_panel.do     14 merge 1:m       pid         ../raw/visits.dta
+ 10 02_panel.do     15 drop vars                   _merge
+ 11 02_panel.do     16 save                        $MM_VISITS                 path built from a macro; run mode
+                                                                              resolves it
+ 12 02_panel.do     19 use                         ../out/county_panel.dta
+ 13 02_panel.do     23 reshape wide    county year
+ 14 02_panel.do     26 save                        ../out/county_wide.dta
+ 15 03_analyze.do    7 use                         $MM_VISITS                 path built from a macro; run mode
+                                                                              resolves it
+ 16 03_analyze.do   12 merge m:1       county      ../out/county_wide.dta     keep(1 3): using-only will be dropped
+ 17 03_analyze.do   18 joinby m:m      staff       ../raw/staff_assign.dta
+ 18 03_analyze.do   24 merge m:1       pid visitid ../raw/corrections.dta     update replace
+ 19 03_analyze.do   25 drop vars                   _merge
+ 20 03_analyze.do   29 frlink m:1      county      frame:counties
+ 21 03_analyze.do   30 frget                       frame:counties
+ 22 03_analyze.do   36 keep if                     date <= mdy(6, 30, 2024)
+ 23 03_analyze.do   42 merge m:m       staff       ../raw/schedules.dta     F !! m:m pairs rows by row order within
+                                                                              key (not a join); !! force used
+ 24 03_analyze.do   43 drop vars                   _merge
+ 25 03_analyze.do   46 save                        ../out/analysis_file.dta
+-----------------------------------------------------------------------------------------------------------------------
+25 events. Severity: !! marks warn and stop.
+mergemap: 25 events written to journals/journal_pipeline.tsv
+
+. log close _g

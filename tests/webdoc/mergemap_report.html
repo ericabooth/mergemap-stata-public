@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<title>mergemap_report.html</title>
+<style>
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.428;
+  margin: 0 auto; padding: 0 15px;
+}
+h1, h2, h3, h4, h5, h6 { margin: 20px 0 10px; }
+h1 { font-size: 28px; } h2 { font-size: 24px; }
+h3 { font-size: 18px; } h4 { font-size: 16px; }
+h5 { font-size: 14px; } h6 { font-size: 12px; }
+a { color: #337AB7; text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
+ul, ol { padding-left: 30px; }
+pre, code, samp {
+  font-size: 13px;
+  font-family: Courier, monospace;
+}
+code, samp {
+  background-color: #F5F5F5;
+  border-radius: 3px; padding: 3px;
+}
+pre code, pre samp {
+  white-space: pre; background: transparent;
+  border: none; padding: 0;
+}
+pre {
+  line-height: 1.33; background-color: #F5F5F5;
+  border: 1px solid #CCCCCC; border-radius: 3px;
+  padding: 8px; overflow: auto;
+}
+</style>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     webdoc2 default theme header
+     Injected into <head> via:  wdinit myfile, replace
+     (or manually: webdoc init myfile, replace header2(include("header.html")))
+
+     To customise: copy this file, edit freely, then point wdinit at it:
+         wdinit myfile, replace headerfile("my_custom_header.html")
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<!-- Bootstrap 5.3 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+<!-- Google Fonts: Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<!-- Bootstrap Icons (chevron for back-to-top button) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+<style>
+/* ── Theme tokens — override here to change the colour scheme ────────────── */
+:root {
+  --wd-primary:    #1B2D55;   /* navbar / headings / accents */
+  --wd-accent:     #D44500;   /* h2 underline, hover highlights */
+  --wd-link:       #2B6CB0;   /* body link colour */
+  --wd-light-bg:   #F5F7FA;   /* code blocks, TOC, accordion bg */
+  --wd-border:     #DEE2E6;
+  --wd-text:       #1A1A2E;
+  --wd-muted:      #6C7A8D;
+  --wd-page-width: 90%;       /* default content width; override with wdwidth command */
+}
+
+/* ── Always reserve scrollbar space; offset anchors below sticky navbar ──── */
+html {
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;   /* matches navbar height so anchors aren't hidden */
+}
+
+/* ── Base typography ──────────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.68;
+  color: var(--wd-text);
+  background-color: #ffffff;
+}
+
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  background-color: var(--wd-primary) !important;
+  padding: 0.55rem 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+}
+.navbar-brand {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff !important;
+}
+.navbar-toggler        { border-color: rgba(255,255,255,0.4); }
+.navbar-toggler-icon   { filter: invert(1) brightness(2); }
+.navbar-nav .nav-link  {
+  font-size: 0.80rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.78) !important;
+  padding: 0.5rem 1.05rem !important;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+.navbar-nav .nav-link:hover {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+}
+.navbar-nav .nav-link.active {
+  color: #ffffff !important;
+  border-bottom-color: var(--wd-accent);
+  font-weight: 600;
+}
+
+/* ── Navbar dropdowns ─────────────────────────────────────────────────────── */
+.navbar .dropdown-menu {
+  background-color: #ffffff;
+  border: 1px solid var(--wd-border);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  margin-top: 0.25rem;
+  min-width: 180px;
+}
+.navbar .dropdown-item {
+  font-size: 0.85rem;
+  color: var(--wd-text);
+  padding: 0.45rem 1rem;
+}
+.navbar .dropdown-item:hover {
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary);
+}
+.navbar .dropdown-toggle::after { vertical-align: 0.1em; }
+
+/* ── Headings ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--wd-primary);
+  margin-top: 1.75rem;
+  margin-bottom: 0.55rem;
+}
+h1 { font-size: 1.85rem; }
+h2 {
+  font-size: 1.35rem;
+  border-bottom: 3px solid var(--wd-accent);
+  padding-bottom: 0.28rem;
+}
+h3 { font-size: 1.12rem; }
+h4 { font-size: 1rem; color: var(--wd-muted); }
+
+/* ── Links ────────────────────────────────────────────────────────────────── */
+a       { color: var(--wd-link);   text-decoration: none; }
+a:hover { color: var(--wd-accent); text-decoration: underline; }
+
+/* ── Stata log blocks ─────────────────────────────────────────────────────── */
+pre.stlog {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.2rem;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+  margin-bottom: 1.1rem;
+}
+.stinp { color: var(--wd-primary); font-weight: 600; }
+.stres { color: #145A32; }
+.stcmt { font-style: italic; opacity: 0.55; }
+
+/* ── Bootstrap accordion (button.ado / graphbutton.ado) ───────────────────── */
+.accordion, .accordion-item, .accordion-body { max-width: 100%; }
+.accordion-item {
+  border: 1px solid var(--wd-border);
+  border-radius: 6px !important;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.accordion-button {
+  font-size: 0.82rem;
+  font-weight: 500;
+  background-color: var(--wd-light-bg);
+  color: var(--wd-primary) !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: var(--wd-primary);
+  color: #ffffff !important;
+  box-shadow: none;
+}
+.accordion-button:not(.collapsed)::after { filter: invert(1) brightness(2); }
+.accordion-body { padding: 1rem 1.2rem; background-color: #ffffff; overflow-x: auto; }
+
+/* ── Lists ────────────────────────────────────────────────────────────────── */
+/* wdlist (dashed) — LaTeX-like em-dash markers via ::before. */
+ul.wd-list-dashed {
+  list-style: none;
+  padding-left: 1.2rem;
+}
+ul.wd-list-dashed > li {
+  position: relative;
+  padding-left: 1.2rem;
+  margin-bottom: 0.15rem;
+}
+ul.wd-list-dashed > li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--wd-primary);
+  font-weight: 600;
+}
+/* wditemize (round) and wdenumerate (numbers) use default browser markers. */
+ul:not(.wd-list-dashed) > li,
+ol > li { margin-bottom: 0.15rem; }
+
+/* ── Figures ──────────────────────────────────────────────────────────────── */
+figure { margin: 0.8rem 0; }
+figure img {
+  border-radius: 6px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── In-page Table of Contents ────────────────────────────────────────────── */
+.wd-toc-wrap {
+  background-color: var(--wd-light-bg);
+  border: 1px solid var(--wd-border);
+  border-left: 4px solid var(--wd-primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  min-width: 220px;
+  max-width: 480px;
+}
+.wd-toc-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--wd-primary);
+  margin-bottom: 0.45rem;
+}
+.wd-toc-list { margin: 0; padding: 0; list-style: none; }
+.wd-toc-list a {
+  display: block;
+  color: var(--wd-primary);
+  font-size: 0.87rem;
+  line-height: 1.95;
+  text-decoration: none;
+  transition: color 0.14s;
+}
+.wd-toc-list a:hover    { color: var(--wd-accent); }
+.wd-toc-h2              { padding-left: 0.8rem; }
+.wd-toc-h3              { padding-left: 1.6rem; font-size: 0.81rem; }
+.wd-toc-h4              { padding-left: 2.4rem; font-size: 0.78rem; }
+.wd-toc-h5              { padding-left: 3.2rem; font-size: 0.75rem; }
+.wd-toc-h6              { padding-left: 4.0rem; font-size: 0.72rem; }
+
+/* ── Page width — controlled by --wd-page-width; use wdwidth command to change */
+.container,
+.container-sm,
+.container-md,
+.container-lg,
+.container-xl,
+.container-xxl {
+  max-width: var(--wd-page-width) !important;
+}
+
+/* ── Misc spacing ─────────────────────────────────────────────────────────── */
+p { margin-bottom: 0.85rem; }
+.container, .container-fluid { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+/* ── Back-to-top button ───────────────────────────────────────────────────── */
+#wd-back-to-top {
+  display: none;
+  position: fixed;
+  bottom: 2rem;  right: 2rem;
+  z-index: 9999;
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background-color: var(--wd-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 1.3rem;
+  line-height: 46px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.22);
+  transition: background-color 0.18s;
+  padding: 0;
+}
+#wd-back-to-top:hover { background-color: var(--wd-accent); }
+</style>
+
+<!-- Bootstrap 5.3 JS Bundle — enables navbar toggler + accordion collapse -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ── Back-to-top floating button ──────────────────────────────────────── */
+  var btn = document.createElement('button');
+  btn.id = 'wd-back-to-top';
+  btn.title = 'Back to top';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '<i class="bi bi-chevron-up"></i>';
+  document.body.appendChild(btn);
+  window.addEventListener('scroll', function () {
+    btn.style.display = (window.scrollY > 320) ? 'block' : 'none';
+  });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ── Auto-generate in-page TOC from headings ──────────────────────────── */
+  // Finds every element with class "wd-toc-wrap" and fills it with heading links.
+  // wdtoc.ado writes the container; this script fills it in.
+  // Depth controlled per-wrap via data-wd-depth (1..6, default 3).
+  document.querySelectorAll('.wd-toc-wrap').forEach(function (wrap) {
+    var depth = parseInt(wrap.getAttribute('data-wd-depth') || '3', 10);
+    if (isNaN(depth) || depth < 1) depth = 3;
+    if (depth > 6) depth = 6;
+    var selectors = [];
+    for (var d = 1; d <= depth; d++) selectors.push('h' + d);
+
+    var headings = Array.prototype.slice.call(
+      document.querySelectorAll(selectors.join(','))
+    ).filter(function (h) {
+      // Skip headings inside navbar and accordion headers
+      return !h.closest('.navbar') && !h.classList.contains('accordion-header');
+    });
+
+    if (headings.length === 0) return;
+
+    var ul = document.createElement('ul');
+    ul.className = 'wd-toc-list';
+
+    headings.forEach(function (h, i) {
+      if (!h.id) h.id = 'wdtoc-h-' + i;
+      var li = document.createElement('li');
+      li.className = 'wd-toc-' + h.tagName.toLowerCase();
+      var a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = h.textContent.trim();
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+
+    wrap.appendChild(ul);
+  });
+
+  /* ── Remove stray closing-command echoes from Stata log output ──────────── */
+  var _wdClosingCmds = ['wdclose', 'buttonclose', 'graphbuttonclose',
+                        'wdnavbarclose', 'wdnavdropdownclose'];
+  document.querySelectorAll('span.stinp').forEach(function (span) {
+    var txt = span.textContent.replace(/^\s*\.\s*/, '').trim();
+    if (_wdClosingCmds.indexOf(txt) !== -1) {
+      var pre = span.closest('pre.stlog');
+      span.remove();
+      if (pre && pre.textContent.trim() === '') pre.remove();
+    }
+  });
+
+});
+</script>
+<style>
+.stcmd .stcmt { font-style: italic; opacity: 0.5; }
+.stoom, .stcnp { font-style: italic; }
+@media screen { .stcnp { display: none; }}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<div class="container-fluid">
+<a class="navbar-brand" href="#">mergemap in webdoc2</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+<div class="collapse navbar-collapse" id="mainNavbar"><ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<li class="nav-item"><a class="nav-link" href="#a-png-via-wdimg">A. PNG</a></li>
+<li class="nav-item"><a class="nav-link" href="#b-iframe-via-wdiframe">B. iframe</a></li>
+<li class="nav-item"><a class="nav-link" href="#c-inline-svg-in-the-page-dom">C. Inline SVG</a></li>
+<li class="nav-item"><a class="nav-link" href="#d-smcl-text-as-a-code-block">D. SMCL text</a></li>
+</ul></div></div></nav>
+<style>
+/* webdoc2 emits a bare <body> with no container: give the report a column */
+.mm-page   { max-width: 960px; margin: 0 auto; padding: 0 1rem 4rem 1rem; }
+/* a bounded viewport for a diagram taller than the screen           */
+.mm-scroll { max-height: 70vh; overflow: auto; border: 1px solid #dee2e6;
+             border-radius: 6px; padding: .5rem; background: #fff; margin: 1rem 0; }
+/* horizontal diagrams: never stretch, scroll sideways instead        */
+.mm-xscroll{ overflow-x: auto; overflow-y: hidden; border: 1px solid #dee2e6;
+             border-radius: 6px; padding: .5rem; margin: 1rem 0; }
+/* mergemap ships svg{max-width:100%}, which cancels the sideways     */
+/* scroller: inside .mm-xscroll the svg must keep its natural width.  */
+.mm-xscroll svg { max-width: none !important; width: auto; height: auto; }
+/* an iframe height that a CSS rule can set (the height= attribute    */
+/* cannot take vh units, so wdiframe's height() option cannot either) */
+.mm-frame-vh { height: 78vh !important; width: 100%; }
+/* height:auto on an iframe does NOT shrink-wrap the document        */
+.mm-frame-auto { height: auto !important; width: 100%; }
+/* monospace receipt / ASCII diagram blocks                           */
+.mm-pre    { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 12.5px;
+             line-height: 1.35; background: #F5F7FA; border: 1px solid #DEE2E6;
+             border-left: 4px solid #1B2D55; border-radius: 0 6px 6px 0;
+             padding: .9rem 1.2rem; overflow-x: auto; }
+/* the inline-SVG wrapper the scoped mergemap CSS hangs off           */
+.mm-embed svg { display: block; }
+</style>
+<style>
+.mm-embed svg { max-width: 100%; height: auto; }
+.mm-embed h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
+.mm-embed p.sub { font-size: 12px; color: #666; margin: 0 0 4px 0; }
+.mm-embed p.legend { font-size: 11px; color: #888; margin: 0 0 14px 0; }
+.mm-embed p.legend b { color: #4a6d8c; }
+.mm-embed svg text { font-family: "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace; }
+.mm-embed .mm-bh { font-size: 12px; font-weight: bold; fill: #111; }
+.mm-embed .mm-bl { font-size: 12px; fill: #333; }
+.mm-embed .mm-bn { font-size: 11px; fill: #666; }
+.mm-embed .mm-bf { font-size: 11px; font-weight: bold; fill: #4a6d8c; }
+.mm-embed .mm-cc { font-size: 11px; font-weight: bold; fill: #111; }
+.mm-embed .mm-cl { font-size: 11px; fill: #333; }
+.mm-embed .mm-cn { font-size: 11px; fill: #666; }
+.mm-embed .mm-cf { font-size: 11px; font-weight: bold; fill: #4a6d8c; }
+.mm-embed .mm-dof { font-size: 13px; font-weight: bold; fill: #222; }
+.mm-embed .mm-hc { font-size: 10px; fill: #333; }
+.mm-embed .mm-hn { font-size: 10px; fill: #666; }
+.mm-embed .mm-hb { font-size: 10px; font-weight: bold; fill: #111; }
+.mm-embed .mm-hf { font-size: 10px; font-weight: bold; fill: #4a6d8c; }
+.mm-embed .mm-bx { fill: #f7f7f7; stroke: #333; stroke-width: 1.1; }
+.mm-embed .mm-bu { fill: #fcfcfc; stroke: #666; stroke-width: 1; }
+.mm-embed .mm-bt { fill: #ffffff; stroke: #666; stroke-width: 1; stroke-dasharray: 5 3; }
+.mm-embed .mm-bstk { fill: #ffffff; stroke: #999; stroke-width: 1; }
+.mm-embed .mm-bw { fill: #ffffff; stroke: #999; stroke-width: 1; }
+.mm-embed .mm-sp { stroke: #444; stroke-width: 1.2; fill: none; }
+.mm-embed .mm-spd { stroke: #777; stroke-width: 1.1; fill: none; stroke-dasharray: 4 3; }
+.mm-embed .mm-hl { stroke: #cccccc; stroke-width: 1; }
+.mm-embed details { margin: 6px 0; border: 1px solid #ddd; }
+.mm-embed summary { font-size: 12px; font-family: "SF Mono", Menlo, Consolas, monospace; padding: 5px 8px; cursor: pointer; background: #f7f7f7; }
+.mm-embed details pre { font-size: 12px; margin: 0; padding: 8px 12px; overflow-x: auto; }
+.mm-embed pre span.flag { font-weight: bold; color: #4a6d8c; }
+.mm-embed h2 { font-size: 15px; margin: 22px 0 8px 0; }
+.mm-embed p.foot { font-size: 10px; color: #999; margin-top: 18px; }
+</style>
+<div class="mm-page">
+<h1 id="mergemap-output-inside-a-webdoc2-report">mergemap output inside a webdoc2 report</h1>
+<div id="wd-toc" class="wd-toc-wrap" data-wd-depth="2"><strong class="wd-toc-title">Contents</strong></div>
+<p>Every embed below shows the same run-mode diagram over the same 20-event journal. The point of the page is to compare how each embed behaves at report width, how tall it gets, and whether the diagram and the Bootstrap shell fight over CSS.</p>
+<h1 id="a-png-via-wdimg">A. PNG via wdimg</h1>
+<p>wdimg links the file, it does not copy it. The src is resolved by the browser relative to the HTML file, so a relative path only survives if the report and the image move together.</p>
+<h2 id="a1-plain-wdimg-no-bound-on-height">A1. Plain wdimg, no bound on height</h2>
+<p>The twoway PNG is 1600 by 5745 px. wdimg gives it max-width 100 percent and height auto, so in a 960 px column it renders about 3450 px tall. Nothing is clipped and nothing scrolls sideways, but one figure is now four screens.</p>
+<img src="../../proto/render_twoway/tw_vert_run.png" style="max-width:100%; height:auto; border-radius:6px;">
+<h2 id="a2-same-png-inside-a-bounded-scroll-box">A2. Same PNG inside a bounded scroll box</h2>
+<p>The same image inside a div with max-height 70vh and overflow auto. The figure now costs two thirds of a screen and the reader scrolls inside it.</p>
+<div class="mm-scroll">
+<img src="../../proto/render_twoway/tw_vert_run.png" style="max-width:100%; height:auto; border-radius:6px;">
+</div>
+<h2 id="a3-wdimg-with-a-caption">A3. wdimg with a caption</h2>
+<p>With caption() the image is wrapped in figure and figcaption, which picks up the rounded corners and drop shadow from the webdoc2 header stylesheet.</p>
+<figure>
+<img src="../../proto/render_twoway/tw_horiz_run.png">
+<figcaption>Horizontal layout, twoway PNG. 12 nodes is about the practical ceiling for the twoway renderer.</figcaption>
+</figure>
+<h1 id="b-iframe-via-wdiframe">B. iframe via wdiframe</h1>
+<p>wdiframe writes width and height into the HTML attributes, not into CSS. The attribute only understands pixels and percentages, so height(70vh) is silently dropped and the iframe falls back to the 150 px default. The class() option is the way out.</p>
+<h2 id="b1-wdiframe-default-height-800px">B1. wdiframe default height, 800px</h2>
+<p>The self-contained mergemap HTML is about 2500 px tall. At the wdiframe default the diagram is cut off at the first third and the reader has to scroll inside the frame.</p>
+<iframe src="../../proto/render_html/html_vert_run.html" width="100%" height="800px" frameborder="0" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
+<h2 id="b2-wdiframe-with-the-height-measured-to-fit">B2. wdiframe with the height measured to fit</h2>
+<p>height(2600px) shows the whole diagram with no inner scrollbar, but the report has to know the diagram height in advance, and the frame cannot shrink when the diagram does.</p>
+<iframe src="../../proto/render_html/html_vert_run.html" width="100%" height="2600px" frameborder="0" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
+<h2 id="b3-wdiframe-sized-by-a-css-class">B3. wdiframe sized by a CSS class</h2>
+<p>class(mm-frame-vh) plus a stylesheet rule of height 78vh. A class rule beats the presentational height attribute, so vh units work here even though they cannot be passed to height().</p>
+<iframe src="../../proto/render_html/html_vert_run.html" width="100%" height="800px" frameborder="0" class="mm-frame-vh" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
+<h2 id="b4-wdiframe-asked-for-height-auto">B4. wdiframe asked for height auto</h2>
+<p>class(mm-frame-auto) sets height auto. An iframe is a replaced element, so auto does not shrink-wrap the document it holds: it falls back to the height attribute wdiframe wrote, or to the CSS default of 150 px. There is no pure-CSS auto-height for an iframe.</p>
+<iframe src="../../proto/render_html/html_vert_run.html" width="100%" height="800px" frameborder="0" class="mm-frame-auto" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
+<h2 id="b5-wdiframe-with-a-visible-border">B5. wdiframe with a visible border</h2>
+<p>The border option swaps the default borderless look for a 1 px rule.</p>
+<iframe src="../../proto/render_html/html_vert_scan.html" width="100%" height="420px" frameborder="0" style="border:1px solid #dee2e6; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
+<h1 id="c-inline-svg-in-the-page-dom">C. Inline SVG in the page DOM</h1>
+<p>These are real SVG nodes in the report, not frames. The fragments were sliced out of the mergemap HTML by the driver, which renamed every CSS class to mm-something, rewrote the marker ids, and rescoped mergemap's stylesheet under .mm-embed. Section F shows what happens without those three steps.</p>
+<h2 id="c1-mergemap-svg-viewbox-only-filling-the-column">C1. mergemap SVG, viewBox only, filling the column</h2>
+<p>width and height attributes removed, viewBox kept. The diagram scales to the column and keeps its aspect ratio. Native size is 880 by 2367.</p>
+<div class="mm-embed">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 2367">
+<defs>
+<marker id="mmA-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mmA-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="mm-dof"> 01_build.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="mm-hl" />
+<rect x="40" y="38" width="310" height="46" class="mm-bx" />
+<text x="10" y="54" class="mm-bn"> #1</text>
+<text x="48" y="59" class="mm-bh"> raw/cps_2019.dta</text>
+<text x="48" y="75" class="mm-bl"> 52,431 &#215; 24</text>
+<line x1="195" y1="84" x2="195" y2="201" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="103" class="mm-cc"> #2 append</text>
+<text x="215" y="118" class="mm-cl"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="215" y="133" class="mm-cl"> +157,203 obs from 3 files</text>
+<text x="215" y="148" class="mm-cl"> &#8594; 209,634 &#215; 24</text>
+<line x1="520" y1="161" x2="203" y2="161" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="530" y="120" width="340" height="62" class="mm-bstk" />
+<rect x="525" y="125" width="340" height="62" class="mm-bstk" />
+<rect x="520" y="130" width="340" height="62" class="mm-bu" />
+<text x="528" y="151" class="mm-bh"> raw/cps_&#96;y'.dta</text>
+<text x="528" y="167" class="mm-bn"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="528" y="183" class="mm-bl"> 157,203 &#215; 24</text>
+<rect x="40" y="202" width="310" height="46" class="mm-bw" />
+<text x="48" y="223" class="mm-bl"> work (after append)</text>
+<text x="48" y="239" class="mm-bn"> 209,634 &#215; 24</text>
+<line x1="195" y1="248" x2="195" y2="387" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="267" class="mm-cc"> #3 merge m:1 county</text>
+<text x="215" y="282" class="mm-cl"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="215" y="297" class="mm-cl"> &#160;&#160;using-only (2 dropped)</text>
+<text x="215" y="312" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="327" class="mm-cl"> &#8594; 209,634 &#215; 26</text>
+<text x="215" y="342" class="mm-cn"> 2 using-only dropped by keep(1 3)</text>
+<line x1="520" y1="355" x2="203" y2="355" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="332" width="340" height="46" class="mm-bu" />
+<text x="528" y="353" class="mm-bh"> xwalk/county_key.dta</text>
+<text x="528" y="369" class="mm-bl"> 254 &#215; 3 &#183; key: county</text>
+<rect x="40" y="388" width="310" height="62" class="mm-bx" />
+<text x="10" y="404" class="mm-bn"> #4</text>
+<text x="48" y="409" class="mm-bh"> collapse</text>
+<text x="48" y="425" class="mm-bl"> (mean) wage hours, by(county year)</text>
+<text x="48" y="441" class="mm-bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="195" y1="450" x2="195" y2="475" class="mm-sp" marker-end="url(#mmA-ag)" />
+<rect x="40" y="476" width="310" height="46" class="mm-bx" />
+<text x="10" y="492" class="mm-bn"> #5</text>
+<text x="48" y="497" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="513" class="mm-bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="40" y="542" class="mm-dof"> 02_panel.do</text>
+<line x1="40" y1="548" x2="860" y2="548" class="mm-hl" />
+<rect x="40" y="574" width="310" height="46" class="mm-bx" />
+<text x="10" y="590" class="mm-bn"> #6</text>
+<text x="48" y="595" class="mm-bh"> raw/participants.dta</text>
+<text x="48" y="611" class="mm-bl"> 8,914 &#215; 12</text>
+<line x1="195" y1="620" x2="195" y2="645" class="mm-sp" marker-end="url(#mmA-ag)" />
+<rect x="40" y="646" width="310" height="78" class="mm-bx" />
+<text x="10" y="662" class="mm-bn"> #7</text>
+<text x="48" y="667" class="mm-bh"> duplicates drop</text>
+<text x="48" y="683" class="mm-bl"> keys: pid</text>
+<text x="48" y="699" class="mm-bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="48" y="715" class="mm-bn"> 12 duplicate pid obs dropped</text>
+<line x1="195" y1="724" x2="195" y2="863" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="743" class="mm-cc"> #8 merge 1:m pid</text>
+<text x="215" y="758" class="mm-cl"> matched 41,210 &#183; master-only 310 &#183;</text>
+<text x="215" y="773" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="788" class="mm-cn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="215" y="803" class="mm-cl"> &#8594; 41,520 &#215; 17</text>
+<text x="215" y="818" class="mm-cn"> 310 master-only kept (no visits)</text>
+<line x1="520" y1="831" x2="203" y2="831" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="808" width="340" height="46" class="mm-bu" />
+<text x="528" y="829" class="mm-bh"> raw/visits.dta</text>
+<text x="528" y="845" class="mm-bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<rect x="40" y="864" width="310" height="46" class="mm-bt" />
+<text x="10" y="880" class="mm-bn"> #9</text>
+<text x="48" y="885" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="901" class="mm-bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="40" y="924" width="310" height="46" class="mm-bx" />
+<text x="10" y="940" class="mm-bn"> #10</text>
+<text x="48" y="945" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="961" class="mm-bl"> 3,048 &#215; 6</text>
+<line x1="195" y1="970" x2="195" y2="995" class="mm-sp" marker-end="url(#mmA-ag)" />
+<rect x="40" y="996" width="310" height="62" class="mm-bx" />
+<text x="10" y="1012" class="mm-bn"> #11</text>
+<text x="48" y="1017" class="mm-bh"> reshape wide</text>
+<text x="48" y="1033" class="mm-bl"> wage hours, i(county) j(year)</text>
+<text x="48" y="1049" class="mm-bn"> 3,048 &#8594; 762 obs</text>
+<line x1="195" y1="1058" x2="195" y2="1083" class="mm-sp" marker-end="url(#mmA-ag)" />
+<rect x="40" y="1084" width="310" height="46" class="mm-bx" />
+<text x="10" y="1100" class="mm-bn"> #12</text>
+<text x="48" y="1105" class="mm-bh"> built/county_wide.dta</text>
+<text x="48" y="1121" class="mm-bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="40" y="1150" class="mm-dof"> 03_analyze.do</text>
+<line x1="40" y1="1156" x2="860" y2="1156" class="mm-hl" />
+<rect x="40" y="1182" width="310" height="78" class="mm-bt" />
+<text x="10" y="1198" class="mm-bn"> #13</text>
+<text x="48" y="1203" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="1219" class="mm-bn"> [tempfile]</text>
+<text x="48" y="1235" class="mm-bl"> 41,520 &#215; 17</text>
+<text x="48" y="1251" class="mm-bn"> tempfile from 02_panel.do line 16</text>
+<line x1="195" y1="1260" x2="195" y2="1399" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="1279" class="mm-cc"> #14 merge m:1 county</text>
+<text x="215" y="1294" class="mm-cl"> matched 41,425 &#183; master-only 95 &#183;</text>
+<text x="215" y="1309" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="1324" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="1339" class="mm-cl"> &#8594; 41,520 &#215; 25</text>
+<text x="215" y="1354" class="mm-cn"> 95 master-only kept</text>
+<line x1="520" y1="1367" x2="203" y2="1367" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="1344" width="340" height="46" class="mm-bu" />
+<text x="528" y="1365" class="mm-bh"> built/county_wide.dta</text>
+<text x="528" y="1381" class="mm-bl"> 762 &#215; 9 &#183; key: county</text>
+<rect x="40" y="1400" width="310" height="46" class="mm-bw" />
+<text x="48" y="1421" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1437" class="mm-bn"> 41,520 &#215; 25</text>
+<line x1="195" y1="1446" x2="195" y2="1570" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="1465" class="mm-cc"> #15 joinby m:m staff</text>
+<text x="215" y="1480" class="mm-cn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="215" y="1495" class="mm-cn"> opts: unmatched(none)</text>
+<text x="215" y="1510" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1525" class="mm-cn"> row multiplication x1.08</text>
+<line x1="520" y1="1538" x2="203" y2="1538" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="1515" width="340" height="46" class="mm-bu" />
+<text x="528" y="1536" class="mm-bh"> raw/staff_assign.dta</text>
+<text x="528" y="1552" class="mm-bl"> 118 &#215; 4 &#183; key: staff</text>
+<rect x="40" y="1571" width="310" height="46" class="mm-bw" />
+<text x="48" y="1592" class="mm-bl"> work (after joinby)</text>
+<text x="48" y="1608" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1617" x2="195" y2="1771" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="1636" class="mm-cc"> #16 merge 1:1 pid visitid</text>
+<text x="215" y="1651" class="mm-cl"> matched 0 &#183; master-only 44,473 &#183; using-only</text>
+<text x="215" y="1666" class="mm-cl"> &#160;&#160;0</text>
+<text x="215" y="1681" class="mm-cl"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="215" y="1696" class="mm-cn"> opts: update replace</text>
+<text x="215" y="1711" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1726" class="mm-cn"> 50 nonmissing conflicts overwritten</text>
+<line x1="520" y1="1739" x2="203" y2="1739" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="1716" width="340" height="46" class="mm-bu" />
+<text x="528" y="1737" class="mm-bh"> raw/corrections.dta</text>
+<text x="528" y="1753" class="mm-bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<rect x="40" y="1772" width="310" height="46" class="mm-bw" />
+<text x="48" y="1793" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1809" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1818" x2="195" y2="1942" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="1837" class="mm-cc"> #17 frlink m:1 county</text>
+<text x="215" y="1852" class="mm-cl"> matched 44,778 &#183; master-only 95</text>
+<text x="215" y="1867" class="mm-cn"> opts: frame(counties)</text>
+<text x="215" y="1882" class="mm-cl"> &#8594; 44,873 &#215; 29</text>
+<text x="215" y="1897" class="mm-cn"> 95 obs unmatched to frame</text>
+<line x1="520" y1="1910" x2="203" y2="1910" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="1887" width="340" height="46" class="mm-bu" />
+<text x="528" y="1908" class="mm-bh"> frame:counties</text>
+<text x="528" y="1924" class="mm-bl"> 254 &#215; 7 &#183; key: county</text>
+<rect x="40" y="1943" width="310" height="46" class="mm-bw" />
+<text x="48" y="1964" class="mm-bl"> work (after frlink)</text>
+<text x="48" y="1980" class="mm-bn"> 44,873 &#215; 29</text>
+<line x1="195" y1="1989" x2="195" y2="2075" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="2008" class="mm-cc"> #18 frget</text>
+<text x="215" y="2023" class="mm-cn"> opts: povrate slots, from(cnty)</text>
+<text x="215" y="2038" class="mm-cl"> &#8594; 44,873 &#215; 31</text>
+<line x1="520" y1="2051" x2="203" y2="2051" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="2036" width="340" height="30" class="mm-bu" />
+<text x="528" y="2057" class="mm-bh"> frame:counties</text>
+<rect x="40" y="2076" width="310" height="46" class="mm-bw" />
+<text x="48" y="2097" class="mm-bl"> work (after frget)</text>
+<text x="48" y="2113" class="mm-bn"> 44,873 &#215; 31</text>
+<line x1="195" y1="2122" x2="195" y2="2306" class="mm-sp" marker-end="url(#mmA-ag)" />
+<text x="215" y="2141" class="mm-cc"> #19 merge m:m staff, force</text>
+<text x="215" y="2156" class="mm-cl"> matched 44,663 &#183; master-only 210 &#183;</text>
+<text x="215" y="2171" class="mm-cl"> &#160;&#160;using-only 4</text>
+<text x="215" y="2186" class="mm-cn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="215" y="2201" class="mm-cn"> opts: force</text>
+<text x="215" y="2216" class="mm-cl"> &#8594; 44,873 &#215; 33</text>
+<text x="215" y="2231" class="mm-cf"> !! m:m pairs rows by order within key (not</text>
+<text x="215" y="2246" class="mm-cf"> &#160;&#160;a join)</text>
+<text x="215" y="2261" class="mm-cf"> !! force: schednote str8 vs byte</text>
+<line x1="520" y1="2274" x2="203" y2="2274" class="mm-sp" marker-end="url(#mmA-aa)" />
+<rect x="520" y="2251" width="340" height="46" class="mm-bu" />
+<text x="528" y="2272" class="mm-bh"> raw/schedules.dta</text>
+<text x="528" y="2288" class="mm-bl"> 560 &#215; 6 &#183; key: staff</text>
+<rect x="40" y="2307" width="310" height="46" class="mm-bx" />
+<text x="10" y="2323" class="mm-bn"> #20</text>
+<text x="48" y="2328" class="mm-bh"> built/analysis_file.dta</text>
+<text x="48" y="2344" class="mm-bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+</div>
+<h2 id="c2-mergemap-svg-at-native-size-inside-a-bounded-box">C2. mergemap SVG at native size inside a bounded box</h2>
+<p>Same diagram with its width and height attributes left in place, inside a box with max-height 70vh. Text is at its designed size instead of being scaled up by the column.</p>
+<div class="mm-embed mm-scroll">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 2367" width="880" height="2367">
+<defs>
+<marker id="mmB-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mmB-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="mm-dof"> 01_build.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="mm-hl" />
+<rect x="40" y="38" width="310" height="46" class="mm-bx" />
+<text x="10" y="54" class="mm-bn"> #1</text>
+<text x="48" y="59" class="mm-bh"> raw/cps_2019.dta</text>
+<text x="48" y="75" class="mm-bl"> 52,431 &#215; 24</text>
+<line x1="195" y1="84" x2="195" y2="201" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="103" class="mm-cc"> #2 append</text>
+<text x="215" y="118" class="mm-cl"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="215" y="133" class="mm-cl"> +157,203 obs from 3 files</text>
+<text x="215" y="148" class="mm-cl"> &#8594; 209,634 &#215; 24</text>
+<line x1="520" y1="161" x2="203" y2="161" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="530" y="120" width="340" height="62" class="mm-bstk" />
+<rect x="525" y="125" width="340" height="62" class="mm-bstk" />
+<rect x="520" y="130" width="340" height="62" class="mm-bu" />
+<text x="528" y="151" class="mm-bh"> raw/cps_&#96;y'.dta</text>
+<text x="528" y="167" class="mm-bn"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="528" y="183" class="mm-bl"> 157,203 &#215; 24</text>
+<rect x="40" y="202" width="310" height="46" class="mm-bw" />
+<text x="48" y="223" class="mm-bl"> work (after append)</text>
+<text x="48" y="239" class="mm-bn"> 209,634 &#215; 24</text>
+<line x1="195" y1="248" x2="195" y2="387" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="267" class="mm-cc"> #3 merge m:1 county</text>
+<text x="215" y="282" class="mm-cl"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="215" y="297" class="mm-cl"> &#160;&#160;using-only (2 dropped)</text>
+<text x="215" y="312" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="327" class="mm-cl"> &#8594; 209,634 &#215; 26</text>
+<text x="215" y="342" class="mm-cn"> 2 using-only dropped by keep(1 3)</text>
+<line x1="520" y1="355" x2="203" y2="355" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="332" width="340" height="46" class="mm-bu" />
+<text x="528" y="353" class="mm-bh"> xwalk/county_key.dta</text>
+<text x="528" y="369" class="mm-bl"> 254 &#215; 3 &#183; key: county</text>
+<rect x="40" y="388" width="310" height="62" class="mm-bx" />
+<text x="10" y="404" class="mm-bn"> #4</text>
+<text x="48" y="409" class="mm-bh"> collapse</text>
+<text x="48" y="425" class="mm-bl"> (mean) wage hours, by(county year)</text>
+<text x="48" y="441" class="mm-bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="195" y1="450" x2="195" y2="475" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="476" width="310" height="46" class="mm-bx" />
+<text x="10" y="492" class="mm-bn"> #5</text>
+<text x="48" y="497" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="513" class="mm-bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="40" y="542" class="mm-dof"> 02_panel.do</text>
+<line x1="40" y1="548" x2="860" y2="548" class="mm-hl" />
+<rect x="40" y="574" width="310" height="46" class="mm-bx" />
+<text x="10" y="590" class="mm-bn"> #6</text>
+<text x="48" y="595" class="mm-bh"> raw/participants.dta</text>
+<text x="48" y="611" class="mm-bl"> 8,914 &#215; 12</text>
+<line x1="195" y1="620" x2="195" y2="645" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="646" width="310" height="78" class="mm-bx" />
+<text x="10" y="662" class="mm-bn"> #7</text>
+<text x="48" y="667" class="mm-bh"> duplicates drop</text>
+<text x="48" y="683" class="mm-bl"> keys: pid</text>
+<text x="48" y="699" class="mm-bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="48" y="715" class="mm-bn"> 12 duplicate pid obs dropped</text>
+<line x1="195" y1="724" x2="195" y2="863" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="743" class="mm-cc"> #8 merge 1:m pid</text>
+<text x="215" y="758" class="mm-cl"> matched 41,210 &#183; master-only 310 &#183;</text>
+<text x="215" y="773" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="788" class="mm-cn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="215" y="803" class="mm-cl"> &#8594; 41,520 &#215; 17</text>
+<text x="215" y="818" class="mm-cn"> 310 master-only kept (no visits)</text>
+<line x1="520" y1="831" x2="203" y2="831" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="808" width="340" height="46" class="mm-bu" />
+<text x="528" y="829" class="mm-bh"> raw/visits.dta</text>
+<text x="528" y="845" class="mm-bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<rect x="40" y="864" width="310" height="46" class="mm-bt" />
+<text x="10" y="880" class="mm-bn"> #9</text>
+<text x="48" y="885" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="901" class="mm-bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="40" y="924" width="310" height="46" class="mm-bx" />
+<text x="10" y="940" class="mm-bn"> #10</text>
+<text x="48" y="945" class="mm-bh"> built/county_panel.dta</text>
+<text x="48" y="961" class="mm-bl"> 3,048 &#215; 6</text>
+<line x1="195" y1="970" x2="195" y2="995" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="996" width="310" height="62" class="mm-bx" />
+<text x="10" y="1012" class="mm-bn"> #11</text>
+<text x="48" y="1017" class="mm-bh"> reshape wide</text>
+<text x="48" y="1033" class="mm-bl"> wage hours, i(county) j(year)</text>
+<text x="48" y="1049" class="mm-bn"> 3,048 &#8594; 762 obs</text>
+<line x1="195" y1="1058" x2="195" y2="1083" class="mm-sp" marker-end="url(#mmB-ag)" />
+<rect x="40" y="1084" width="310" height="46" class="mm-bx" />
+<text x="10" y="1100" class="mm-bn"> #12</text>
+<text x="48" y="1105" class="mm-bh"> built/county_wide.dta</text>
+<text x="48" y="1121" class="mm-bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="40" y="1150" class="mm-dof"> 03_analyze.do</text>
+<line x1="40" y1="1156" x2="860" y2="1156" class="mm-hl" />
+<rect x="40" y="1182" width="310" height="78" class="mm-bt" />
+<text x="10" y="1198" class="mm-bn"> #13</text>
+<text x="48" y="1203" class="mm-bh"> tempfile:__visits</text>
+<text x="48" y="1219" class="mm-bn"> [tempfile]</text>
+<text x="48" y="1235" class="mm-bl"> 41,520 &#215; 17</text>
+<text x="48" y="1251" class="mm-bn"> tempfile from 02_panel.do line 16</text>
+<line x1="195" y1="1260" x2="195" y2="1399" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1279" class="mm-cc"> #14 merge m:1 county</text>
+<text x="215" y="1294" class="mm-cl"> matched 41,425 &#183; master-only 95 &#183;</text>
+<text x="215" y="1309" class="mm-cl"> &#160;&#160;using-only 0</text>
+<text x="215" y="1324" class="mm-cn"> opts: keep(1 3) nogenerate</text>
+<text x="215" y="1339" class="mm-cl"> &#8594; 41,520 &#215; 25</text>
+<text x="215" y="1354" class="mm-cn"> 95 master-only kept</text>
+<line x1="520" y1="1367" x2="203" y2="1367" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1344" width="340" height="46" class="mm-bu" />
+<text x="528" y="1365" class="mm-bh"> built/county_wide.dta</text>
+<text x="528" y="1381" class="mm-bl"> 762 &#215; 9 &#183; key: county</text>
+<rect x="40" y="1400" width="310" height="46" class="mm-bw" />
+<text x="48" y="1421" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1437" class="mm-bn"> 41,520 &#215; 25</text>
+<line x1="195" y1="1446" x2="195" y2="1570" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1465" class="mm-cc"> #15 joinby m:m staff</text>
+<text x="215" y="1480" class="mm-cn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="215" y="1495" class="mm-cn"> opts: unmatched(none)</text>
+<text x="215" y="1510" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1525" class="mm-cn"> row multiplication x1.08</text>
+<line x1="520" y1="1538" x2="203" y2="1538" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1515" width="340" height="46" class="mm-bu" />
+<text x="528" y="1536" class="mm-bh"> raw/staff_assign.dta</text>
+<text x="528" y="1552" class="mm-bl"> 118 &#215; 4 &#183; key: staff</text>
+<rect x="40" y="1571" width="310" height="46" class="mm-bw" />
+<text x="48" y="1592" class="mm-bl"> work (after joinby)</text>
+<text x="48" y="1608" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1617" x2="195" y2="1771" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1636" class="mm-cc"> #16 merge 1:1 pid visitid</text>
+<text x="215" y="1651" class="mm-cl"> matched 0 &#183; master-only 44,473 &#183; using-only</text>
+<text x="215" y="1666" class="mm-cl"> &#160;&#160;0</text>
+<text x="215" y="1681" class="mm-cl"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="215" y="1696" class="mm-cn"> opts: update replace</text>
+<text x="215" y="1711" class="mm-cl"> &#8594; 44,873 &#215; 28</text>
+<text x="215" y="1726" class="mm-cn"> 50 nonmissing conflicts overwritten</text>
+<line x1="520" y1="1739" x2="203" y2="1739" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1716" width="340" height="46" class="mm-bu" />
+<text x="528" y="1737" class="mm-bh"> raw/corrections.dta</text>
+<text x="528" y="1753" class="mm-bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<rect x="40" y="1772" width="310" height="46" class="mm-bw" />
+<text x="48" y="1793" class="mm-bl"> work (after merge)</text>
+<text x="48" y="1809" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="195" y1="1818" x2="195" y2="1942" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="1837" class="mm-cc"> #17 frlink m:1 county</text>
+<text x="215" y="1852" class="mm-cl"> matched 44,778 &#183; master-only 95</text>
+<text x="215" y="1867" class="mm-cn"> opts: frame(counties)</text>
+<text x="215" y="1882" class="mm-cl"> &#8594; 44,873 &#215; 29</text>
+<text x="215" y="1897" class="mm-cn"> 95 obs unmatched to frame</text>
+<line x1="520" y1="1910" x2="203" y2="1910" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="1887" width="340" height="46" class="mm-bu" />
+<text x="528" y="1908" class="mm-bh"> frame:counties</text>
+<text x="528" y="1924" class="mm-bl"> 254 &#215; 7 &#183; key: county</text>
+<rect x="40" y="1943" width="310" height="46" class="mm-bw" />
+<text x="48" y="1964" class="mm-bl"> work (after frlink)</text>
+<text x="48" y="1980" class="mm-bn"> 44,873 &#215; 29</text>
+<line x1="195" y1="1989" x2="195" y2="2075" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="2008" class="mm-cc"> #18 frget</text>
+<text x="215" y="2023" class="mm-cn"> opts: povrate slots, from(cnty)</text>
+<text x="215" y="2038" class="mm-cl"> &#8594; 44,873 &#215; 31</text>
+<line x1="520" y1="2051" x2="203" y2="2051" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="2036" width="340" height="30" class="mm-bu" />
+<text x="528" y="2057" class="mm-bh"> frame:counties</text>
+<rect x="40" y="2076" width="310" height="46" class="mm-bw" />
+<text x="48" y="2097" class="mm-bl"> work (after frget)</text>
+<text x="48" y="2113" class="mm-bn"> 44,873 &#215; 31</text>
+<line x1="195" y1="2122" x2="195" y2="2306" class="mm-sp" marker-end="url(#mmB-ag)" />
+<text x="215" y="2141" class="mm-cc"> #19 merge m:m staff, force</text>
+<text x="215" y="2156" class="mm-cl"> matched 44,663 &#183; master-only 210 &#183;</text>
+<text x="215" y="2171" class="mm-cl"> &#160;&#160;using-only 4</text>
+<text x="215" y="2186" class="mm-cn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="215" y="2201" class="mm-cn"> opts: force</text>
+<text x="215" y="2216" class="mm-cl"> &#8594; 44,873 &#215; 33</text>
+<text x="215" y="2231" class="mm-cf"> !! m:m pairs rows by order within key (not</text>
+<text x="215" y="2246" class="mm-cf"> &#160;&#160;a join)</text>
+<text x="215" y="2261" class="mm-cf"> !! force: schednote str8 vs byte</text>
+<line x1="520" y1="2274" x2="203" y2="2274" class="mm-sp" marker-end="url(#mmB-aa)" />
+<rect x="520" y="2251" width="340" height="46" class="mm-bu" />
+<text x="528" y="2272" class="mm-bh"> raw/schedules.dta</text>
+<text x="528" y="2288" class="mm-bl"> 560 &#215; 6 &#183; key: staff</text>
+<rect x="40" y="2307" width="310" height="46" class="mm-bx" />
+<text x="10" y="2323" class="mm-bn"> #20</text>
+<text x="48" y="2328" class="mm-bh"> built/analysis_file.dta</text>
+<text x="48" y="2344" class="mm-bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+</div>
+<h2 id="c3-stata-twoway-svg-inlined">C3. Stata twoway SVG inlined</h2>
+<p>The twoway export from Stata 19.5. Its root tag is width 5.570in, height 20.000in, viewBox 0 0 4010 14400. The inch units are the problem, not a missing viewBox. Dropping the two attributes lets the viewBox drive the scaling.</p>
+<div class="mm-embed mm-scroll">
+<svg version="1.1" viewBox="0 0 4010 14400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>Stata Graph - _rtw</desc>
+	<rect x="0" y="0" width="4010" height="14400" style="fill:#FFFFFF;stroke:none"/>
+	<rect x="0.00" y="0.00" width="4010.00" height="14400.00" style="fill:#FFFFFF"/>
+	<rect x="4.01" y="4.01" width="4001.98" height="14391.98" style="fill:none;stroke:#FFFFFF;stroke-width:8.02"/>
+	<line x1="357.71" y1="445.50" x2="2385.21" y2="445.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="774.00" x2="2385.21" y2="774.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="445.50" x2="357.71" y2="774.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="445.50" x2="2385.21" y2="774.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="1021.95" x2="2385.21" y2="1021.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="1350.00" x2="2385.21" y2="1350.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="1021.95" x2="357.71" y2="1350.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="1021.95" x2="2385.21" y2="1350.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="964.80" x2="3761.17" y2="964.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="1407.15" x2="3761.17" y2="1407.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="964.80" x2="2602.54" y2="1407.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="964.80" x2="3761.17" y2="1407.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2645.74" y1="918.90" x2="3804.37" y2="918.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3804.37" y1="918.90" x2="3804.37" y2="1361.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="1597.95" x2="2385.21" y2="1597.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="2269.80" x2="2385.21" y2="2269.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="1597.95" x2="357.71" y2="2269.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="1597.95" x2="2385.21" y2="2269.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="1769.85" x2="3761.17" y2="1769.85" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="2097.90" x2="3761.17" y2="2097.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="1769.85" x2="2602.54" y2="2097.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="1769.85" x2="3761.17" y2="2097.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="2460.60" x2="2385.21" y2="2460.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="2902.95" x2="2385.21" y2="2902.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="2460.60" x2="357.71" y2="2902.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="2460.60" x2="2385.21" y2="2902.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="3093.75" x2="2385.21" y2="3093.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="3422.25" x2="2385.21" y2="3422.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="3093.75" x2="357.71" y2="3422.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="3093.75" x2="2385.21" y2="3422.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="3994.65" x2="2385.21" y2="3994.65" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="4322.70" x2="2385.21" y2="4322.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="3994.65" x2="357.71" y2="4322.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="3994.65" x2="2385.21" y2="4322.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="4513.50" x2="2385.21" y2="4513.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="4956.30" x2="2385.21" y2="4956.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="4513.50" x2="357.71" y2="4956.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="4513.50" x2="2385.21" y2="4956.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="5147.10" x2="2385.21" y2="5147.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="5589.45" x2="2385.21" y2="5589.45" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="5147.10" x2="357.71" y2="5589.45" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="5147.10" x2="2385.21" y2="5589.45" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="5204.25" x2="3761.17" y2="5204.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="5532.30" x2="3761.17" y2="5532.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="5204.25" x2="2602.54" y2="5532.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="5204.25" x2="3761.17" y2="5532.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="5780.25" x2="2385.21" y2="5780.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6108.75" x2="2385.21" y2="6108.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="5780.25" x2="357.71" y2="6108.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="5780.25" x2="2385.21" y2="6108.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6452.10" x2="2385.21" y2="6452.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6780.15" x2="2385.21" y2="6780.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6452.10" x2="357.71" y2="6780.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="6452.10" x2="2385.21" y2="6780.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6970.95" x2="2385.21" y2="6970.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="7413.75" x2="2385.21" y2="7413.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="6970.95" x2="357.71" y2="7413.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="6970.95" x2="2385.21" y2="7413.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="7604.55" x2="2385.21" y2="7604.55" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="7932.60" x2="2385.21" y2="7932.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="7604.55" x2="357.71" y2="7932.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="7604.55" x2="2385.21" y2="7932.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="8505.00" x2="2385.21" y2="8505.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="8947.80" x2="2385.21" y2="8947.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="8505.00" x2="357.71" y2="8947.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="8505.00" x2="2385.21" y2="8947.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="9138.60" x2="2385.21" y2="9138.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="9695.70" x2="2385.21" y2="9695.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="9138.60" x2="357.71" y2="9695.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="9138.60" x2="2385.21" y2="9695.70" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="9252.90" x2="3761.17" y2="9252.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="9581.40" x2="3761.17" y2="9581.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="9252.90" x2="2602.54" y2="9581.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="9252.90" x2="3761.17" y2="9581.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="9886.50" x2="2385.21" y2="9886.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="10443.60" x2="2385.21" y2="10443.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="9886.50" x2="357.71" y2="10443.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="9886.50" x2="2385.21" y2="10443.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10000.80" x2="3761.17" y2="10000.80" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10329.30" x2="3761.17" y2="10329.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10000.80" x2="2602.54" y2="10329.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="10000.80" x2="3761.17" y2="10329.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="10634.40" x2="2385.21" y2="10634.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="11306.25" x2="2385.21" y2="11306.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="10634.40" x2="357.71" y2="11306.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="10634.40" x2="2385.21" y2="11306.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10806.30" x2="3761.17" y2="10806.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11134.35" x2="3761.17" y2="11134.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10806.30" x2="2602.54" y2="11134.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="10806.30" x2="3761.17" y2="11134.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="11497.05" x2="2385.21" y2="11497.05" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12054.15" x2="2385.21" y2="12054.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="11497.05" x2="357.71" y2="12054.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="11497.05" x2="2385.21" y2="12054.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12244.95" x2="2385.21" y2="12244.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12687.30" x2="2385.21" y2="12687.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12244.95" x2="357.71" y2="12687.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="12244.95" x2="2385.21" y2="12687.30" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12878.10" x2="2385.21" y2="12878.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="13664.25" x2="2385.21" y2="13664.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="12878.10" x2="357.71" y2="13664.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="12878.10" x2="2385.21" y2="13664.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="13107.15" x2="3761.17" y2="13107.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="13435.20" x2="3761.17" y2="13435.20" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="13107.15" x2="2602.54" y2="13435.20" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="13107.15" x2="3761.17" y2="13435.20" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="13855.05" x2="2385.21" y2="13855.05" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="14183.10" x2="2385.21" y2="14183.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="357.71" y1="13855.05" x2="357.71" y2="14183.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="13855.05" x2="2385.21" y2="14183.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11611.35" x2="2682.63" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2722.68" y1="11611.35" x2="2803.22" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2843.27" y1="11611.35" x2="2923.36" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2963.40" y1="11611.35" x2="3043.50" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3083.54" y1="11611.35" x2="3164.08" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3204.13" y1="11611.35" x2="3284.22" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3324.27" y1="11611.35" x2="3404.36" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3444.41" y1="11611.35" x2="3524.95" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3564.99" y1="11611.35" x2="3645.09" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3685.13" y1="11611.35" x2="3761.17" y2="11611.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11939.40" x2="2682.63" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2722.68" y1="11939.40" x2="2803.22" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2843.27" y1="11939.40" x2="2923.36" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2963.40" y1="11939.40" x2="3043.50" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3083.54" y1="11939.40" x2="3164.08" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3204.13" y1="11939.40" x2="3284.22" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3324.27" y1="11939.40" x2="3404.36" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3444.41" y1="11939.40" x2="3524.95" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3564.99" y1="11939.40" x2="3645.09" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3685.13" y1="11939.40" x2="3761.17" y2="11939.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11611.35" x2="2602.54" y2="11691.45" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11731.50" x2="2602.54" y2="11811.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="11851.65" x2="2602.54" y2="11932.20" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="11611.35" x2="3761.17" y2="11691.45" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="11731.50" x2="3761.17" y2="11811.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="11851.65" x2="3761.17" y2="11932.20" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="12359.25" x2="2682.63" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2722.68" y1="12359.25" x2="2803.22" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2843.27" y1="12359.25" x2="2923.36" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2963.40" y1="12359.25" x2="3043.50" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3083.54" y1="12359.25" x2="3164.08" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3204.13" y1="12359.25" x2="3284.22" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3324.27" y1="12359.25" x2="3404.36" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3444.41" y1="12359.25" x2="3524.95" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3564.99" y1="12359.25" x2="3645.09" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3685.13" y1="12359.25" x2="3761.17" y2="12359.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="12573.00" x2="2682.63" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2722.68" y1="12573.00" x2="2803.22" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2843.27" y1="12573.00" x2="2923.36" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2963.40" y1="12573.00" x2="3043.50" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3083.54" y1="12573.00" x2="3164.08" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3204.13" y1="12573.00" x2="3284.22" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3324.27" y1="12573.00" x2="3404.36" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3444.41" y1="12573.00" x2="3524.95" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3564.99" y1="12573.00" x2="3645.09" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3685.13" y1="12573.00" x2="3761.17" y2="12573.00" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="12359.25" x2="2602.54" y2="12439.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="12479.40" x2="2602.54" y2="12559.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="12359.25" x2="3761.17" y2="12439.35" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="3761.17" y1="12479.40" x2="3761.17" y2="12559.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="1185.75" x2="2385.21" y2="1185.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="774.00" x2="1371.46" y2="1021.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="1934.10" x2="2385.21" y2="1934.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="1350.00" x2="1371.46" y2="1597.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="2269.80" x2="1371.46" y2="2460.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="2902.95" x2="1371.46" y2="3093.75" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="4322.70" x2="1371.46" y2="4513.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="5368.50" x2="2385.21" y2="5368.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="4956.30" x2="1371.46" y2="5147.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="5589.45" x2="1371.46" y2="5780.25" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="6780.15" x2="1371.46" y2="6970.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="7413.75" x2="1371.46" y2="7604.55" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="9417.15" x2="2385.21" y2="9417.15" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="8947.80" x2="1371.46" y2="9138.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10165.05" x2="2385.21" y2="10165.05" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="9695.70" x2="1371.46" y2="9886.50" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="10970.10" x2="2385.21" y2="10970.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="10443.60" x2="1371.46" y2="10634.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="11306.25" x2="1371.46" y2="11497.05" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="12054.15" x2="1371.46" y2="12244.95" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="13271.40" x2="2385.21" y2="13271.40" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="12687.30" x2="1371.46" y2="12878.10" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="1371.46" y1="13664.25" x2="1371.46" y2="13855.05" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="1185.75" x2="2427.51" y2="1162.80" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="1185.75" x2="2427.51" y2="1208.70" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="1021.95" x2="1348.52" y2="979.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="1021.95" x2="1394.41" y2="979.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="1934.10" x2="2427.51" y2="1911.15" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="1934.10" x2="2427.51" y2="1957.05" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="1597.95" x2="1348.52" y2="1555.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="1597.95" x2="1394.41" y2="1555.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="2460.60" x2="1348.52" y2="2418.30" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="2460.60" x2="1394.41" y2="2418.30" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="3093.75" x2="1348.52" y2="3051.45" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="3093.75" x2="1394.41" y2="3051.45" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="4513.50" x2="1348.52" y2="4471.20" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="4513.50" x2="1394.41" y2="4471.20" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="5368.50" x2="2427.51" y2="5345.55" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="5368.50" x2="2427.51" y2="5391.45" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="5147.10" x2="1348.52" y2="5104.80" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="5147.10" x2="1394.41" y2="5104.80" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="5780.25" x2="1348.52" y2="5737.95" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="5780.25" x2="1394.41" y2="5737.95" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="6970.95" x2="1348.52" y2="6928.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="6970.95" x2="1394.41" y2="6928.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="7604.55" x2="1348.52" y2="7562.25" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="7604.55" x2="1394.41" y2="7562.25" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="9417.15" x2="2427.51" y2="9394.20" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="9417.15" x2="2427.51" y2="9440.10" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="9138.60" x2="1348.52" y2="9096.30" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="9138.60" x2="1394.41" y2="9096.30" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="10165.05" x2="2427.51" y2="10142.10" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="10165.05" x2="2427.51" y2="10188.00" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="9886.50" x2="1348.52" y2="9844.20" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="9886.50" x2="1394.41" y2="9844.20" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="10970.10" x2="2427.51" y2="10947.15" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="10970.10" x2="2427.51" y2="10993.05" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="10634.40" x2="1348.52" y2="10592.10" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="10634.40" x2="1394.41" y2="10592.10" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="11497.05" x2="1348.52" y2="11454.75" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="11497.05" x2="1394.41" y2="11454.75" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="12244.95" x2="1348.52" y2="12202.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="12244.95" x2="1394.41" y2="12202.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="13271.40" x2="2427.51" y2="13248.45" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="13271.40" x2="2427.51" y2="13294.35" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="12878.10" x2="1348.52" y2="12835.80" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="12878.10" x2="1394.41" y2="12835.80" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="13855.05" x2="1348.52" y2="13812.75" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="1371.46" y1="13855.05" x2="1394.41" y2="13812.75" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2602.54" y1="11775.60" x2="2522.45" y2="11775.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2482.40" y1="11775.60" x2="2402.31" y2="11775.60" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2602.54" y1="12465.90" x2="2522.45" y2="12465.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2482.40" y1="12465.90" x2="2402.31" y2="12465.90" style="stroke:#000000;stroke-width:10.03"/>
+	<line x1="2385.21" y1="11775.60" x2="2427.51" y2="11752.65" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="11775.60" x2="2427.51" y2="11798.55" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="12465.90" x2="2427.51" y2="12442.95" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<line x1="2385.21" y1="12465.90" x2="2427.51" y2="12488.85" stroke-linecap="round" style="stroke:#000000;stroke-width:8.02"/>
+	<text x="399.56" y="360.77" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#606060" text-anchor="middle">01_build.do</text>
+	<text x="1371.46" y="582.17" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">use raw/cps_2019.dta</text>
+	<text x="1371.46" y="696.46" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">52,431 obs × 24 vars</text>
+	<text x="306.87" y="570.35" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">1</text>
+	<text x="1371.46" y="1158.17" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">append</text>
+	<text x="1371.46" y="1272.92" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 52,431 → 209,634</text>
+	<text x="306.87" y="1146.35" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">2</text>
+	<text x="3181.63" y="1101.02" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">raw/cps_ˋy'.dta</text>
+	<text x="3181.63" y="1215.32" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">×3: cps_2020 … cps_2022</text>
+	<text x="3181.63" y="1330.07" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">157,203 obs total</text>
+	<text x="1371.46" y="1734.61" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">merge m:1 county</text>
+	<text x="1371.46" y="1845.45" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">keep(1 3) nogenerate</text>
+	<text x="1371.46" y="1963.67" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 209,101 · master 533</text>
+	<text x="1371.46" y="2077.96" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">· using (2 dropped)</text>
+	<text x="1371.46" y="2188.80" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">2 using-only dropped by keep(1 3)</text>
+	<text x="306.87" y="1722.80" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">3</text>
+	<text x="3181.63" y="1906.07" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">xwalk/county_key.dta</text>
+	<text x="3181.63" y="2020.82" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">254 obs × 3 vars</text>
+	<text x="1371.46" y="2596.82" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">collapse</text>
+	<text x="1371.46" y="2708.10" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">(mean) wage hours, by(county year)</text>
+	<text x="1371.46" y="2825.86" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 209,634 → 3,048 · vars 26 → 6</text>
+	<text x="306.87" y="2585.00" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">4</text>
+	<text x="1371.46" y="3230.42" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">built/county_panel.dta  [saved]</text>
+	<text x="1371.46" y="3344.71" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">3,048 obs × 6 vars</text>
+	<text x="306.87" y="3218.60" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">5</text>
+	<text x="413.06" y="3756.92" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#606060" text-anchor="middle">02_panel.do</text>
+	<text x="1371.46" y="4130.86" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">use raw/participants.dta</text>
+	<text x="1371.46" y="4245.61" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">8,914 obs × 12 vars</text>
+	<text x="306.87" y="4119.05" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">6</text>
+	<text x="1371.46" y="4649.71" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">duplicates drop pid</text>
+	<text x="1371.46" y="4764.46" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 8,914 → 8,902</text>
+	<text x="1371.46" y="4875.30" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">12 duplicate pid obs dropped</text>
+	<text x="306.87" y="4637.90" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">7</text>
+	<text x="1371.46" y="5283.32" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">merge 1:m pid</text>
+	<text x="1371.46" y="5398.07" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 41,210 · master 310</text>
+	<text x="1371.46" y="5508.90" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">310 master-only kept (no visits)</text>
+	<text x="306.87" y="5271.50" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">8</text>
+	<text x="3181.63" y="5340.46" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">raw/visits.dta</text>
+	<text x="3181.63" y="5455.21" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">41,210 obs × 6 vars</text>
+	<text x="1371.46" y="5916.92" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">tempfile: __visits  [tempfile]</text>
+	<text x="1371.46" y="6031.21" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">41,520 obs × 17 vars</text>
+	<text x="306.87" y="5905.10" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">9</text>
+	<text x="1371.46" y="6588.32" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">use built/county_panel.dta</text>
+	<text x="1371.46" y="6703.07" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">3,048 obs × 6 vars</text>
+	<text x="292.92" y="6576.50" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">10</text>
+	<text x="1371.46" y="7107.62" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">reshape wide</text>
+	<text x="1371.46" y="7218.45" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">wage hours, i(county) j(year)</text>
+	<text x="1371.46" y="7336.21" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 3,048 → 762 · vars 6 → 9</text>
+	<text x="292.92" y="7095.80" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">11</text>
+	<text x="1371.46" y="7740.77" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">built/county_wide.dta  [saved]</text>
+	<text x="1371.46" y="7855.52" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">762 obs × 9 vars</text>
+	<text x="292.92" y="7728.95" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">12</text>
+	<text x="455.80" y="8267.72" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#606060" text-anchor="middle">03_analyze.do</text>
+	<text x="1371.46" y="8641.67" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">use tempfile: __visits</text>
+	<text x="1371.46" y="8755.97" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">41,520 obs × 17 vars</text>
+	<text x="1371.46" y="8866.80" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">tempfile from 02_panel.do line 16</text>
+	<text x="292.92" y="8629.85" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">13</text>
+	<text x="1371.46" y="9274.82" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">merge m:1 county</text>
+	<text x="1371.46" y="9386.10" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">keep(1 3) nogenerate</text>
+	<text x="1371.46" y="9503.87" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 41,425 · master 95</text>
+	<text x="1371.46" y="9615.15" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">95 master-only kept</text>
+	<text x="292.92" y="9263.00" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">14</text>
+	<text x="3181.63" y="9389.57" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">built/county_wide.dta</text>
+	<text x="3181.63" y="9503.87" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">762 obs × 9 vars</text>
+	<text x="1371.46" y="10022.72" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">joinby m:m staff</text>
+	<text x="1371.46" y="10134.00" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">unmatched(none)</text>
+	<text x="1371.46" y="10251.77" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 41,520 → 44,873</text>
+	<text x="1371.46" y="10363.05" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">row multiplication x1.08</text>
+	<text x="292.92" y="10010.90" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">15</text>
+	<text x="3181.63" y="10137.47" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">raw/staff_assign.dta</text>
+	<text x="3181.63" y="10251.77" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">118 obs × 4 vars</text>
+	<text x="1371.46" y="10770.62" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">merge 1:1 pid visitid</text>
+	<text x="1371.46" y="10881.90" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">update replace</text>
+	<text x="1371.46" y="10999.67" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 0 · master 44,473 · upd 350</text>
+	<text x="1371.46" y="11114.42" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">· confl 50</text>
+	<text x="1371.46" y="11225.25" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">50 nonmissing conflicts overwritten</text>
+	<text x="292.92" y="10758.80" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">16</text>
+	<text x="3181.63" y="10942.52" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">raw/corrections.dta</text>
+	<text x="3181.63" y="11056.82" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">400 obs × 5 vars</text>
+	<text x="1371.46" y="11633.27" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">frlink m:1 county</text>
+	<text x="1371.46" y="11744.10" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">frame(counties)</text>
+	<text x="1371.46" y="11862.32" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 44,778 · unmatched 95</text>
+	<text x="1371.46" y="11973.15" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">95 obs unmatched to frame</text>
+	<text x="292.92" y="11621.45" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">17</text>
+	<text x="3181.63" y="11747.57" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">frame: counties</text>
+	<text x="3181.63" y="11862.32" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">254 obs × 7 vars</text>
+	<text x="1371.46" y="12381.17" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">frget</text>
+	<text x="1371.46" y="12492.00" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">povrate slots, from(cnty)</text>
+	<text x="1371.46" y="12610.22" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">obs 44,873 · vars 29 → 31</text>
+	<text x="292.92" y="12369.35" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">18</text>
+	<text x="3181.63" y="12495.47" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">frame: counties</text>
+	<text x="1371.46" y="13014.77" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">merge m:m staff</text>
+	<text x="1371.46" y="13125.60" style="font-family:'Helvetica';font-size:74.24px;fill:#707070" text-anchor="middle">force</text>
+	<text x="1371.46" y="13243.82" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">matched 44,663 · master 210 · using 4</text>
+	<text x="1371.46" y="13358.12" style="font-family:'Helvetica';font-size:84.14px;fill:#1A476f" text-anchor="middle">!! m:m pairs rows by order within key</text>
+	<text x="1371.46" y="13472.42" style="font-family:'Helvetica';font-size:84.14px;fill:#1A476f" text-anchor="middle">(not a join)</text>
+	<text x="1371.46" y="13587.17" style="font-family:'Helvetica';font-size:84.14px;fill:#1A476f" text-anchor="middle">!! force: schednote str8 vs byte</text>
+	<text x="292.92" y="13002.95" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">19</text>
+	<text x="3181.63" y="13243.82" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">raw/schedules.dta</text>
+	<text x="3181.63" y="13358.12" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">560 obs × 6 vars</text>
+	<text x="1371.46" y="13991.72" style="font-family:'Helvetica';font-weight:bold;font-size:84.14px;fill:#000000" text-anchor="middle">built/analysis_file.dta  [saved]</text>
+	<text x="1371.46" y="14106.02" style="font-family:'Helvetica';font-size:84.14px;fill:#000000" text-anchor="middle">44,873 obs × 33 vars</text>
+	<text x="292.92" y="13979.90" style="font-family:'Helvetica';font-size:50.39px;fill:#A0A0a0" text-anchor="middle">20</text>
+</svg>
+</div>
+<h2 id="c4-horizontal-diagram-stretched-to-the-column-the-wrong-way">C4. Horizontal diagram stretched to the column, the wrong way</h2>
+<p>The horizontal layout is 6802 by 439. Stretched to a 960 px column it renders about 62 px tall and the labels are unreadable.</p>
+<div class="mm-embed">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6802 439">
+<defs>
+<marker id="mmD-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mmD-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="24" y="26" class="mm-dof"> 01_build.do</text>
+<line x1="24" y1="32" x2="24" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="24" y="210" width="230" height="78" class="mm-bx" />
+<text x="27" y="205" class="mm-bn"> #1</text>
+<text x="32" y="230" class="mm-bh"> raw/cps_2019.dta</text>
+<text x="32" y="246" class="mm-bl"> 52,431 &#215; 24</text>
+<line x1="254" y1="249" x2="522" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="228" y="306" class="mm-hb"> #2 append</text>
+<text x="228" y="319" class="mm-hc"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="228" y="332" class="mm-hc"> +157,203 obs from 3 files</text>
+<text x="228" y="345" class="mm-hc"> &#8594; 209,634 &#215; 24</text>
+<rect x="274" y="106" width="250" height="62" class="mm-bstk" />
+<rect x="269" y="111" width="250" height="62" class="mm-bstk" />
+<rect x="264" y="116" width="250" height="62" class="mm-bu" />
+<text x="272" y="137" class="mm-bh"> raw/cps_&#96;y'.dta</text>
+<text x="272" y="153" class="mm-bn"> &#215;3: raw/c&#8230;20.dta &#8230; raw/c&#8230;22.dta</text>
+<text x="272" y="169" class="mm-bl"> 157,203 &#215; 24</text>
+<line x1="389" y1="178" x2="389" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="524" y="210" width="230" height="78" class="mm-bw" />
+<text x="532" y="230" class="mm-bl"> work (after append)</text>
+<text x="532" y="246" class="mm-bn"> 209,634 &#215; 24</text>
+<line x1="754" y1="249" x2="1022" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="728" y="306" class="mm-hb"> #3 merge m:1 county</text>
+<text x="728" y="319" class="mm-hc"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="728" y="332" class="mm-hc"> &#160;&#160;using-only (2 dropped)</text>
+<text x="728" y="345" class="mm-hn"> opts: keep(1 3) nogenerate</text>
+<text x="728" y="358" class="mm-hc"> &#8594; 209,634 &#215; 26</text>
+<text x="728" y="371" class="mm-hn"> 2 using-only dropped by keep(1 3)</text>
+<rect x="764" y="132" width="250" height="46" class="mm-bu" />
+<text x="772" y="153" class="mm-bh"> xwalk/county_key.dta</text>
+<text x="772" y="169" class="mm-bl"> 254 &#215; 3 &#183; key: county</text>
+<line x1="889" y1="178" x2="889" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="1024" y="210" width="230" height="78" class="mm-bx" />
+<text x="1027" y="205" class="mm-bn"> #4</text>
+<text x="1032" y="230" class="mm-bh"> collapse</text>
+<text x="1032" y="246" class="mm-bl"> (mean) wage ho&#8230;by(county year)</text>
+<text x="1032" y="262" class="mm-bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="1254" y1="249" x2="1316" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<rect x="1318" y="210" width="230" height="78" class="mm-bx" />
+<text x="1321" y="205" class="mm-bn"> #5</text>
+<text x="1326" y="230" class="mm-bh"> built/county_panel.dta</text>
+<text x="1326" y="246" class="mm-bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="1558" y="26" class="mm-dof"> 02_panel.do</text>
+<line x1="1558" y1="32" x2="1558" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="1604" y="210" width="230" height="78" class="mm-bx" />
+<text x="1607" y="205" class="mm-bn"> #6</text>
+<text x="1612" y="230" class="mm-bh"> raw/participants.dta</text>
+<text x="1612" y="246" class="mm-bl"> 8,914 &#215; 12</text>
+<line x1="1834" y1="249" x2="1896" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<rect x="1898" y="210" width="230" height="78" class="mm-bx" />
+<text x="1901" y="205" class="mm-bn"> #7</text>
+<text x="1906" y="230" class="mm-bh"> duplicates drop</text>
+<text x="1906" y="246" class="mm-bl"> keys: pid</text>
+<text x="1906" y="262" class="mm-bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="1906" y="278" class="mm-bn"> 12 duplicate pid obs dropped</text>
+<line x1="2128" y1="249" x2="2396" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="2102" y="306" class="mm-hb"> #8 merge 1:m pid</text>
+<text x="2102" y="319" class="mm-hc"> matched 41,210 &#183; master-only 310 &#183; using-only</text>
+<text x="2102" y="332" class="mm-hc"> &#160;&#160;0</text>
+<text x="2102" y="345" class="mm-hn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="2102" y="358" class="mm-hc"> &#8594; 41,520 &#215; 17</text>
+<text x="2102" y="371" class="mm-hn"> 310 master-only kept (no visits)</text>
+<rect x="2138" y="132" width="250" height="46" class="mm-bu" />
+<text x="2146" y="153" class="mm-bh"> raw/visits.dta</text>
+<text x="2146" y="169" class="mm-bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<line x1="2263" y1="178" x2="2263" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="2398" y="210" width="230" height="78" class="mm-bt" />
+<text x="2401" y="205" class="mm-bn"> #9</text>
+<text x="2406" y="230" class="mm-bh"> tempfile:__visits</text>
+<text x="2406" y="246" class="mm-bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="2674" y="210" width="230" height="78" class="mm-bx" />
+<text x="2677" y="205" class="mm-bn"> #10</text>
+<text x="2682" y="230" class="mm-bh"> built/county_panel.dta</text>
+<text x="2682" y="246" class="mm-bl"> 3,048 &#215; 6</text>
+<line x1="2904" y1="249" x2="2966" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<rect x="2968" y="210" width="230" height="78" class="mm-bx" />
+<text x="2971" y="205" class="mm-bn"> #11</text>
+<text x="2976" y="230" class="mm-bh"> reshape wide</text>
+<text x="2976" y="246" class="mm-bl"> wage hours, i(county) j(year)</text>
+<text x="2976" y="262" class="mm-bn"> 3,048 &#8594; 762 obs</text>
+<line x1="3198" y1="249" x2="3260" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<rect x="3262" y="210" width="230" height="78" class="mm-bx" />
+<text x="3265" y="205" class="mm-bn"> #12</text>
+<text x="3270" y="230" class="mm-bh"> built/county_wide.dta</text>
+<text x="3270" y="246" class="mm-bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="3502" y="26" class="mm-dof"> 03_analyze.do</text>
+<line x1="3502" y1="32" x2="3502" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="3548" y="210" width="230" height="78" class="mm-bt" />
+<text x="3551" y="205" class="mm-bn"> #13</text>
+<text x="3556" y="230" class="mm-bh"> tempfile:__visits</text>
+<text x="3556" y="246" class="mm-bn"> [tempfile]</text>
+<text x="3556" y="262" class="mm-bl"> 41,520 &#215; 17</text>
+<line x1="3778" y1="249" x2="4046" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="3752" y="306" class="mm-hb"> #14 merge m:1 county</text>
+<text x="3752" y="319" class="mm-hc"> matched 41,425 &#183; master-only 95 &#183; using-only 0</text>
+<text x="3752" y="332" class="mm-hn"> opts: keep(1 3) nogenerate</text>
+<text x="3752" y="345" class="mm-hc"> &#8594; 41,520 &#215; 25</text>
+<text x="3752" y="358" class="mm-hn"> 95 master-only kept</text>
+<rect x="3788" y="132" width="250" height="46" class="mm-bu" />
+<text x="3796" y="153" class="mm-bh"> built/county_wide.dta</text>
+<text x="3796" y="169" class="mm-bl"> 762 &#215; 9 &#183; key: county</text>
+<line x1="3913" y1="178" x2="3913" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="4048" y="210" width="230" height="78" class="mm-bw" />
+<text x="4056" y="230" class="mm-bl"> work (after merge)</text>
+<text x="4056" y="246" class="mm-bn"> 41,520 &#215; 25</text>
+<line x1="4278" y1="249" x2="4546" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="4252" y="306" class="mm-hb"> #15 joinby m:m staff</text>
+<text x="4252" y="319" class="mm-hn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="4252" y="332" class="mm-hn"> opts: unmatched(none)</text>
+<text x="4252" y="345" class="mm-hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4252" y="358" class="mm-hn"> row multiplication x1.08</text>
+<rect x="4288" y="132" width="250" height="46" class="mm-bu" />
+<text x="4296" y="153" class="mm-bh"> raw/staff_assign.dta</text>
+<text x="4296" y="169" class="mm-bl"> 118 &#215; 4 &#183; key: staff</text>
+<line x1="4413" y1="178" x2="4413" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="4548" y="210" width="230" height="78" class="mm-bw" />
+<text x="4556" y="230" class="mm-bl"> work (after joinby)</text>
+<text x="4556" y="246" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="4778" y1="249" x2="5046" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="4752" y="306" class="mm-hb"> #16 merge 1:1 pid visitid</text>
+<text x="4752" y="319" class="mm-hc"> matched 0 &#183; master-only 44,473 &#183; using-only 0</text>
+<text x="4752" y="332" class="mm-hc"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="4752" y="345" class="mm-hn"> opts: update replace</text>
+<text x="4752" y="358" class="mm-hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4752" y="371" class="mm-hn"> 50 nonmissing conflicts overwritten</text>
+<rect x="4788" y="132" width="250" height="46" class="mm-bu" />
+<text x="4796" y="153" class="mm-bh"> raw/corrections.dta</text>
+<text x="4796" y="169" class="mm-bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<line x1="4913" y1="178" x2="4913" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="5048" y="210" width="230" height="78" class="mm-bw" />
+<text x="5056" y="230" class="mm-bl"> work (after merge)</text>
+<text x="5056" y="246" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="5278" y1="249" x2="5546" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="5252" y="306" class="mm-hb"> #17 frlink m:1 county</text>
+<text x="5252" y="319" class="mm-hc"> matched 44,778 &#183; master-only 95</text>
+<text x="5252" y="332" class="mm-hn"> opts: frame(counties)</text>
+<text x="5252" y="345" class="mm-hc"> &#8594; 44,873 &#215; 29</text>
+<text x="5252" y="358" class="mm-hn"> 95 obs unmatched to frame</text>
+<rect x="5288" y="132" width="250" height="46" class="mm-bu" />
+<text x="5296" y="153" class="mm-bh"> frame:counties</text>
+<text x="5296" y="169" class="mm-bl"> 254 &#215; 7 &#183; key: county</text>
+<line x1="5413" y1="178" x2="5413" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="5548" y="210" width="230" height="78" class="mm-bw" />
+<text x="5556" y="230" class="mm-bl"> work (after frlink)</text>
+<text x="5556" y="246" class="mm-bn"> 44,873 &#215; 29</text>
+<line x1="5778" y1="249" x2="6046" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="5752" y="306" class="mm-hb"> #18 frget</text>
+<text x="5752" y="319" class="mm-hn"> opts: povrate slots, from(cnty)</text>
+<text x="5752" y="332" class="mm-hc"> &#8594; 44,873 &#215; 31</text>
+<rect x="5788" y="148" width="250" height="30" class="mm-bu" />
+<text x="5796" y="169" class="mm-bh"> frame:counties</text>
+<line x1="5913" y1="178" x2="5913" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="6048" y="210" width="230" height="78" class="mm-bw" />
+<text x="6056" y="230" class="mm-bl"> work (after frget)</text>
+<text x="6056" y="246" class="mm-bn"> 44,873 &#215; 31</text>
+<line x1="6278" y1="249" x2="6546" y2="249" class="mm-sp" marker-end="url(#mmD-ag)" />
+<text x="6252" y="306" class="mm-hb"> #19 merge m:m staff, force</text>
+<text x="6252" y="319" class="mm-hc"> matched 44,663 &#183; master-only 210 &#183; using-only</text>
+<text x="6252" y="332" class="mm-hc"> &#160;&#160;4</text>
+<text x="6252" y="345" class="mm-hn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="6252" y="358" class="mm-hn"> opts: force</text>
+<text x="6252" y="371" class="mm-hc"> &#8594; 44,873 &#215; 33</text>
+<text x="6252" y="384" class="mm-hf"> !! m:m pairs rows by order within key (not a</text>
+<text x="6252" y="397" class="mm-hf"> &#160;&#160;join)</text>
+<text x="6252" y="410" class="mm-hf"> !! force: schednote str8 vs byte</text>
+<rect x="6288" y="132" width="250" height="46" class="mm-bu" />
+<text x="6296" y="153" class="mm-bh"> raw/schedules.dta</text>
+<text x="6296" y="169" class="mm-bl"> 560 &#215; 6 &#183; key: staff</text>
+<line x1="6413" y1="178" x2="6413" y2="245" class="mm-sp" marker-end="url(#mmD-aa)" />
+<rect x="6548" y="210" width="230" height="78" class="mm-bx" />
+<text x="6551" y="205" class="mm-bn"> #20</text>
+<text x="6556" y="230" class="mm-bh"> built/analysis_file.dta</text>
+<text x="6556" y="246" class="mm-bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+</div>
+<h2 id="c5-horizontal-diagram-at-native-size-in-a-sideways-scroller">C5. Horizontal diagram at native size in a sideways scroller</h2>
+<p>The same diagram with its width attribute intact inside a div with overflow-x auto. The report column never scrolls sideways, only the box does.</p>
+<div class="mm-embed mm-xscroll">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6802 439" width="6802" height="439">
+<defs>
+<marker id="mmC-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mmC-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="24" y="26" class="mm-dof"> 01_build.do</text>
+<line x1="24" y1="32" x2="24" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="24" y="210" width="230" height="78" class="mm-bx" />
+<text x="27" y="205" class="mm-bn"> #1</text>
+<text x="32" y="230" class="mm-bh"> raw/cps_2019.dta</text>
+<text x="32" y="246" class="mm-bl"> 52,431 &#215; 24</text>
+<line x1="254" y1="249" x2="522" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="228" y="306" class="mm-hb"> #2 append</text>
+<text x="228" y="319" class="mm-hc"> &#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<text x="228" y="332" class="mm-hc"> +157,203 obs from 3 files</text>
+<text x="228" y="345" class="mm-hc"> &#8594; 209,634 &#215; 24</text>
+<rect x="274" y="106" width="250" height="62" class="mm-bstk" />
+<rect x="269" y="111" width="250" height="62" class="mm-bstk" />
+<rect x="264" y="116" width="250" height="62" class="mm-bu" />
+<text x="272" y="137" class="mm-bh"> raw/cps_&#96;y'.dta</text>
+<text x="272" y="153" class="mm-bn"> &#215;3: raw/c&#8230;20.dta &#8230; raw/c&#8230;22.dta</text>
+<text x="272" y="169" class="mm-bl"> 157,203 &#215; 24</text>
+<line x1="389" y1="178" x2="389" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="524" y="210" width="230" height="78" class="mm-bw" />
+<text x="532" y="230" class="mm-bl"> work (after append)</text>
+<text x="532" y="246" class="mm-bn"> 209,634 &#215; 24</text>
+<line x1="754" y1="249" x2="1022" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="728" y="306" class="mm-hb"> #3 merge m:1 county</text>
+<text x="728" y="319" class="mm-hc"> matched 209,101 &#183; master-only 533 &#183;</text>
+<text x="728" y="332" class="mm-hc"> &#160;&#160;using-only (2 dropped)</text>
+<text x="728" y="345" class="mm-hn"> opts: keep(1 3) nogenerate</text>
+<text x="728" y="358" class="mm-hc"> &#8594; 209,634 &#215; 26</text>
+<text x="728" y="371" class="mm-hn"> 2 using-only dropped by keep(1 3)</text>
+<rect x="764" y="132" width="250" height="46" class="mm-bu" />
+<text x="772" y="153" class="mm-bh"> xwalk/county_key.dta</text>
+<text x="772" y="169" class="mm-bl"> 254 &#215; 3 &#183; key: county</text>
+<line x1="889" y1="178" x2="889" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="1024" y="210" width="230" height="78" class="mm-bx" />
+<text x="1027" y="205" class="mm-bn"> #4</text>
+<text x="1032" y="230" class="mm-bh"> collapse</text>
+<text x="1032" y="246" class="mm-bl"> (mean) wage ho&#8230;by(county year)</text>
+<text x="1032" y="262" class="mm-bn"> 209,634 &#8594; 3,048 obs</text>
+<line x1="1254" y1="249" x2="1316" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<rect x="1318" y="210" width="230" height="78" class="mm-bx" />
+<text x="1321" y="205" class="mm-bn"> #5</text>
+<text x="1326" y="230" class="mm-bh"> built/county_panel.dta</text>
+<text x="1326" y="246" class="mm-bl"> 3,048 &#215; 6 &#183; [saved]</text>
+<text x="1558" y="26" class="mm-dof"> 02_panel.do</text>
+<line x1="1558" y1="32" x2="1558" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="1604" y="210" width="230" height="78" class="mm-bx" />
+<text x="1607" y="205" class="mm-bn"> #6</text>
+<text x="1612" y="230" class="mm-bh"> raw/participants.dta</text>
+<text x="1612" y="246" class="mm-bl"> 8,914 &#215; 12</text>
+<line x1="1834" y1="249" x2="1896" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<rect x="1898" y="210" width="230" height="78" class="mm-bx" />
+<text x="1901" y="205" class="mm-bn"> #7</text>
+<text x="1906" y="230" class="mm-bh"> duplicates drop</text>
+<text x="1906" y="246" class="mm-bl"> keys: pid</text>
+<text x="1906" y="262" class="mm-bn"> 8,914 &#8594; 8,902 obs</text>
+<text x="1906" y="278" class="mm-bn"> 12 duplicate pid obs dropped</text>
+<line x1="2128" y1="249" x2="2396" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="2102" y="306" class="mm-hb"> #8 merge 1:m pid</text>
+<text x="2102" y="319" class="mm-hc"> matched 41,210 &#183; master-only 310 &#183; using-only</text>
+<text x="2102" y="332" class="mm-hc"> &#160;&#160;0</text>
+<text x="2102" y="345" class="mm-hn"> dup-key obs: master 0 &#183; using 32,618</text>
+<text x="2102" y="358" class="mm-hc"> &#8594; 41,520 &#215; 17</text>
+<text x="2102" y="371" class="mm-hn"> 310 master-only kept (no visits)</text>
+<rect x="2138" y="132" width="250" height="46" class="mm-bu" />
+<text x="2146" y="153" class="mm-bh"> raw/visits.dta</text>
+<text x="2146" y="169" class="mm-bl"> 41,210 &#215; 6 &#183; key: pid</text>
+<line x1="2263" y1="178" x2="2263" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="2398" y="210" width="230" height="78" class="mm-bt" />
+<text x="2401" y="205" class="mm-bn"> #9</text>
+<text x="2406" y="230" class="mm-bh"> tempfile:__visits</text>
+<text x="2406" y="246" class="mm-bl"> 41,520 &#215; 17 &#183; [tempfile]</text>
+<rect x="2674" y="210" width="230" height="78" class="mm-bx" />
+<text x="2677" y="205" class="mm-bn"> #10</text>
+<text x="2682" y="230" class="mm-bh"> built/county_panel.dta</text>
+<text x="2682" y="246" class="mm-bl"> 3,048 &#215; 6</text>
+<line x1="2904" y1="249" x2="2966" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<rect x="2968" y="210" width="230" height="78" class="mm-bx" />
+<text x="2971" y="205" class="mm-bn"> #11</text>
+<text x="2976" y="230" class="mm-bh"> reshape wide</text>
+<text x="2976" y="246" class="mm-bl"> wage hours, i(county) j(year)</text>
+<text x="2976" y="262" class="mm-bn"> 3,048 &#8594; 762 obs</text>
+<line x1="3198" y1="249" x2="3260" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<rect x="3262" y="210" width="230" height="78" class="mm-bx" />
+<text x="3265" y="205" class="mm-bn"> #12</text>
+<text x="3270" y="230" class="mm-bh"> built/county_wide.dta</text>
+<text x="3270" y="246" class="mm-bl"> 762 &#215; 9 &#183; [saved]</text>
+<text x="3502" y="26" class="mm-dof"> 03_analyze.do</text>
+<line x1="3502" y1="32" x2="3502" y2="210" class="mm-hl" stroke-dasharray="2 4" />
+<rect x="3548" y="210" width="230" height="78" class="mm-bt" />
+<text x="3551" y="205" class="mm-bn"> #13</text>
+<text x="3556" y="230" class="mm-bh"> tempfile:__visits</text>
+<text x="3556" y="246" class="mm-bn"> [tempfile]</text>
+<text x="3556" y="262" class="mm-bl"> 41,520 &#215; 17</text>
+<line x1="3778" y1="249" x2="4046" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="3752" y="306" class="mm-hb"> #14 merge m:1 county</text>
+<text x="3752" y="319" class="mm-hc"> matched 41,425 &#183; master-only 95 &#183; using-only 0</text>
+<text x="3752" y="332" class="mm-hn"> opts: keep(1 3) nogenerate</text>
+<text x="3752" y="345" class="mm-hc"> &#8594; 41,520 &#215; 25</text>
+<text x="3752" y="358" class="mm-hn"> 95 master-only kept</text>
+<rect x="3788" y="132" width="250" height="46" class="mm-bu" />
+<text x="3796" y="153" class="mm-bh"> built/county_wide.dta</text>
+<text x="3796" y="169" class="mm-bl"> 762 &#215; 9 &#183; key: county</text>
+<line x1="3913" y1="178" x2="3913" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="4048" y="210" width="230" height="78" class="mm-bw" />
+<text x="4056" y="230" class="mm-bl"> work (after merge)</text>
+<text x="4056" y="246" class="mm-bn"> 41,520 &#215; 25</text>
+<line x1="4278" y1="249" x2="4546" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="4252" y="306" class="mm-hb"> #15 joinby m:m staff</text>
+<text x="4252" y="319" class="mm-hn"> dup-key obs: master 0 &#183; using 74</text>
+<text x="4252" y="332" class="mm-hn"> opts: unmatched(none)</text>
+<text x="4252" y="345" class="mm-hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4252" y="358" class="mm-hn"> row multiplication x1.08</text>
+<rect x="4288" y="132" width="250" height="46" class="mm-bu" />
+<text x="4296" y="153" class="mm-bh"> raw/staff_assign.dta</text>
+<text x="4296" y="169" class="mm-bl"> 118 &#215; 4 &#183; key: staff</text>
+<line x1="4413" y1="178" x2="4413" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="4548" y="210" width="230" height="78" class="mm-bw" />
+<text x="4556" y="230" class="mm-bl"> work (after joinby)</text>
+<text x="4556" y="246" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="4778" y1="249" x2="5046" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="4752" y="306" class="mm-hb"> #16 merge 1:1 pid visitid</text>
+<text x="4752" y="319" class="mm-hc"> matched 0 &#183; master-only 44,473 &#183; using-only 0</text>
+<text x="4752" y="332" class="mm-hc"> updated: 350 missing &#183; 50 conflicts</text>
+<text x="4752" y="345" class="mm-hn"> opts: update replace</text>
+<text x="4752" y="358" class="mm-hc"> &#8594; 44,873 &#215; 28</text>
+<text x="4752" y="371" class="mm-hn"> 50 nonmissing conflicts overwritten</text>
+<rect x="4788" y="132" width="250" height="46" class="mm-bu" />
+<text x="4796" y="153" class="mm-bh"> raw/corrections.dta</text>
+<text x="4796" y="169" class="mm-bl"> 400 &#215; 5 &#183; key: pid visitid</text>
+<line x1="4913" y1="178" x2="4913" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="5048" y="210" width="230" height="78" class="mm-bw" />
+<text x="5056" y="230" class="mm-bl"> work (after merge)</text>
+<text x="5056" y="246" class="mm-bn"> 44,873 &#215; 28</text>
+<line x1="5278" y1="249" x2="5546" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="5252" y="306" class="mm-hb"> #17 frlink m:1 county</text>
+<text x="5252" y="319" class="mm-hc"> matched 44,778 &#183; master-only 95</text>
+<text x="5252" y="332" class="mm-hn"> opts: frame(counties)</text>
+<text x="5252" y="345" class="mm-hc"> &#8594; 44,873 &#215; 29</text>
+<text x="5252" y="358" class="mm-hn"> 95 obs unmatched to frame</text>
+<rect x="5288" y="132" width="250" height="46" class="mm-bu" />
+<text x="5296" y="153" class="mm-bh"> frame:counties</text>
+<text x="5296" y="169" class="mm-bl"> 254 &#215; 7 &#183; key: county</text>
+<line x1="5413" y1="178" x2="5413" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="5548" y="210" width="230" height="78" class="mm-bw" />
+<text x="5556" y="230" class="mm-bl"> work (after frlink)</text>
+<text x="5556" y="246" class="mm-bn"> 44,873 &#215; 29</text>
+<line x1="5778" y1="249" x2="6046" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="5752" y="306" class="mm-hb"> #18 frget</text>
+<text x="5752" y="319" class="mm-hn"> opts: povrate slots, from(cnty)</text>
+<text x="5752" y="332" class="mm-hc"> &#8594; 44,873 &#215; 31</text>
+<rect x="5788" y="148" width="250" height="30" class="mm-bu" />
+<text x="5796" y="169" class="mm-bh"> frame:counties</text>
+<line x1="5913" y1="178" x2="5913" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="6048" y="210" width="230" height="78" class="mm-bw" />
+<text x="6056" y="230" class="mm-bl"> work (after frget)</text>
+<text x="6056" y="246" class="mm-bn"> 44,873 &#215; 31</text>
+<line x1="6278" y1="249" x2="6546" y2="249" class="mm-sp" marker-end="url(#mmC-ag)" />
+<text x="6252" y="306" class="mm-hb"> #19 merge m:m staff, force</text>
+<text x="6252" y="319" class="mm-hc"> matched 44,663 &#183; master-only 210 &#183; using-only</text>
+<text x="6252" y="332" class="mm-hc"> &#160;&#160;4</text>
+<text x="6252" y="345" class="mm-hn"> dup-key obs: master 3,110 &#183; using 102</text>
+<text x="6252" y="358" class="mm-hn"> opts: force</text>
+<text x="6252" y="371" class="mm-hc"> &#8594; 44,873 &#215; 33</text>
+<text x="6252" y="384" class="mm-hf"> !! m:m pairs rows by order within key (not a</text>
+<text x="6252" y="397" class="mm-hf"> &#160;&#160;join)</text>
+<text x="6252" y="410" class="mm-hf"> !! force: schednote str8 vs byte</text>
+<rect x="6288" y="132" width="250" height="46" class="mm-bu" />
+<text x="6296" y="153" class="mm-bh"> raw/schedules.dta</text>
+<text x="6296" y="169" class="mm-bl"> 560 &#215; 6 &#183; key: staff</text>
+<line x1="6413" y1="178" x2="6413" y2="245" class="mm-sp" marker-end="url(#mmC-aa)" />
+<rect x="6548" y="210" width="230" height="78" class="mm-bx" />
+<text x="6551" y="205" class="mm-bn"> #20</text>
+<text x="6556" y="230" class="mm-bh"> built/analysis_file.dta</text>
+<text x="6556" y="246" class="mm-bl"> 44,873 &#215; 33 &#183; [saved]</text>
+</svg>
+</div>
+<h1 id="d-smcl-text-as-a-code-block">D. SMCL text as a code block</h1>
+<p>The SMCL renderer writes a plain-text twin of every diagram. Escaping ampersand, less-than and greater-than and dropping it into a pre block is the cheapest embed there is, and it is the only one that survives a plain-text or Markdown export of the report.</p>
+<h2 id="d1-ascii-diagram">D1. ASCII diagram</h2>
+<p>155 lines, longest line 79 characters. At 12.5 px monospace that is about 600 px wide, so it fits any report column without wrapping.</p>
+<pre class="mm-pre">
+mergemap diagram: ../journal_run.tsv
+(run mode; style: boxes)
+
+01_build.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/cps_2019.dta                 |  52,431 x 24
+  +----------------------------------+
+        |
+        |                                 +----------------------------------+
+        |                                +----------------------------------+|
+        |                                | x3: raw/cps_2020.dta             |+
+        |                                |   ... raw/cps_2022.dta           |
+        |                                +----------------------------------+
+        |                                  |
+        |  append  x3 files  &lt;-------------+
+        |    +157,203 obs
+        |    -&gt; 209,634 x 24
+        |
+        |                                +----------------------------------+
+        |                                | xwalk/county_key.dta             |
+        |                                | 254 x 3   key: county            |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1 county  &lt;-------------+
+        |    keep(1 3) nogenerate
+        |    matched 209,101; master-only 533; using-only (2 dropped)
+        |    -&gt; 209,634 x 26
+        |  2 using-only dropped by keep(1 3)
+        |
+        v
+  +---------------------------------------------+
+  | collapse (mean) wage hours, by(county year) |  209,634 -&gt; 3,048 obs
+  +---------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_panel.dta           |  3,048 x 6  [saved]
+  +----------------------------------+
+
+02_panel.do -------------------------------------------------------------------
+
+  +----------------------------------+
+  | raw/participants.dta             |  8,914 x 12
+  +----------------------------------+
+        |
+        v
+  +---------------------+
+  | duplicates drop pid |  8,914 -&gt; 8,902 obs
+  +---------------------+
+      12 duplicate pid obs dropped
+        |
+        |                                +----------------------------------+
+        |                                | raw/visits.dta                   |
+        |                                | 41,210 x 6   key: pid            |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:m pid  &lt;----------------+
+        |    matched 41,210; master-only 310
+        |    -&gt; 41,520 x 17
+        |  310 master-only kept (no visits)
+        |
+        v
+  +----------------------------------+
+  | tempfile:__visits                |  41,520 x 17  [tempfile]
+  +----------------------------------+
+
+  +----------------------------------+
+  | built/county_panel.dta           |  3,048 x 6
+  +----------------------------------+
+        |
+        v
+  +--------------------------------------------+
+  | reshape wide wage hours, i(county) j(year) |  3,048 -&gt; 762 obs
+  +--------------------------------------------+
+        |
+        v
+  +----------------------------------+
+  | built/county_wide.dta            |  762 x 9  [saved]
+  +----------------------------------+
+
+03_analyze.do -----------------------------------------------------------------
+
+  +----------------------------------+
+  | tempfile:__visits                |  41,520 x 17
+  +----------------------------------+
+      tempfile from 02_panel.do line 16
+        |
+        |                                +----------------------------------+
+        |                                | built/county_wide.dta            |
+        |                                | 762 x 9   key: county            |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:1 county  &lt;-------------+
+        |    keep(1 3) nogenerate
+        |    matched 41,425; master-only 95
+        |    -&gt; 41,520 x 25
+        |  95 master-only kept
+        |
+        |                                +----------------------------------+
+        |                                | raw/staff_assign.dta             |
+        |                                | 118 x 4   key: staff             |
+        |                                +----------------------------------+
+        |                                  |
+        |  joinby m:m staff  &lt;-------------+
+        |    unmatched(none)
+        |    dup keys: using +74
+        |    -&gt; 44,873 x 28
+        |  row multiplication x1.08
+        |
+        |                                +----------------------------------+
+        |                                | raw/corrections.dta              |
+        |                                | 400 x 5   key: pid visitid       |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge 1:1 pid visitid  &lt;--------+
+        |    update replace
+        |    matched 0; master-only 44,473; missing-updated 350;
+        |    conflicts-updated 50
+        |    -&gt; 44,873 x 28
+        |  50 nonmissing conflicts overwritten
+        |
+        |                                +----------------------------------+
+        |                                | frame:counties                   |
+        |                                | 254 x 7   key: county            |
+        |                                +----------------------------------+
+        |                                  |
+        |  frlink m:1 county  &lt;------------+
+        |    frame(counties)
+        |    matched 44,778; unmatched 95
+        |    -&gt; 44,873 x 29
+        |  95 obs unmatched to frame
+        |
+        |  frget povrate slots, from(cnty)   &lt;- frame:counties
+        |    -&gt; 44,873 x 31
+        |
+        |                                +----------------------------------+
+        |                                | raw/schedules.dta                |
+        |                                | 560 x 6   key: staff             |
+        |                                +----------------------------------+
+        |                                  |
+        |  merge m:m staff  &lt;--------------+
+        |    force
+        |    matched 44,663; master-only 210; using-only 4
+        |    dup keys: master +3,110; using +102
+        |    -&gt; 44,873 x 33
+        |  !! m:m pairs rows by order within key (not a join)
+        |  !! force: schednote str8 vs byte
+        |
+        v
+  +----------------------------------+
+  | built/analysis_file.dta          |  44,873 x 33  [saved]
+  +----------------------------------+
+</pre>
+<h2 id="d2-receipt-table">D2. Receipt table</h2>
+<p>The receipt that accompanies every diagram, from the escalation demo.</p>
+<pre class="mm-pre">
+. rendersmcl using ../journal_run.tsv
+
++-----------------------------------------------------------------------------+
+| mergemap receipt: ../journal_run.tsv  (20 events, 10 join/transform)        |
++-----------------------------------------------------------------------------+
+  # file         line command         keys       using/result       F flags
+-------------------------------------------------------------------------------
+  1 01_build.do    12 use                        raw/cps_2019.dta     
+  2 01_build.do    15 append                     raw/cps_`y'.dta      
+  3 01_build.do    22 merge m:1       county     xwalk/co...key.dta   2 using..
+  4 01_build.do    31 collapse        coun...ear                      
+  5 01_build.do    33 save                       built/co...nel.dta   
+  6 02_panel.do     8 use                        raw/part...nts.dta   
+  7 02_panel.do    11 duplicates drop pid                             12 dupl..
+  8 02_panel.do    14 merge 1:m       pid        raw/visits.dta       310 mas..
+  9 02_panel.do    16 save tempfile              tempfile:__visits    tempfile
+ 10 02_panel.do    19 use                        built/co...nel.dta   
+ 11 02_panel.do    23 reshape wide    coun...ear                      
+ 12 02_panel.do    26 save                       built/co...ide.dta   
+ 13 03_an...e.do    7 use                        tempfile:__visits    tempfil..
+ 14 03_an...e.do   12 merge m:1       county     built/co...ide.dta   95 mast..
+ 15 03_an...e.do   18 joinby m:m      staff      raw/staf...ign.dta   row mul..
+ 16 03_an...e.do   24 merge 1:1       pid ...tid raw/corr...ons.dta   50 nonm..
+ 17 03_an...e.do   29 frlink m:1      county     frame:counties       95 obs ..
+ 18 03_an...e.do   30 frget                      frame:counties       
+ 19 03_an...e.do   36 merge m:m       staff      raw/schedules.dta  F !! m:m ..
+ 20 03_an...e.do   40 save                       built/an...ile.dta   
+-------------------------------------------------------------------------------
+
+note: 10 join/transform events exceed maxnodes(8);
+      diagram deferred to the HTML renderer (renderhtml).
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. rendersmcl using ../journal_run.tsv, style(rail)
+
++-----------------------------------------------------------------------------+
+| mergemap receipt: ../journal_run.tsv  (20 events, 10 join/transform)        |
++-----------------------------------------------------------------------------+
+  # file         line command         keys       using/result       F flags
+-------------------------------------------------------------------------------
+  1 01_build.do    12 use                        raw/cps_2019.dta     
+  2 01_build.do    15 append                     raw/cps_`y'.dta      
+  3 01_build.do    22 merge m:1       county     xwalk/co...key.dta   2 using..
+  4 01_build.do    31 collapse        coun...ear                      
+  5 01_build.do    33 save                       built/co...nel.dta   
+  6 02_panel.do     8 use                        raw/part...nts.dta   
+  7 02_panel.do    11 duplicates drop pid                             12 dupl..
+  8 02_panel.do    14 merge 1:m       pid        raw/visits.dta       310 mas..
+  9 02_panel.do    16 save tempfile              tempfile:__visits    tempfile
+ 10 02_panel.do    19 use                        built/co...nel.dta   
+ 11 02_panel.do    23 reshape wide    coun...ear                      
+ 12 02_panel.do    26 save                       built/co...ide.dta   
+ 13 03_an...e.do    7 use                        tempfile:__visits    tempfil..
+ 14 03_an...e.do   12 merge m:1       county     built/co...ide.dta   95 mast..
+ 15 03_an...e.do   18 joinby m:m      staff      raw/staf...ign.dta   row mul..
+ 16 03_an...e.do   24 merge 1:1       pid ...tid raw/corr...ons.dta   50 nonm..
+ 17 03_an...e.do   29 frlink m:1      county     frame:counties       95 obs ..
+ 18 03_an...e.do   30 frget                      frame:counties       
+ 19 03_an...e.do   36 merge m:m       staff      raw/schedules.dta  F !! m:m ..
+ 20 03_an...e.do   40 save                       built/an...ile.dta   
+-------------------------------------------------------------------------------
+
+note: 10 join/transform events exceed maxnodes(8);
+      diagram deferred to the HTML renderer (renderhtml).
+      Use maxnodes(#) or forcesmcl to draw it in SMCL anyway.
+
+. log close _mm</pre>
+<h1 id="e-details-blocks-inside-webdoc2">E. Details blocks inside webdoc2</h1>
+<p>mergemap uses native HTML details and summary for per-join detail, with no JavaScript. Bootstrap 5 restyles summary only lightly, so the disclosure triangles survive. These blocks are inside .mm-embed, which is where the scoped mergemap rules for details, summary and details pre apply.</p>
+<div class="mm-embed">
+<details>
+<summary> #2 &#183; 01_build.do line 15 &#183; append using raw/cps_&#96;y'.dta</summary>
+<pre>
+ mergemap: append using raw/cps_&#96;y'.dta   (01_build.do line 15)
+ &#160;&#160;loop: &#215;3 files, raw/cps_2020.dta &#8230; raw/cps_2022.dta
+ &#160;&#160;master 52,431 &#215; 24 | using 157,203 &#215; 24 | result 209,634 &#215; 24
+</pre>
+</details>
+<details>
+<summary> #3 &#183; 01_build.do line 22 &#183; merge m:1 county using xwalk/county_key.dta</summary>
+<pre>
+ mergemap: merge m:1 county using xwalk/county_key.dta   (01_build.do line 22)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;master 209,634 &#215; 24 | using 254 &#215; 3 | result 209,634 &#215; 26
+ &#160;&#160;matched 209,101  |  master-only 533  |  using-only (2 dropped)
+ &#160;&#160;duplicate-key obs: master 0 | using 0
+ &#160;&#160;options: keep(1 3) nogenerate
+ &#160;&#160;2 using-only dropped by keep(1 3)
+</pre>
+</details>
+<details>
+<summary> #8 &#183; 02_panel.do line 14 &#183; merge 1:m pid using raw/visits.dta</summary>
+<pre>
+ mergemap: merge 1:m pid using raw/visits.dta   (02_panel.do line 14)
+ &#160;&#160;key: pid   declared 1:m
+ &#160;&#160;master 8,902 &#215; 12 | using 41,210 &#215; 6 | result 41,520 &#215; 17
+ &#160;&#160;matched 41,210  |  master-only 310  |  using-only 0
+ &#160;&#160;duplicate-key obs: master 0 | using 32,618
+ &#160;&#160;310 master-only kept (no visits)
+</pre>
+</details>
+<details>
+<summary> #14 &#183; 03_analyze.do line 12 &#183; merge m:1 county using built/county_wide.dta</summary>
+<pre>
+ mergemap: merge m:1 county using built/county_wide.dta   (03_analyze.do line 12)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;master 41,520 &#215; 17 | using 762 &#215; 9 | result 41,520 &#215; 25
+ &#160;&#160;matched 41,425  |  master-only 95  |  using-only 0
+ &#160;&#160;duplicate-key obs: master 0 | using 0
+ &#160;&#160;options: keep(1 3) nogenerate
+ &#160;&#160;95 master-only kept
+</pre>
+</details>
+<details>
+<summary> #15 &#183; 03_analyze.do line 18 &#183; joinby m:m staff using raw/staff_assign.dta</summary>
+<pre>
+ mergemap: joinby m:m staff using raw/staff_assign.dta   (03_analyze.do line 18)
+ &#160;&#160;key: staff   declared m:m
+ &#160;&#160;master 41,520 &#215; 25 | using 118 &#215; 4 | result 44,873 &#215; 28
+ &#160;&#160;duplicate-key obs: master 0 | using 74
+ &#160;&#160;options: unmatched(none)
+ &#160;&#160;row multiplication x1.08
+</pre>
+</details>
+<details>
+<summary> #16 &#183; 03_analyze.do line 24 &#183; merge 1:1 pid visitid using raw/corrections.dta</summary>
+<pre>
+ mergemap: merge 1:1 pid visitid using raw/corrections.dta   (03_analyze.do line 24)
+ &#160;&#160;key: pid visitid   declared 1:1
+ &#160;&#160;master 44,873 &#215; 28 | using 400 &#215; 5 | result 44,873 &#215; 28
+ &#160;&#160;matched 0  |  master-only 44,473  |  using-only 0
+ &#160;&#160;updated: missing 350 | conflicts 50
+ &#160;&#160;duplicate-key obs: master 0 | using 0
+ &#160;&#160;options: update replace
+ &#160;&#160;50 nonmissing conflicts overwritten
+</pre>
+</details>
+<details>
+<summary> #17 &#183; 03_analyze.do line 29 &#183; frlink m:1 county using frame:counties</summary>
+<pre>
+ mergemap: frlink m:1 county using frame:counties   (03_analyze.do line 29)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;master 44,873 &#215; 28 | using 254 &#215; 7 | result 44,873 &#215; 29
+ &#160;&#160;matched 44,778  |  master-only 95
+ &#160;&#160;duplicate-key obs: master 0 | using 0
+ &#160;&#160;options: frame(counties)
+ &#160;&#160;95 obs unmatched to frame
+</pre>
+</details>
+<details>
+<summary> #18 &#183; 03_analyze.do line 30 &#183; frget using frame:counties</summary>
+<pre>
+ mergemap: frget using frame:counties   (03_analyze.do line 30)
+ &#160;&#160;master 44,873 &#215; 29 | using . | result 44,873 &#215; 31
+ &#160;&#160;options: povrate slots, from(cnty)
+</pre>
+</details>
+<details>
+<summary> #19 &#183; 03_analyze.do line 36 &#183; merge m:m staff using raw/schedules.dta</summary>
+<pre>
+ mergemap: merge m:m staff using raw/schedules.dta   (03_analyze.do line 36)
+ &#160;&#160;key: staff   declared m:m
+ &#160;&#160;master 44,873 &#215; 31 | using 560 &#215; 6 | result 44,873 &#215; 33
+ &#160;&#160;matched 44,663  |  master-only 210  |  using-only 4
+ &#160;&#160;duplicate-key obs: master 3,110 | using 102
+ &#160;&#160;options: force
+<span class="flag"> &#160;&#160;!! force</span>
+<span class="flag"> &#160;&#160;!! m:m pairs rows by order within key (not a join)</span>
+<span class="flag"> &#160;&#160;!! force: schednote str8 vs byte</span>
+</pre>
+</details>
+</div>
+<h2 id="e2-details-with-no-mm-embed-wrapper">E2. Details with no mm-embed wrapper</h2>
+<p>The same markup outside the wrapper gets Bootstrap defaults only, so it loses mergemap's border and grey summary bar.</p>
+<details><summary>a plain details block, unscoped</summary><p>Body text inside a details element with no mergemap styling attached.</p></details>
+<h1 id="f-what-the-collision-demo-shows">F. What the collision demo shows</h1>
+<p>collision_demo.html in this directory injects mergemap's HTML verbatim, stylesheet and all, into a webdoc2 page. Its body rule caps the whole report at 920 px and adds a 24 px margin, its h1 and h2 rules shrink the report headings, and the marker ids ag and aa appear twice because every mergemap file uses the same two.</p>
+<h2 id="f1-a-style-block-written-straight-from-the-do-file">F1. A style block written straight from the do-file</h2>
+<p>A single webdoc put line carrying a style block with braces parses fine in a do-file, which matters because it is the shortest way to add a rule from Stata.</p>
+<style>.mm-page h2 { scroll-margin-top: 80px; }</style>
+<p>The rule above was emitted by that one line.</p>
+</div>
+</body>
+</html>

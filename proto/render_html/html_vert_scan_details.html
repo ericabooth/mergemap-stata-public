@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="utf-8" />
+<title>mergemap &#183; journal_scan.tsv (scan, vertical)</title>
+<style type="text/css">
+body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #222; background: #fff; margin: 24px; max-width: 1100px; }
+h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
+.mm-html-vert-scan-details { margin: 1rem 0; }
+.mm-html-vert-scan-details .mm-wrap { max-height: 32rem; overflow: auto; resize: vertical; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }
+.mm-html-vert-scan-details .mm-svg { max-width: 100%; height: auto; display: block; }
+.mm-html-vert-scan-details .mm-cap { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 12px; color: #666; margin: 0 0 3px 0; }
+.mm-html-vert-scan-details .mm-leg { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 11px; color: #888; margin: 0 0 8px 0; }
+.mm-html-vert-scan-details .mm-legk { color: #4a6d8c; font-weight: 700; }
+.mm-html-vert-scan-details .mm-foot { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 10px; color: #999; margin: 10px 0 0 0; line-height: 1.5; }
+.mm-html-vert-scan-details .mm-h2 { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #222; margin: 18px 0 6px 0; }
+.mm-html-vert-scan-details .mm-det { margin: 6px 0; border: 1px solid #ddd; border-radius: 3px; }
+.mm-html-vert-scan-details .mm-sum { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; font-size: 12px; padding: 5px 8px; cursor: pointer; background: #f7f7f7; }
+.mm-html-vert-scan-details .mm-pre { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; font-size: 12px; line-height: 1.35; color: #222; background: #fff; margin: 0; padding: 8px 12px; overflow-x: auto; }
+.mm-html-vert-scan-details .mm-flag { font-weight: 700; color: #4a6d8c; }
+.mm-html-vert-scan-details .mm-node { cursor: help; }
+.mm-html-vert-scan-details .mm-t { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; }
+.mm-html-vert-scan-details .mm-bh { font-size: 12px; font-weight: 700; fill: #111; }
+.mm-html-vert-scan-details .mm-bl { font-size: 12px; fill: #333; }
+.mm-html-vert-scan-details .mm-bn { font-size: 11px; fill: #666; }
+.mm-html-vert-scan-details .mm-bf { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-bs { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-cc { font-size: 11px; font-weight: 700; fill: #111; }
+.mm-html-vert-scan-details .mm-cl { font-size: 11px; fill: #333; }
+.mm-html-vert-scan-details .mm-cn { font-size: 11px; fill: #666; }
+.mm-html-vert-scan-details .mm-cf { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-cs { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-dof { font-size: 13px; font-weight: 700; fill: #222; }
+.mm-html-vert-scan-details .mm-hc { font-size: 10px; fill: #333; }
+.mm-html-vert-scan-details .mm-hn { font-size: 10px; fill: #666; }
+.mm-html-vert-scan-details .mm-hb { font-size: 10px; font-weight: 700; fill: #111; }
+.mm-html-vert-scan-details .mm-hf { font-size: 10px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-hs { font-size: 10px; font-weight: 700; fill: #4a6d8c; }
+.mm-html-vert-scan-details .mm-bx { fill: #f7f7f7; stroke: #333; stroke-width: 1.1; }
+.mm-html-vert-scan-details .mm-bu { fill: #fcfcfc; stroke: #666; stroke-width: 1; }
+.mm-html-vert-scan-details .mm-bt { fill: #fff; stroke: #666; stroke-width: 1; stroke-dasharray: 5 3; }
+.mm-html-vert-scan-details .mm-bstk { fill: #fff; stroke: #999; stroke-width: 1; }
+.mm-html-vert-scan-details .mm-bw { fill: #fff; stroke: #999; stroke-width: 1; }
+.mm-html-vert-scan-details .mm-bfil { fill: #fbfbfb; stroke: #888; stroke-width: 1; }
+.mm-html-vert-scan-details .mm-sevw { stroke: #222; stroke-width: 1.7; }
+.mm-html-vert-scan-details .mm-sevs { stroke: #4a6d8c; stroke-width: 2.2; }
+.mm-html-vert-scan-details .mm-sp { stroke: #444; stroke-width: 1.2; fill: none; }
+.mm-html-vert-scan-details .mm-spd { stroke: #777; stroke-width: 1.1; fill: none; stroke-dasharray: 4 3; }
+.mm-html-vert-scan-details .mm-hl { stroke: #ccc; stroke-width: 1; }
+@media print { .mm-html-vert-scan-details .mm-wrap { max-height: none; overflow: visible; resize: none; border: 0; padding: 0; } }
+</style>
+</head>
+<body>
+<h1>mergemap &#183; journal_scan.tsv</h1>
+<div class="mm-embed mm-html-vert-scan-details">
+<div class="mm-cap">mode: scan &#183; layout: vertical &#183; 22 events &#183; 2 of 9 joins flagged: 2 warn</div>
+<div class="mm-leg"><span class="mm-legk">!!</span> = warning or stop (never colour alone) &#183; dashed box = tempfile &#183; &#215;N = collapsed loop &#183; #k = journal event &#183; hover a node for detail</div>
+<div class="mm-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 880 1779" width="880" height="1779">
+<title>mergemap join map for journal_scan.tsv (scan mode)</title>
+<desc>Boxes are datasets in memory or on disk; arrows are joins, filters and saves, top to bottom, in do-file order.</desc>
+<defs>
+<marker id="mm-html-vert-scan-details-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mm-html-vert-scan-details-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">01_build.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<g class="mm-node">
+<title>#1 &#183; 01_build.do line 12 &#183; use
+file: raw/cps_2019.dta
+opts: clear
+lifecycle: read
+</title>
+<rect x="40" y="38" width="310" height="30" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="54" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#1</text>
+<text x="48" y="62" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/cps_2019.dta</text>
+</g>
+<line x1="195" y1="68" x2="195" y2="147" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#2 &#183; 01_build.do line 15 &#183; append
+file: raw/cps_&#96;y'.dta
+</title>
+<text x="215" y="87" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#2 append</text>
+<text x="215" y="102" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">&#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+<line x1="520" y1="115" x2="203" y2="115" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="530" y="82" width="340" height="46" class="mm-bstk" fill="#ffffff" stroke="#999" stroke-width="1" />
+<rect x="525" y="87" width="340" height="46" class="mm-bstk" fill="#ffffff" stroke="#999" stroke-width="1" />
+<rect x="520" y="92" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="113" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/cps_&#96;y'.dta</text>
+<text x="528" y="129" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">&#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
+</g>
+<rect x="40" y="148" width="310" height="30" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="172" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after append)</text>
+<line x1="195" y1="178" x2="195" y2="272" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#3 &#183; 01_build.do line 22 &#183; merge m:1
+key: county
+file: xwalk/county_key.dta
+opts: keep(1 3) nogenerate
+keep(1 3): using-only will be dropped
+</title>
+<text x="215" y="197" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#3 merge m:1 county</text>
+<text x="215" y="212" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: keep(1 3) nogenerate</text>
+<text x="215" y="227" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">keep(1 3): using-only will be dropped</text>
+<line x1="520" y1="240" x2="203" y2="240" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="217" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="238" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">xwalk/county_key.dta</text>
+<text x="528" y="254" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: county</text>
+</g>
+<g class="mm-node">
+<title>#4 &#183; 01_build.do line 27 &#183; drop if
+opts: if missing(wage)
+</title>
+<rect x="58" y="273" width="274" height="40" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="289" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#4</text>
+<text x="66" y="294" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop if missing(wage)</text>
+<text x="66" y="309" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">row change unknown until run</text>
+</g>
+<line x1="195" y1="313" x2="195" y2="338" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#5 &#183; 01_build.do line 31 &#183; collapse
+key: county year
+opts: (mean) wage hours, by(county year)
+</title>
+<rect x="40" y="339" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="355" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#5</text>
+<text x="48" y="363" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">collapse</text>
+<text x="48" y="379" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">(mean) wage hours, by(county year)</text>
+</g>
+<line x1="195" y1="385" x2="195" y2="410" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#6 &#183; 01_build.do line 33 &#183; save
+saved to: built/county_panel.dta
+opts: replace
+lifecycle: create
+</title>
+<rect x="40" y="411" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="427" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#6</text>
+<text x="48" y="435" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/county_panel.dta</text>
+<text x="48" y="451" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">[saved, new]</text>
+</g>
+<text x="40" y="477" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">02_panel.do</text>
+<line x1="40" y1="483" x2="860" y2="483" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<g class="mm-node">
+<title>#7 &#183; 02_panel.do line 8 &#183; use
+file: raw/participants.dta
+opts: clear
+lifecycle: read
+</title>
+<rect x="40" y="509" width="310" height="30" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="525" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#7</text>
+<text x="48" y="533" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/participants.dta</text>
+</g>
+<line x1="195" y1="539" x2="195" y2="564" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#8 &#183; 02_panel.do line 11 &#183; duplicates drop
+key: pid
+</title>
+<rect x="40" y="565" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="581" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#8</text>
+<text x="48" y="589" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">duplicates drop</text>
+<text x="48" y="605" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">keys: pid</text>
+</g>
+<line x1="195" y1="611" x2="195" y2="678" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#9 &#183; 02_panel.do line 14 &#183; merge 1:m
+key: pid
+file: raw/visits.dta
+</title>
+<text x="215" y="630" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#9 merge 1:m pid</text>
+<line x1="520" y1="646" x2="203" y2="646" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="623" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="644" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/visits.dta</text>
+<text x="528" y="660" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: pid</text>
+</g>
+<g class="mm-node">
+<title>#10 &#183; 02_panel.do line 16 &#183; save tempfile
+saved to: tempfile:__visits
+lifecycle: create
+tempfile
+</title>
+<rect x="40" y="679" width="310" height="46" class="mm-bt" fill="#ffffff" stroke="#666" stroke-width="1" stroke-dasharray="5 3" />
+<text x="10" y="695" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#10</text>
+<text x="48" y="703" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">tempfile:__visits</text>
+<text x="48" y="719" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">[tempfile]</text>
+</g>
+<g class="mm-node">
+<title>#11 &#183; 02_panel.do line 19 &#183; use
+file: built/county_panel.dta
+opts: clear
+lifecycle: read
+</title>
+<rect x="40" y="739" width="310" height="30" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="755" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#11</text>
+<text x="48" y="763" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/county_panel.dta</text>
+</g>
+<line x1="195" y1="769" x2="195" y2="794" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#12 &#183; 02_panel.do line 23 &#183; reshape wide
+key: county year
+opts: wage hours, i(county) j(year)
+</title>
+<rect x="40" y="795" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="811" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#12</text>
+<text x="48" y="819" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">reshape wide</text>
+<text x="48" y="835" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">wage hours, i(county) j(year)</text>
+</g>
+<line x1="195" y1="841" x2="195" y2="866" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#13 &#183; 02_panel.do line 26 &#183; save
+saved to: built/county_wide.dta
+opts: replace
+lifecycle: create
+</title>
+<rect x="40" y="867" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="883" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#13</text>
+<text x="48" y="891" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/county_wide.dta</text>
+<text x="48" y="907" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">[saved, new]</text>
+</g>
+<text x="40" y="933" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">03_analyze.do</text>
+<line x1="40" y1="939" x2="860" y2="939" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<g class="mm-node">
+<title>#14 &#183; 03_analyze.do line 7 &#183; use
+file: tempfile:__visits
+opts: clear
+lifecycle: read
+tempfile from 02_panel.do line 16
+</title>
+<rect x="40" y="965" width="310" height="62" class="mm-bt" fill="#ffffff" stroke="#666" stroke-width="1" stroke-dasharray="5 3" />
+<text x="10" y="981" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#14</text>
+<text x="48" y="989" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">tempfile:__visits</text>
+<text x="48" y="1005" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[tempfile]</text>
+<text x="48" y="1021" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">tempfile from 02_panel.do line 16</text>
+</g>
+<line x1="195" y1="1027" x2="195" y2="1106" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#15 &#183; 03_analyze.do line 12 &#183; merge m:1
+key: county
+file: built/county_wide.dta
+opts: keep(1 3) nogenerate
+</title>
+<text x="215" y="1046" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#15 merge m:1 county</text>
+<text x="215" y="1061" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: keep(1 3) nogenerate</text>
+<line x1="520" y1="1074" x2="203" y2="1074" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1051" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1072" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/county_wide.dta</text>
+<text x="528" y="1088" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: county</text>
+</g>
+<rect x="40" y="1107" width="310" height="30" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1131" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after merge)</text>
+<line x1="195" y1="1137" x2="195" y2="1216" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#16 &#183; 03_analyze.do line 18 &#183; joinby m:m
+key: staff
+file: raw/staff_assign.dta
+opts: unmatched(none)
+</title>
+<text x="215" y="1156" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#16 joinby m:m staff</text>
+<text x="215" y="1171" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: unmatched(none)</text>
+<line x1="520" y1="1184" x2="203" y2="1184" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1161" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1182" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/staff_assign.dta</text>
+<text x="528" y="1198" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: staff</text>
+</g>
+<rect x="40" y="1217" width="310" height="30" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1241" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after joinby)</text>
+<line x1="195" y1="1247" x2="195" y2="1341" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#17 &#183; 03_analyze.do line 24 &#183; merge 1:1
+key: pid visitid
+file: raw/corrections.dta
+opts: update replace
+severity: warn
+update replace
+</title>
+<text x="215" y="1266" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#17 merge 1:1 pid visitid</text>
+<text x="215" y="1281" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: update replace</text>
+<text x="215" y="1296" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! update replace</text>
+<line x1="520" y1="1309" x2="203" y2="1309" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1286" width="340" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
+<text x="528" y="1307" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/corrections.dta</text>
+<text x="528" y="1323" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: pid visitid</text>
+</g>
+<rect x="40" y="1342" width="310" height="30" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1366" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after merge)</text>
+<line x1="195" y1="1372" x2="195" y2="1451" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#18 &#183; 03_analyze.do line 29 &#183; frlink m:1
+key: county
+file: frame:counties
+opts: frame(counties)
+</title>
+<text x="215" y="1391" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#18 frlink m:1 county</text>
+<text x="215" y="1406" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: frame(counties)</text>
+<line x1="520" y1="1419" x2="203" y2="1419" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1396" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1417" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">frame:counties</text>
+<text x="528" y="1433" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: county</text>
+</g>
+<rect x="40" y="1452" width="310" height="30" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1476" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after frlink)</text>
+<line x1="195" y1="1482" x2="195" y2="1553" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#19 &#183; 03_analyze.do line 30 &#183; frget
+file: frame:counties
+opts: povrate slots, from(cnty)
+</title>
+<text x="215" y="1501" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#19 frget</text>
+<text x="215" y="1516" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: povrate slots, from(cnty)</text>
+<line x1="520" y1="1529" x2="203" y2="1529" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1514" width="340" height="30" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1535" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">frame:counties</text>
+</g>
+<g class="mm-node">
+<title>#20 &#183; 03_analyze.do line 34 &#183; keep if
+opts: if inrange(year, 2019, 2022)
+</title>
+<rect x="58" y="1554" width="274" height="40" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="1570" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#20</text>
+<text x="66" y="1575" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep if inrange(year, 2019, 2022)</text>
+<text x="66" y="1590" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">row change unknown until run</text>
+</g>
+<line x1="195" y1="1594" x2="195" y2="1718" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-ag)" />
+<g class="mm-node">
+<title>#21 &#183; 03_analyze.do line 36 &#183; merge m:m
+key: staff
+file: raw/schedules.dta
+opts: force
+!! force
+severity: warn
+!! m:m pairs rows by row order within key (not a join)
+!! force used
+</title>
+<text x="215" y="1613" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#21 merge m:m staff, force</text>
+<text x="215" y="1628" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: force</text>
+<text x="215" y="1643" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! m:m pairs rows by row order within key</text>
+<text x="215" y="1658" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">&#160;&#160;(not a join)</text>
+<text x="215" y="1673" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! force used</text>
+<line x1="520" y1="1686" x2="203" y2="1686" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-vert-scan-details-aa)" />
+<rect x="520" y="1663" width="340" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
+<text x="528" y="1684" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/schedules.dta</text>
+<text x="528" y="1700" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">key: staff</text>
+</g>
+<g class="mm-node">
+<title>#22 &#183; 03_analyze.do line 40 &#183; save
+saved to: built/analysis_file.dta
+opts: replace
+lifecycle: create
+</title>
+<rect x="40" y="1719" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1735" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#22</text>
+<text x="48" y="1743" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/analysis_file.dta</text>
+<text x="48" y="1759" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">[saved, new]</text>
+</g>
+</svg>
+</div>
+<div class="mm-h2">Event ledger (joins, links, filters)</div>
+<details class="mm-det">
+<summary class="mm-sum"> #2 &#183; 01_build.do line 15 &#183; append using raw/cps_&#96;y'.dta</summary>
+<pre class="mm-pre">
+ mergemap: append using raw/cps_&#96;y'.dta   (01_build.do line 15)
+ &#160;&#160;loop: &#215;3 files, raw/cps_2020.dta &#8230; raw/cps_2022.dta
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #3 &#183; 01_build.do line 22 &#183; merge m:1 county using xwalk/county_key.dta</summary>
+<pre class="mm-pre">
+ mergemap: merge m:1 county using xwalk/county_key.dta   (01_build.do line 22)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;options: keep(1 3) nogenerate
+ &#160;&#160;keep(1 3): using-only will be dropped
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #4 &#183; 01_build.do line 27 &#183; drop if missing(wage)</summary>
+<pre class="mm-pre">
+ mergemap: drop if missing(wage)   (01_build.do line 27)
+ &#160;&#160;options: if missing(wage)
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #9 &#183; 02_panel.do line 14 &#183; merge 1:m pid using raw/visits.dta</summary>
+<pre class="mm-pre">
+ mergemap: merge 1:m pid using raw/visits.dta   (02_panel.do line 14)
+ &#160;&#160;key: pid   declared 1:m
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #15 &#183; 03_analyze.do line 12 &#183; merge m:1 county using built/county_wide.dta</summary>
+<pre class="mm-pre">
+ mergemap: merge m:1 county using built/county_wide.dta   (03_analyze.do line 12)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;options: keep(1 3) nogenerate
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #16 &#183; 03_analyze.do line 18 &#183; joinby m:m staff using raw/staff_assign.dta</summary>
+<pre class="mm-pre">
+ mergemap: joinby m:m staff using raw/staff_assign.dta   (03_analyze.do line 18)
+ &#160;&#160;key: staff   declared m:m
+ &#160;&#160;options: unmatched(none)
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #17 &#183; 03_analyze.do line 24 &#183; merge 1:1 pid visitid using raw/corrections.dta   !! warn</summary>
+<pre class="mm-pre">
+ mergemap: merge 1:1 pid visitid using raw/corrections.dta   (03_analyze.do line 24)
+ &#160;&#160;key: pid visitid   declared 1:1
+ &#160;&#160;options: update replace
+<span class="mm-flag"> &#160;&#160;!! update replace</span>
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #18 &#183; 03_analyze.do line 29 &#183; frlink m:1 county using frame:counties</summary>
+<pre class="mm-pre">
+ mergemap: frlink m:1 county using frame:counties   (03_analyze.do line 29)
+ &#160;&#160;key: county   declared m:1
+ &#160;&#160;options: frame(counties)
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #19 &#183; 03_analyze.do line 30 &#183; frget using frame:counties</summary>
+<pre class="mm-pre">
+ mergemap: frget using frame:counties   (03_analyze.do line 30)
+ &#160;&#160;options: povrate slots, from(cnty)
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #20 &#183; 03_analyze.do line 34 &#183; keep if inrange(year, 2019, 2022)</summary>
+<pre class="mm-pre">
+ mergemap: keep if inrange(year, 2019, 2022)   (03_analyze.do line 34)
+ &#160;&#160;options: if inrange(year, 2019, 2022)
+</pre>
+</details>
+<details class="mm-det">
+<summary class="mm-sum"> #21 &#183; 03_analyze.do line 36 &#183; merge m:m staff using raw/schedules.dta   !! warn</summary>
+<pre class="mm-pre">
+ mergemap: merge m:m staff using raw/schedules.dta   (03_analyze.do line 36)
+ &#160;&#160;key: staff   declared m:m
+ &#160;&#160;options: force
+<span class="mm-flag"> &#160;&#160;!! force</span>
+<span class="mm-flag"> &#160;&#160;!! m:m pairs rows by row order within key (not a join)</span>
+<span class="mm-flag"> &#160;&#160;!! force used</span>
+</pre>
+</details>
+<div class="mm-foot">mergemap &#183; journal journal_scan.tsv &#183; scan mode, vertical layout, 22 events &#183; generated 19 Aug 2026 23:51:50 &#183; Stata 19.5 MP &#183; self-contained: no scripts, no external assets</div>
+</div>
+</body>
+</html>
