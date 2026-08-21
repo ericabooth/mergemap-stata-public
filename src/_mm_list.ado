@@ -24,8 +24,11 @@ program define _mm_list, rclass
             di as txt ""
             di as txt "mergemap list: " as res `"`jfile'"' as txt "  (`N' events)"
             di as txt ""
-            di as txt %-4s "  #" %-16s "file" %5s "line" %-12s "command" ///
-                %-8s "type" %-14s "keys" %10s "n in" %10s "n out" %-6s "  sev"
+            * explicit single-space separators: a %-4s field holding "  10"
+            * fills exactly, so a two-digit event number ran into the filename
+            di as txt "  " %3s "#" " " %-15s "file" " " %4s "line" "  " ///
+                %-10s "command" " " %-7s "type" " " %-13s "keys" " "     ///
+                %9s "n in" " " %9s "n out" "  " %-4s "sev"
             di as txt "  {hline 88}"
             forvalues i = 1/`N' {
                 local sq  = seq[`i']
@@ -44,9 +47,9 @@ program define _mm_list, rclass
                 if "`sv'" == "note" local sv ""
                 if strlen("`fl'") > 15 local fl = substr("`fl'", 1, 14) + "~"
                 if strlen("`ky'") > 13 local ky = substr("`ky'", 1, 12) + "~"
-                di as txt %-4s "  `sq'" %-16s "`fl'" %5s "`ln'" as res ///
-                    %-12s " `cm'" as txt %-8s "`st'" %-14s "`ky'" ///
-                    %10s "`ni'" %10s "`no'" as err %-6s "  `sv'"
+                di as txt "  " %3s "`sq'" " " %-15s "`fl'" " " %4s "`ln'" "  " ///
+                    as res %-10s "`cm'" as txt " " %-7s "`st'" " " %-13s "`ky'" " " ///
+                    %9s "`ni'" " " %9s "`no'" "  " as err %-4s "`sv'"
             }
             di as txt "  {hline 88}"
             di as txt `"  one event in depth: {stata mergemap detail 1:mergemap detail #} ; every column: mergemap list, full"'
