@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.4.0  21aug2026  Eric Booth}{...}
+{* *! version 0.4.1  21aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -625,6 +625,16 @@ do-file uses {cmd:#delimit ;}, the scan is best-effort and says so.{p_end}
 {phang2}
 Do not nest {cmd:mergemap run} inside {cmd:webdoc do}. Both take control of how a
 do-file is executed.{p_end}
+
+{phang2}
+On Stata 16, run mode cannot hold the sort seed steady, because {cmd:c(sortseed)}
+came in after that release. The instrumentation's own bookkeeping advances
+Stata's sort RNG, so a later {cmd:sort} or {cmd:collapse} that breaks a tie at
+random can land differently than it would in a plain run. The gap shows up below
+display precision, and run mode says so when it starts. Scan mode, the default,
+does not execute anything and is unaffected. On a newer Stata, run mode restores
+the seed and the output is identical to a plain run, which
+{cmd:tests/runmode/transparency.do} checks.{p_end}
 
 {marker results}{...}
 {title:Stored results}

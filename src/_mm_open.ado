@@ -24,10 +24,9 @@ program define _mm_open
         di as err `"mergemap: `f' not found"'
         exit 601
     }
-    * absolute path, so the handler resolves it whatever the working directory
-    if substr(`"`f'"', 1, 1) != "/" & substr(`"`f'"', 2, 1) != ":" {
-        local f `"`c(pwd)'/`f'"'
-    }
+    * absolute path, so the handler resolves it whatever the working directory.
+    _mm_isabs `"`f'"'
+    if !r(abs) local f `"`c(pwd)'/`f'"'
     local q = char(34)
     if "`c(os)'" == "MacOSX" {
         shell open `q'`f'`q'

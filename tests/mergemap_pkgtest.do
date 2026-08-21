@@ -566,6 +566,30 @@ capture noisily mergemap draw "`j'", export(html) saving(dm16.html) replace join
 mm_assert `=(_rc == 0)' "joinsonly works for HTML"
 capture program drop mm_cls
 
+* ---- block 17: absolute-path detection is platform-neutral ----------------
+* An output path that is already absolute must not be sent back through
+* c(pwd).  The Windows forms are the ones that regressed: a UNC share and a
+* root-relative path both start with a backslash, which a test that only
+* looks for a leading / and a drive letter reads as relative.  These run the
+* same on every platform because the predicate is pure string work.
+local bs = char(92)
+foreach spec in ///
+    "/home/eric/out.html|1|unix absolute" ///
+    "C:`bs'project`bs'out.html|1|Windows drive letter" ///
+    "`bs'`bs'server`bs'share`bs'out.html|1|Windows UNC share" ///
+    "`bs'project`bs'out.html|1|Windows root-relative" ///
+    "out.html|0|bare relative" ///
+    "sub/out.html|0|relative with a subfolder" ///
+    "./out.html|0|explicitly relative" {
+    local path  = substr("`spec'", 1, strpos("`spec'", "|") - 1)
+    local rest  = substr("`spec'", strpos("`spec'", "|") + 1, .)
+    local want  = real(substr("`rest'", 1, strpos("`rest'", "|") - 1))
+    local lab   = substr("`rest'", strpos("`rest'", "|") + 1, .)
+    capture _mm_isabs "`path'"
+    mm_assert `=(_rc == 0)' "_mm_isabs runs: `lab'"
+    mm_assert `=(r(abs) == `want')' "_mm_isabs: `lab'"
+}
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///

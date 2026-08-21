@@ -164,9 +164,8 @@ program define _mm_draw_html, sclass
     * an earlier version only absolutised when the file existed, which left
     * a relative path in the link on the one occasion it mattered.
     local abs `"`hf'"'
-    if substr(`"`abs'"', 1, 1) != "/" & substr(`"`abs'"', 2, 1) != ":" {
-        local abs `"`c(pwd)'/`hf'"'
-    }
+    _mm_isabs `"`abs'"'
+    if !r(abs) local abs `"`c(pwd)'/`hf'"'
     global MM_LASTOUT `"`abs'"'
     * A {stata ...} link runs a Stata command.  Do NOT go back to
     * {browse "file://..."}: SMCL hands that to the platform URL parser, and

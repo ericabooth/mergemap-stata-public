@@ -2,6 +2,41 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.4.1 — 2026-08-21
+
+### Fixed
+
+- **Run mode failed outright on Stata 16.** `_mm_run` saved the sort seed with
+  `c(sortseed)` and put it back before executing the pipeline, but that creturn
+  came in after Stata 16. On 16 the save produced an empty macro and the restore
+  ran as a bare `set sortseed`, which stopped run mode with `r(198) invalid
+  syntax` before a single do-file executed. The package declares Stata 16 as its
+  floor, so run mode was unusable at the floor it advertised. The seed is now
+  probed for and used only where it exists. Verified on Stata 16.1 and 19.5:
+  both produce 30 events and 11 joins on the test pipeline.
+- **Bit-level reproducibility on Stata 16 is a limitation, and now says so.**
+  Without `c(sortseed)` the instrumentation's own bookkeeping advances Stata's
+  sort RNG with no way to put it back, so a later `sort` or `collapse` that
+  breaks a tie at random can land a last bit away from a plain run. Run mode
+  prints a note when it starts on such a Stata, and the help and README record
+  it. Scan mode, the default, executes nothing and is unaffected. On a newer
+  Stata the output stays identical to a plain run.
+- **A UNC or root-relative Windows path was treated as relative.** The test for
+  an absolute output path looked for a leading `/` or a drive letter, so
+  `\\server\share\map.html` and `\project\map.html` were sent back through
+  `c(pwd)` and came out as a path that opens nothing. Both forms are common on
+  managed Windows machines, where research folders sit on a share. The test now
+  lives in one place, `_mm_isabs`, used by `mergemap draw` and `_mm_open` alike.
+
+### Added
+
+- `_mm_isabs`, the absolute-path test, extracted so it can be checked directly.
+  The battery covers all four absolute forms (unix, drive letter, UNC,
+  root-relative) and three relative ones, and runs the same on every platform.
+- The run-mode transparency suite reports SKIP rather than FAIL for the
+  bit-level comparisons on a Stata without `c(sortseed)`, and counts them
+  separately, so the suite reads honestly on both releases.
+
 ## 0.4.0 — 2026-08-21
 
 ### Added

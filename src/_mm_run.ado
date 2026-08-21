@@ -66,7 +66,14 @@ program define _mm_run, rclass
     * therefore captured before anything else happens and put back just
     * before the pipeline executes.  (The wrappers themselves never sort:
     * their diagnostics run in Mata, see _mm_keys.)
-    local runss "`c(sortseed)'"
+    * c(sortseed) arrived after Stata 16, so probe for it rather than assume
+    * it is there: on a Stata that predates it there is no sort seed to carry
+    * across, and run mode should go ahead instead of stopping.  Without this
+    * probe the restore below ran as a bare -set sortseed- and failed with
+    * r(198) on Stata 16, which is the version this package claims to support.
+    local runss ""
+    capture local runss = c(sortseed)
+    if _rc local runss ""
 
     * ---------------- fresh run state ----------------
     _mm_rclear
@@ -168,7 +175,23 @@ program define _mm_run, rclass
     * ---------------- run the instrumented copies -------------------------
     di as txt _newline "mergemap run: executing " as res `"`disp'"' as txt   ///
         " with instrumentation" _newline
-    set sortseed `runss'
+    * Say so when the sort seed cannot be held steady.  The wrappers' own
+    * bookkeeping advances Stata's sort RNG, and without c(sortseed) there is
+    * no way to put it back, so a later -collapse- or -sort- that breaks a tie
+    * at random can land differently than it would in a plain run.  The
+    * difference shows up below display precision, but it is a difference, and
+    * a user comparing run-mode output against their own run should know.
+    if `"`runss'"' == "" {
+        di as txt "mergemap run: this Stata has no c(sortseed), so the sort " ///
+            "seed cannot be held"
+        di as txt "               steady.  Where a sort or collapse breaks a " ///
+            "tie at random, results"
+        di as txt "               can differ from a plain run in the last " ///
+            "bits.  Scan mode is"
+        di as txt "               unaffected, and a newer Stata does not " ///
+            "have this limitation." _newline
+    }
+    if `"`runss'"' != "" capture set sortseed `runss'
     local rc = 0
     forvalues i = 1/`top' {
         if `rc' continue

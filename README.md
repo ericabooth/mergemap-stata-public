@@ -276,6 +276,8 @@ The scanner matches command names in your source, so a join it never sees by nam
 
 `mergemap run` rewrites your do-files into temporary copies with instrumented command names, keeping your line numbers. It does not alter your files. If a do-file uses `#delimit ;`, the scan is best-effort and says so, and run mode leaves that region uninstrumented. Avoid nesting `mergemap run` inside `webdoc do`, because both take control of how a do-file is executed.
 
+On Stata 16, run mode cannot hold the sort seed steady, because `c(sortseed)` came in after that release. The instrumentation's own bookkeeping advances Stata's sort RNG, so a later `sort` or `collapse` that breaks a tie at random can land differently than it would in a plain run. The gap sits below display precision, and run mode prints a note when it starts. Scan mode, the default, executes nothing and is unaffected. On a newer Stata, run mode restores the seed and produces output identical to a plain run, which `tests/runmode/transparency.do` checks on every commit.
+
 ## See also
 
 - [`precombine`](https://www.stata-journal.com/article.html?article=dm0080) (Chatfield): compares datasets *before* you combine them, including whether their value-label code sets agree. It is the pre-flight check, and `mergemap` is the map afterwards. Use both.
