@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.3.1  20aug2026  Eric Booth}{...}
+{* *! version 0.3.2  21aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -332,7 +332,16 @@ as a gate rather than a report.{p_end}
 
 {synoptset 26 tabbed}{...}
 {synopt :{opt fold:er(path)}}write the example here; default {cmd:mergemap_demo}{p_end}
-{synopt :{opt replace}}overwrite an existing example folder{p_end}
+{p2colreset}{...}
+
+{pstd}
+Running {cmd:mergemap demo} a second time refreshes the example in place, so you
+can retype it as often as you like. If the folder holds anything {cmd:mergemap}
+did not write, it stops and leaves your files alone; {opt replace} proceeds
+anyway.{p_end}
+
+{synoptset 26 tabbed}{...}
+{synopt :{opt replace}}write the example into an existing folder that {cmd:mergemap} did not create{p_end}
 {synoptline}
 {p2colreset}{...}
 

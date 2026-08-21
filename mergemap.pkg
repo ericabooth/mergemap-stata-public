@@ -25,7 +25,7 @@ d
 d Author: Eric Booth
 d Support: email eric.a.booth@gmail.com
 d
-d Distribution-Date: 20260820
+d Distribution-Date: 20260821
 f src/mergemap.sthlp
 f src/mergemap.ado
 f src/_mm_append.ado

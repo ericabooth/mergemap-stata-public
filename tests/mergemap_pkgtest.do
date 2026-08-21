@@ -462,6 +462,29 @@ mm_assert `=("$MM_LASTJ" == "")' "clear forgets the remembered journal"
 capture confirm file j13.tsv
 mm_assert `=(_rc == 0)' "clear leaves the journal FILE untouched"
 
+* ============================================================================
+mm_block 14 "mergemap demo can be run more than once"
+* ============================================================================
+* Reported from real use: the demo refused on every call after the first,
+* which turns the first command a new user types into an error.
+capture noisily mergemap demo, folder(dm14)
+mm_assert `=(_rc == 0)' "demo runs on a fresh folder"
+capture noisily mergemap demo, folder(dm14)
+mm_assert `=(_rc == 0)' "demo runs again on its own folder"
+capture noisily mergemap demo, folder(dm14)
+mm_assert `=(_rc == 0)' "and again"
+
+* a folder mergemap did not write is still protected
+capture mkdir dm14_user
+capture erase dm14_user/mywork.do
+file open fh using dm14_user/mywork.do, write text replace
+file write fh "* the user's own file" _n
+file close fh
+capture noisily mergemap demo, folder(dm14_user)
+mm_assert `=(_rc == 602)' "a folder mergemap did not write is refused"
+capture confirm file dm14_user/mywork.do
+mm_assert `=(_rc == 0)' "and the user's file is left alone"
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///

@@ -2,6 +2,21 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.3.2 — 2026-08-21
+
+### Fixed
+
+- **`mergemap demo` can be run more than once.** It refused on every call after
+  the first, exiting `r(602)`, which stops any do-file that calls it without
+  `capture`. The guard was meant to protect a folder the user owns, but the
+  folder it refused was almost always the one the demo had written a minute
+  earlier, so the first command a new user types failed the second time they
+  typed it. The demo now recognises its own output and refreshes it in place. A
+  folder holding anything else is still refused, and the user's files are still
+  left alone.
+- `mergemap list` collided the event number with the filename from event 10 on:
+  a `%-4s` field holding `"  10"` fills exactly, leaving no separator.
+
 ## 0.3.1 — 2026-08-20
 
 The subcommand set is complete: nothing in the help file is a promise any more.

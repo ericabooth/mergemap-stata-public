@@ -1,4 +1,4 @@
-*! version 0.3.1  20aug2026  Eric Booth
+*! version 0.3.2  21aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -2256,10 +2256,23 @@ program define _mm_demo
     local isdir = 0
     mata: st_local("isdir", strofreal(direxists(st_local("d"))))
     if `isdir' & "`replace'" == "" {
-        di as err `"mergemap: folder `d' already exists."'
-        di as err `"          mergemap demo, replace          overwrite it"'
-        di as err `"          mergemap demo, folder(name)     write somewhere else"'
-        exit 602
+        * A folder holding a previous demo is ours to refresh.  The demo is
+        * the first command a new user types and the one they retype while
+        * finding their footing, so refusing on the second call turns the
+        * introduction into an error.  A folder with anything else in it is
+        * the user's, and that one is still refused.
+        local mine = 1
+        foreach f in 01_cars.do 02_join.do 03_report.do {
+            capture confirm file `"`d'/`f'"'
+            if _rc local mine = 0
+        }
+        if !`mine' {
+            di as err `"mergemap: folder `d' already exists and was not written by mergemap demo."'
+            di as err `"          mergemap demo, replace          write the example into it anyway"'
+            di as err `"          mergemap demo, folder(name)     write somewhere else"'
+            exit 602
+        }
+        di as txt `"mergemap demo: refreshing the example already in `d'"'
     }
     if !`isdir' {
         capture mkdir `"`d'"'
