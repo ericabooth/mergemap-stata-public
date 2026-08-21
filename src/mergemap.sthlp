@@ -346,7 +346,7 @@ Both take either a count ({cmd:warn(500)}) or a share between 0 and 1
 percent is a crisis; one warning symbol cannot say which, so {cmd:mergemap} sorts
 events into {bf:note}, {bf:warn} and {bf:stop}. A {bf:stop} makes
 {cmd:mergemap run} exit with an error, which lets you put it in a master do-file
-as a gate rather than a report.{p_end}
+as a gate that halts the build.{p_end}
 
 {dlgtab:Run mode only}
 
@@ -600,25 +600,22 @@ crow's-foot glyphs.{p_end}
 
 {pstd}
 A horizontal diagram is wider than any text column. Let it keep its own width and
-scroll sideways rather than shrinking to fit; squeezed into a column its labels
-fall below two pixels.{p_end}
+scroll sideways. Squeezed into a text column its labels fall below two
+pixels.{p_end}
 
 {marker limits}{...}
 {title:Limitations}
 
-{pstd}
-These are boundaries of the approach, not bugs. Knowing them is part of using the
-tool honestly.{p_end}
-
 {phang2}
 In scan mode, anything built at run time stays unresolved. A file name assembled
 from a macro appears as it is written in your code, and a loop over a list built
-from a directory listing cannot be counted. Both are flagged rather than guessed at.
-Run mode resolves them.{p_end}
+from a directory listing cannot be counted. {cmd:mergemap} flags both, and run
+mode resolves them.{p_end}
 
 {phang2}
-A join performed inside a command you wrote yourself, or built up as text and
-executed, is invisible to the scanner. It sees code, not intentions.{p_end}
+The scanner matches command names in your source, so a join it never sees by name
+stays off the map. That covers a join performed inside a command you wrote
+yourself, and a join built up as text and then executed.{p_end}
 
 {phang2}
 {cmd:mergemap run} rewrites your do-files into temporary copies with instrumented
@@ -673,8 +670,8 @@ went. {cmd:mergemap} reports what happened; {cmd:iedropone} enforces what should
 
 {phang2}
 {bf:For participant-flow figures.} {cmd:flowchart} (Dodd) draws CONSORT and PRISMA
-diagrams of how subjects were included and excluded. It needs LaTeX and it charts
-people, not datasets.{p_end}
+diagrams of how subjects were included and excluded. It charts participants where
+{cmd:mergemap} charts datasets, and it needs LaTeX.{p_end}
 
 {phang2}
 {bf:For a row-flow picture.} {cmd:sankey} (Naqvi) draws flow widths from
@@ -682,8 +679,9 @@ people, not datasets.{p_end}
 
 {phang2}
 {bf:Note on merge wrappers.} If your code uses {cmd:mmerge}, {cmd:dmerge},
-{cmd:mergeall}, {cmd:pullin}, or a merge command of your own, {cmd:mergemap} will
-see the wrapper and not the join inside it. It reads code, not intentions.{p_end}
+{cmd:mergeall}, {cmd:pullin}, or a merge command of your own, {cmd:mergemap}
+records the wrapper and stops there. The join happens a level deeper than the
+scanner reads.{p_end}
 
 {title:Also see}
 
