@@ -150,8 +150,8 @@ mergemap: drop _merge   (02_panel.do line 15)
     removed 1 variables, 9 remaining
 
 . _mm_save #3:16# "$MM_VISITS"
-file /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St64952.000002 saved as .dta format
-mergemap: save tempfile:St64952.000002   (02_panel.do line 16)
+file /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St06296.000002 saved as .dta format
+mergemap: save tempfile:St06296.000002   (02_panel.do line 16)
     create, 1,908 obs, 9 vars
 
 . 
@@ -201,7 +201,7 @@ mergemap: do 03_analyze.do   (00_master.do line 21)
 
 . _mm_use #4:7# "$MM_VISITS", clear
 (participants: 12 duplicate pids, stray counties)
-mergemap: use tempfile:St64952.000002   (03_analyze.do line 7)
+mergemap: use tempfile:St06296.000002   (03_analyze.do line 7)
     loaded 1,908 obs, 9 vars
 
 . 

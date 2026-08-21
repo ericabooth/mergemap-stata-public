@@ -137,7 +137,7 @@ The HTML page is **self-contained**: no internet, no JavaScript, no external ass
 
 ### It renders on GitHub, too
 
-`export(mermaid)` writes a flowchart this page can display. The block below came straight out of the command:
+`export(mermaid)` writes a flowchart this page can display. The block below came straight out of `mergemap draw, export(mermaid) joinsonly`, which leaves out the reshaping and filtering steps so the joins stand on their own. GitHub renders it with pan and zoom controls, so a dense map stays readable.
 
 ```mermaid
 flowchart TD
@@ -145,25 +145,21 @@ flowchart TD
   classDef mmfilter fill:#f4f4f4,stroke:#909090,color:#202020;
   classDef mmnote fill:#fafafa,stroke:#b0b0b0,color:#404040;
   classDef mmwarn fill:#ffffff,stroke:#4a6d8c,stroke-width:2.5px,color:#202020;
+  classDef mmstop fill:#ffffff,stroke:#4a6d8c,stroke-width:4px,color:#202020;
   subgraph sg1["01_build.do"]
     d6["../raw/cps_2019.dta<br/>484 x 7"]
     d7["x3: ../raw/cps_2020.dta ... ../raw/cps_2022.dta<br/>1,452 x 22"]
     s3["work<br/>1,936 x 8<br/>!! force used"]
     d5["../raw/county_key.dta<br/>42 x 3"]
     s4["work<br/>1,936 x 10<br/>2 using-only dropped by keep(1 3)<br/>17 master-only kept"]
-    s5(["drop if missing(hours)<br/>!! removed 488 rows (25.2%), 1,448 remaining"])
-    s6["collapse (mean) wage hours, by(county year)<br/>1,448 -> 123 obs"]
     d2["../out/county_panel.dta [saved, overwrites]<br/>123 x 4"]
   end
   d6 -- "append<br/>force<br/>+1,452 obs from 3 files" --> s3
   d7 --> s3
   s3 -- "merge m:1 county<br/>keep(1 3) nogenerate<br/>matched 1,919, master-only 17<br/>99.1% of master matched" --> s4
   d5 -. "using-only (2 dropped)<br/>95.2% of using used" .-> s4
-  s4 --> s5
-  s5 --> s6
-  s6 --> d2
+  s4 --> d2
   class s3 mmwarn;
-  class s5 mmfilter;
 ```
 
 ### Putting a map in a report
@@ -255,7 +251,7 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 
 **Run mode only.** `examples(#)` lists a few sample rows per join, showing the keys and `_merge` only. `nochecks` skips the duplicate-key scan of using files, which is the expensive part on large data.
 
-**Drawing.** `style(boxes|rail)` picks full boxes (the default) or a compact rail; `layout(vertical|horizontal)` picks down the page or across it; `compact`, `nocounts`, `nokeys`, `notransforms` and `noellipsis` leave things out; `details` folds per-join ledgers into the HTML; `accent(hex)` sets the single colour used for flags and arrowheads; `noopen` writes the HTML without opening a browser.
+**Drawing.** `style(boxes|rail)` picks full boxes (the default) or a compact rail; `layout(vertical|horizontal)` picks down the page or across it; `compact`, `nocounts`, `nokeys` and `noellipsis` leave detail out; **`joinsonly` draws the joins and nothing else** (`notransforms` and `nofilters` do half of that each, and all three work for every export format); `details` folds per-join ledgers into the HTML; `accent(hex)` sets the single colour used for flags and arrowheads; `noopen` writes the HTML without opening a browser.
 
 ## Flags, and what to do about them
 

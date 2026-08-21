@@ -2,11 +2,11 @@
 
 Entities are datasets, attributes are the keys they were joined on, and the glyph carries the Stata subtype: `||--||` is 1:1, `}o--||` is m:1, `||--o{` is 1:m, `}o--o{` is m:m or joinby. A dotted line is a link that does not pair rows on a key: append, or frlink.
 
-*mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP*
+*mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df*
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px','primaryColor':'#ffffff','primaryTextColor':'#202020','primaryBorderColor':'#606060','lineColor':'#606060','secondaryColor':'#f4f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%
-%% mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP
+%% mergemap _mm_rendertext 0.2.0 - journal journal_scan.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df
 erDiagram
   accTitle: keys and cardinality behind journal_scan.tsv
   accDescr {

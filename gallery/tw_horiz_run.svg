@@ -398,5 +398,5 @@
 	<text x="8401.50" y="12037.99" style="font-family:'Helvetica';font-size:128.70px;fill:#000000" text-anchor="middle">[saved]</text>
 	<text x="8401.50" y="12204.05" style="font-family:'Helvetica';font-size:128.70px;fill:#000000" text-anchor="middle">44,120 obs × 33 vars</text>
 	<text x="7512.30" y="11599.28" style="font-family:'Helvetica';font-size:77.40px;fill:#A0A0a0" text-anchor="middle">22</text>
-	<text x="1973.70" y="13735.15" style="font-family:'Helvetica';font-size:93.15px;fill:#909090" text-anchor="middle">mergemap · 20 Aug 2026 09:27 · Stata 19.5 MP · journal_run.tsv</text>
+	<text x="2419.20" y="13735.15" style="font-family:'Helvetica';font-size:93.15px;fill:#909090" text-anchor="middle">mergemap · 21 Aug 2026 08:33 · Stata 19.5 MP · git main@057d6df · journal_run.tsv</text>
 </svg>

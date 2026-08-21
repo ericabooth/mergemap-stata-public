@@ -2,11 +2,11 @@
 
 Boxes are datasets; the spine is the dataset in memory. A slim rounded node is a row filter. `!!` marks an event that needs attention.
 
-*mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP*
+*mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df*
 
 ```mermaid
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px','primaryColor':'#ffffff','primaryTextColor':'#202020','primaryBorderColor':'#606060','lineColor':'#606060','secondaryColor':'#f4f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%
-%% mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 20 Aug 2026 09:27:36 - Stata 19.5 MP
+%% mergemap _mm_rendertext 0.2.0 - journal journal_pipeline.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df
 flowchart TD
   accTitle: mergemap data-flow map of journal_pipeline.tsv
   accDescr {

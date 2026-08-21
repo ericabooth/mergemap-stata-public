@@ -2,6 +2,25 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.4.0 — 2026-08-21
+
+### Added
+
+- **`joinsonly`, `nofilters`, and a working `notransforms`.** Asked for from
+  real use: a map of the joins alone, with the reshaping and the row filters
+  left out. `notransforms` already existed but hid only the reshapes, left the
+  filters in place, and worked for the Results-window drawing alone. The cut now
+  happens on the journal before any renderer reads it, so `notransforms`,
+  `nofilters` and `joinsonly` all apply to HTML, PNG, SVG, mermaid and DOT as
+  well as SMCL, from one implementation.
+- **A section in the help on naming files so they map well**: numbering do-files
+  in run order, giving a loop a list that resolves without executing anything,
+  varying one index against a common stub so a loop collapses to a single node,
+  separating raw from built, and naming saved files for what they hold. The stub
+  advice is the same habit that makes `reshape` work.
+- The help's author block now carries the full affiliation and the license, in
+  line with the other packages.
+
 ## 0.3.3 — 2026-08-21
 
 ### Fixed

@@ -14,6 +14,7 @@ program define _mm_draw, rclass
     syntax [anything(name=jspec)] [, EXPort(string) SAVing(string)          ///
         STYLE(string) LAYout(string) WRAP(integer -1) MAXnodes(integer -1)  ///
         FORCEsmcl COMPact noCOUNTS noKEYS noTRANSFORMS noELLIPSIS           ///
+        noFILTERS JOINSonly                                                 ///
         DETails EMBed ACCent(string) PAGE(string) replace NOOPen]
 
     * ---- which journal --------------------------------------------------
@@ -47,6 +48,30 @@ program define _mm_draw, rclass
         exit 198
     }
 
+    * ---- hide whole classes of event, before any renderer sees them ------
+    * Doing this on the journal rather than inside one renderer means
+    * notransforms and nofilters work for every export, not just the
+    * Results-window drawing, and one implementation covers all of them.
+    if "`joinsonly'" != "" {
+        local transforms "notransforms"
+        local filters    "nofilters"
+    }
+    if "`transforms'" == "notransforms" | "`filters'" == "nofilters" {
+        local q = char(34)
+        local keepcls `"`q'source`q', `q'join`q', `q'link`q', `q'save`q', `q'flow`q', `q'note`q'"'
+        if "`transforms'" != "notransforms" local keepcls `"`keepcls', `q'transform`q'"'
+        if "`filters'"    != "nofilters"    local keepcls `"`keepcls', `q'filter`q'"'
+        tempfile jcut
+        local jcut `"`jcut'.tsv"'
+        preserve
+        quietly import delimited using `"`jfile'"', delimiter(tab) ///
+            varnames(1) stringcols(_all) clear
+        quietly keep if inlist(class, `keepcls')
+        quietly export delimited using `"`jcut'"', delimiter(tab) replace datafmt
+        restore
+        local jfile `"`jcut'"'
+    }
+
     return local journal `"`jfile'"'
 
     * ---- smcl -----------------------------------------------------------
@@ -56,7 +81,7 @@ program define _mm_draw, rclass
         if `"`layout'"' != "" local o `"`o' layout(`layout')"'
         if `wrap'     >= 0    local o `"`o' wrap(`wrap')"'
         if `maxnodes' >= 0    local o `"`o' maxnodes(`maxnodes')"'
-        local o `"`o' `forcesmcl' `compact' `counts' `keys' `transforms' `ellipsis'"'
+        local o `"`o' `forcesmcl' `compact' `counts' `keys' `ellipsis'"'
         _mm_rendersmcl using `"`jfile'"', `o'
         * escalation: the renderer declined (too many nodes, or horizontal);
         * write the HTML it promised, into saving() or a default name

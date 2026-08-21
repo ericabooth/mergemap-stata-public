@@ -326,5 +326,5 @@
 	<text x="3747.44" y="13014.11" style="font-family:'Helvetica';font-weight:bold;font-size:99.00px;fill:#000000" text-anchor="middle">raw/schedules.dta</text>
 	<text x="1615.43" y="13758.41" style="font-family:'Helvetica';font-weight:bold;font-size:99.00px;fill:#000000" text-anchor="middle">built/analysis_file.dta  [saved]</text>
 	<text x="344.69" y="13744.55" style="font-family:'Helvetica';font-size:59.40px;fill:#A0A0a0" text-anchor="middle">22</text>
-	<text x="1318.89" y="14169.85" style="font-family:'Helvetica';font-size:71.10px;fill:#909090" text-anchor="middle">mergemap · 20 Aug 2026 09:27 · Stata 19.5 MP · journal_scan.tsv</text>
+	<text x="1660.43" y="14169.85" style="font-family:'Helvetica';font-size:71.10px;fill:#909090" text-anchor="middle">mergemap · 21 Aug 2026 08:33 · Stata 19.5 MP · git main@057d6df · journal_scan.tsv</text>
 </svg>

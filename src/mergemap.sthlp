@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.3.3  21aug2026  Eric Booth}{...}
+{* *! version 0.4.0  21aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -11,6 +11,7 @@
 {viewerjumpto "Reading the receipt" "mergemap##receipt"}{...}
 {viewerjumpto "Scan mode versus run mode" "mergemap##modes"}{...}
 {viewerjumpto "Drawing the map" "mergemap##draw"}{...}
+{viewerjumpto "Naming files so they map well" "mergemap##naming"}{...}
 {viewerjumpto "Options" "mergemap##options"}{...}
 {viewerjumpto "Examples" "mergemap##examples"}{...}
 {viewerjumpto "Joins in Stata and SQL" "mergemap##sql"}{...}
@@ -120,7 +121,7 @@ Folders and patterns expand to their {cmd:.do} files in name order, and a missin
 {synoptline}
 {synopt :{opt demo}}write a worked example, scan it, and show the output{p_end}
 {synopt :{opt scan}}read do-files without running them {it:(the default)}{p_end}
-{synopt :{opt check}}show only the events that carry a flag{p_end}
+{synopt :{opt check}}show only the events that were flagged{p_end}
 {synopt :{opt run}}run the do-files and record what actually happened{p_end}
 {synopt :{opt draw}}draw the map: Results window, HTML, PNG/SVG, mermaid, DOT{p_end}
 {synopt :{opt sql}}teach a join form as a row-pairing picture{p_end}
@@ -255,6 +256,54 @@ instead, prints the path along with a clickable link that opens it, and opens it
 for you in GUI sessions unless {opt noopen}. {opt forcesmcl} overrides the count. A PNG too dense for one
 readable image is split into one page per do-file on its own.{p_end}
 
+{marker naming}{...}
+{title:Naming files so they map well}
+
+{pstd}
+{cmd:mergemap} reads whatever you wrote, so a few habits when you name and
+arrange things make the map more useful. None of them are required, and none of
+them change how your code runs.{p_end}
+
+{phang2}
+{bf:Number your do-files in run order.} With {cmd:01_clean.do},
+{cmd:02_merge.do}, {cmd:03_analyze.do}, the folder order is the run order, so
+{cmd:mergemap build/} gives you the pipeline in the sequence it happens. Without
+the numbers you have to list the files yourself and get the order right by
+hand.{p_end}
+
+{phang2}
+{bf:Give a loop a list Stata can read without running it.} A loop over a literal
+list or a numlist resolves during the scan, so four merges collapse into one
+stacked node naming the first and last file:{p_end}
+
+{phang3}{cmd:forvalues y = 2019/2022 {c -(}}{p_end}
+{phang3}{cmd:    merge 1:1 id using acs_`y'.dta, nogenerate}{p_end}
+{phang3}{cmd:{c )-}}{p_end}
+
+{pstd}
+A loop over a list built while the code runs, from a directory listing or an
+{cmd:r()} result, cannot be counted without executing anything, so the map draws
+one node showing the unresolved name and flags it. Run mode resolves it. When
+you want the scan alone to be informative, prefer the literal list.{p_end}
+
+{phang2}
+{bf:Use one stub and vary only the index.} {cmd:acs_2019.dta} through
+{cmd:acs_2022.dta} collapse into {cmd:x4: acs_2019.dta ... acs_2022.dta}. Files
+called {cmd:acs19.dta}, {cmd:acs_2020_final.dta} and {cmd:ACS2021v2.dta} are
+three unrelated names, so they draw as three separate nodes. This is the habit
+that also makes {helpb reshape} work: a common stub with the varying part in one
+place.{p_end}
+
+{phang2}
+{bf:Keep raw and built files in separate folders.} Reading from {cmd:raw/} and
+writing to {cmd:built/} makes the sources and the outputs obvious in the map, and
+it lets {cmd:mergemap} tell you when two do-files write the same path.{p_end}
+
+{phang2}
+{bf:Save under a name that says what the file holds.} The box shows the name
+you chose, so {cmd:built/county_panel.dta} reads better in a figure than
+{cmd:temp2.dta}.{p_end}
+
 {marker options}{...}
 {title:Options}
 
@@ -279,10 +328,9 @@ equivalent.{p_end}
 {p2colreset}{...}
 
 {pstd}
-The journal is a tab-separated file with one line per event. It is the record
-everything else is built from, and it is worth keeping: it can be read straight
-back into Stata with {helpb import delimited}, or reprinted with
-{cmd:mergemap receipt}.{p_end}
+The journal is a tab-separated file with one line per event, and every other
+output is built from it. Read it back with {helpb import delimited} to audit the
+joins yourself, or reprint the table with {cmd:mergemap receipt}.{p_end}
 
 {dlgtab:How loudly to complain}
 
@@ -317,7 +365,10 @@ as a gate rather than a report.{p_end}
 {synopt :{opt maxnodes(#)}}how much SMCL will attempt before handing over to HTML{p_end}
 {synopt :{opt forcesmcl}}draw in the Results window regardless of size{p_end}
 {synopt :{opt compact}}one line per box{p_end}
-{synopt :{opt nocounts} {opt nokeys} {opt notransforms} {opt noellipsis}}leave things out{p_end}
+{synopt :{opt nocounts} {opt nokeys} {opt noellipsis}}leave counts, keys, or loop detail out{p_end}
+{synopt :{opt notrans:forms}}hide {cmd:reshape}, {cmd:collapse}, {cmd:contract} and friends{p_end}
+{synopt :{opt nofilters}}hide {cmd:keep if}, {cmd:drop if}, and variable drops{p_end}
+{synopt :{opt joinsonly}}both of the above: draw the joins and nothing else{p_end}
 {synopt :{opt det:ails}}per-join ledgers folded into the HTML page{p_end}
 {synopt :{opt embed}}HTML as a fragment for someone else's page; see below{p_end}
 {synopt :{opt acc:ent(hex)}}the one colour used for flags and arrowheads{p_end}
@@ -378,6 +429,17 @@ anyway.{p_end}
 
 {pstd}{bf:Draw what I just scanned}{p_end}
 {phang2}{cmd:. mergemap draw}{p_end}
+
+{pstd}{bf:Just the joins: no reshapes, no collapses, no row filters}{p_end}
+{phang2}{cmd:. mergemap draw, joinsonly}{p_end}
+
+{pstd}{bf:Keep the filters but drop the reshaping steps, or the reverse}{p_end}
+{phang2}{cmd:. mergemap draw, notransforms}{p_end}
+{phang2}{cmd:. mergemap draw, nofilters}{p_end}
+
+{pstd}{bf:Map a numbered folder of do-files, then draw only its joins}{p_end}
+{phang2}{cmd:. mergemap build/}{p_end}
+{phang2}{cmd:. mergemap draw, joinsonly export(png) saving(figures/joins) replace}{p_end}
 
 {pstd}{bf:A figure for a report}{p_end}
 {phang2}{cmd:. mergemap draw, export(png) saving(figures/pipeline) replace}{p_end}
@@ -634,5 +696,10 @@ Help: {manhelp merge D}, {manhelp append D}, {manhelp joinby D},
 
 {title:Author}
 
-{pstd}Eric Booth{break}
-{cmd:eric.a.booth@gmail.com}{p_end}
+{pstd}Eric A. Booth{break}
+Sr Researcher, Texas 2036{break}
+eric.a.booth@gmail.com{p_end}
+
+{pstd}
+MIT License. Report issues at the
+{browse "https://github.com/ericabooth/mergemap-stata-public":GitHub repository}.{p_end}

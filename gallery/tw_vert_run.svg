@@ -375,5 +375,5 @@
 	<text x="1177.34" y="13831.92" style="font-family:'Helvetica';font-weight:bold;font-size:72.46px;fill:#000000" text-anchor="middle">built/analysis_file.dta  [saved]</text>
 	<text x="1177.34" y="13930.47" style="font-family:'Helvetica';font-size:72.46px;fill:#000000" text-anchor="middle">44,120 obs × 33 vars</text>
 	<text x="251.58" y="13821.68" style="font-family:'Helvetica';font-size:43.21px;fill:#A0A0a0" text-anchor="middle">22</text>
-	<text x="943.31" y="14231.93" style="font-family:'Helvetica';font-size:51.76px;fill:#909090" text-anchor="middle">mergemap · 20 Aug 2026 09:27 · Stata 19.5 MP · journal_run.tsv</text>
+	<text x="1192.19" y="14231.93" style="font-family:'Helvetica';font-size:51.76px;fill:#909090" text-anchor="middle">mergemap · 21 Aug 2026 08:33 · Stata 19.5 MP · git main@057d6df · journal_run.tsv</text>
 </svg>

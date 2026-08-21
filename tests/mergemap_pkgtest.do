@@ -519,6 +519,53 @@ mm_assert `=(`sawstata' == 1)' "the link is a {stata _mm_open} command link"
 capture noisily _mm_open "no_such_file_here.html"
 mm_assert `=(_rc == 601)' "_mm_open refuses a file that is not there"
 
+* ============================================================================
+mm_block 16 "hiding transforms and filters"
+* ============================================================================
+* Asked for from real use: a map of the joins alone, with the reshapes and the
+* row filters left out.  The cut happens on the journal, so it applies to
+* every export rather than only the Results-window drawing.
+capture noisily mergemap demo, folder(dm16)
+local j "dm16/demo_journal.tsv"
+
+* count what each option leaves behind, straight from the journal
+program define mm_cls, rclass
+    args jfile cls
+    tempname fr
+    capture frame drop `fr'
+    frame create `fr'
+    local n = 0
+    frame `fr' {
+        quietly import delimited using "`jfile'", delimiter(tab) varnames(1) ///
+            stringcols(_all) clear
+        quietly count if class == "`cls'"
+        local n = r(N)
+    }
+    frame drop `fr'
+    return scalar n = `n'
+end
+
+mm_cls "`j'" transform
+local ntrans = r(n)
+mm_cls "`j'" filter
+local nfilt = r(n)
+mm_cls "`j'" join
+local njoin = r(n)
+mm_assert `=(`ntrans' > 0 & `nfilt' > 0 & `njoin' > 0)' "the demo journal has transforms, filters and joins to hide"
+
+foreach o in notransforms nofilters joinsonly {
+    capture noisily mergemap draw "`j'", forcesmcl maxnodes(99) `o'
+    mm_assert `=(_rc == 0)' "draw accepts `o'"
+}
+* the cut reaches the other exports too, which it did not before
+foreach o in notransforms joinsonly {
+    capture noisily mergemap draw "`j'", export(mermaid) saving(dm16_`o') replace `o'
+    mm_assert `=(_rc == 0)' "`o' works for a non-SMCL export"
+}
+capture noisily mergemap draw "`j'", export(html) saving(dm16.html) replace joinsonly noopen
+mm_assert `=(_rc == 0)' "joinsonly works for HTML"
+capture program drop mm_cls
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///
