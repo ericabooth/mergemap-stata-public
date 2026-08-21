@@ -11,12 +11,12 @@ seq	dofile	line	class	cmd	subtype	keys	master	usingfile	result	n_in	k_in	n_using
 10	02_panel.do	11	transform	duplicates	drop	pid	work	.	work	792	6	.	.	780	6	.	.	.	.	.	.	.	0	drop pid, force	.	.	.	warn	.	.	.	.	12 duplicate pid obs dropped
 11	02_panel.do	14	join	merge	1:m	pid	work	../raw/visits.dta	work	780	6	1860	4	1908	10	48	0	1860	0	0	0	1128	0	.	.	.	.	warn	pid: long vs long	93.8	100.0	.	48 master-only kept; row multiplication x2.45
 12	02_panel.do	15	filter	drop	.	.	work	.	work	1908	10	.	.	1908	9	.	.	.	.	.	.	.	0	_merge	.	.	.	note	.	.	.	.	removed 1 variables, 9 remaining
-13	02_panel.do	16	save	save	tempfile	.	work	.	tempfile:St04009.000002	1908	9	.	.	1908	9	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	create	tempfile
+13	02_panel.do	16	save	save	tempfile	.	work	.	tempfile:St04657.000002	1908	9	.	.	1908	9	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	create	tempfile
 14	02_panel.do	19	source	use	.	.	.	../out/county_panel.dta	work	.	.	123	4	123	4	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	produced by 01_build.do line 42
 15	02_panel.do	23	transform	reshape	wide	county year	work	.	work	123	4	.	.	41	7	.	.	.	.	.	.	.	0	wide wage hours, i(county) j(year)	.	.	.	note	.	.	.	.	.
 16	02_panel.do	26	save	save	.	.	work	.	../out/county_wide.dta	41	7	.	.	41	7	.	.	.	.	.	.	.	0	replace	.	.	.	note	.	.	.	overwrite	.
 17	00_master.do	21	flow	do	.	.	work	03_analyze.do	work	.	.	.	.	.	.	.	.	.	.	.	.	.	0	.	.	.	.	note	.	.	.	.	.
-18	03_analyze.do	7	source	use	.	.	.	tempfile:St04009.000002	work	.	.	1908	9	1908	9	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	tempfile from 02_panel.do line 16
+18	03_analyze.do	7	source	use	.	.	.	tempfile:St04657.000002	work	.	.	1908	9	1908	9	.	.	.	.	.	.	.	0	clear	.	.	.	note	.	.	.	read	tempfile from 02_panel.do line 16
 19	03_analyze.do	12	join	merge	m:1	county	work	../out/county_wide.dta	work	1908	9	41	7	1908	15	16	0	1892	0	0	1866	0	0	keep(1 3) nogenerate	.	.	.	note	county: str5 vs str5	99.2	100.0	.	16 master-only kept
 20	03_analyze.do	18	join	joinby	m:m	staff	work	../raw/staff_assign.dta	work	1908	15	62	4	4235	18	.	.	.	.	.	1883	35	0	unmatched(none)	.	.	.	warn	staff: int vs int	96.1	90.3	.	row multiplication x2.22
 21	03_analyze.do	24	join	merge	m:1	pid visitid	work	../raw/corrections.dta	work	4235	18	274	3	4243	19	3609	8	302	171	153	2402	0	0	update replace	.	.	.	warn	pid: long vs long; visitid: int vs int	14.8	97.1	.	153 nonmissing conflicts overwritten; 3,609 master-only kept

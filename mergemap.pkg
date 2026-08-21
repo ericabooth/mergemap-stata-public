@@ -56,6 +56,7 @@ f src/_mm_keys.ado
 f src/_mm_lbl.ado
 f src/_mm_list.ado
 f src/_mm_merge.ado
+f src/_mm_open.ado
 f src/_mm_opt.ado
 f src/_mm_post.ado
 f src/_mm_pre.ado

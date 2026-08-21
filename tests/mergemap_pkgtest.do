@@ -485,6 +485,40 @@ mm_assert `=(_rc == 602)' "a folder mergemap did not write is refused"
 capture confirm file dm14_user/mywork.do
 mm_assert `=(_rc == 0)' "and the user's file is left alone"
 
+* ============================================================================
+mm_block 15 "the open-diagram link never hands a URL to the platform"
+* ============================================================================
+* Reported from real use: clicking the link crashed Stata outright.  SMCL's
+* {browse} passes its target to the OS URL parser, and a file:// URL kills
+* Stata on macOS (NSURLComponents throws, abort()).  The link must be a
+* {stata ...} command link instead, and no file:// may reach the output.
+capture noisily mergemap demo, folder(dm15)
+capture log close L15
+log using dm15_draw.smcl, replace smcl name(L15) nomsg
+capture noisily mergemap draw dm15/demo_journal.tsv, saving(dm15_map.html) replace noopen
+log close L15
+
+tempname fh
+local sawbrowse = 0
+local sawfile   = 0
+local sawstata  = 0
+file open `fh' using dm15_draw.smcl, read text
+file read `fh' line
+while r(eof) == 0 {
+    if strpos(`"`macval(line)'"', "{browse") local sawbrowse = 1
+    if strpos(`"`macval(line)'"', "file://") local sawfile   = 1
+    if strpos(`"`macval(line)'"', "{stata _mm_open") local sawstata = 1
+    file read `fh' line
+}
+file close `fh'
+mm_assert `=(`sawbrowse' == 0)' "no {browse} directive in the draw output"
+mm_assert `=(`sawfile' == 0)' "no file:// URL in the draw output"
+mm_assert `=(`sawstata' == 1)' "the link is a {stata _mm_open} command link"
+
+* _mm_open refuses a missing file rather than doing anything drastic
+capture noisily _mm_open "no_such_file_here.html"
+mm_assert `=(_rc == 601)' "_mm_open refuses a file that is not there"
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///

@@ -28,9 +28,7 @@
 `mergemap` is self-contained: the commands and the help file, with no external Stata dependencies, no Python, no LaTeX, and nothing to download at run time.
 
 ```stata
-net install mergemap, ///
-    from("https://raw.githubusercontent.com/ericabooth/mergemap-stata-public/main/") ///
-    replace force
+net install mergemap, from("https://raw.githubusercontent.com/ericabooth/mergemap-stata-public/main/") replace force
 discard
 which mergemap
 help mergemap
@@ -39,8 +37,7 @@ help mergemap
 The package ships `mergemap.pkg` and `stata.toc`, so Stata's installer picks up every file in one call; no manual `adopath` step is needed. To pull a local copy of the regression battery, `net get` the ancillary do-file:
 
 ```stata
-net get mergemap, ///
-    from("https://raw.githubusercontent.com/ericabooth/mergemap-stata-public/main/")
+net get mergemap, from("https://raw.githubusercontent.com/ericabooth/mergemap-stata-public/main/")
 ```
 
 Requires Stata 16 or later (the frames era).

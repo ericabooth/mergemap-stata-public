@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.3.2  21aug2026  Eric Booth}{...}
+{* *! version 0.3.3  21aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -251,8 +251,8 @@ look, always as text, never as colour alone.{p_end}
 {bf:When the Results window is too small.} A window is a fixed-width space, so
 past {opt maxnodes(#)} events (default 8), or whenever {opt layout(horizontal)}
 is asked for, the SMCL drawing steps aside: {cmd:draw} writes the HTML page
-instead, prints a clickable link, and opens it in GUI sessions unless
-{opt noopen}. {opt forcesmcl} overrides the count. A PNG too dense for one
+instead, prints the path along with a clickable link that opens it, and opens it
+for you in GUI sessions unless {opt noopen}. {opt forcesmcl} overrides the count. A PNG too dense for one
 readable image is split into one page per do-file on its own.{p_end}
 
 {marker options}{...}

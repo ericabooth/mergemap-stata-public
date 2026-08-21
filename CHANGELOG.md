@@ -2,6 +2,33 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.3.3 — 2026-08-21
+
+### Fixed
+
+- **Clicking the "open the diagram" link crashed Stata.** After `mergemap draw`
+  wrote an HTML page it printed a `{browse "file://..."}` link. SMCL hands a
+  `{browse}` target to the platform's URL machinery, and on macOS a `file://`
+  URL passed that way throws an uncaught exception inside `NSURLComponents`
+  and aborts the process: the crash report ends in
+  `-[_NSURLComponentsBridge setScheme:]` and `abort()`. The same call was used
+  for the automatic open, so both routes were affected.
+
+  The link is now `{stata _mm_open:...}`, which runs a Stata command rather
+  than handing a URL to the platform, and `_mm_open` shells to the operating
+  system's own handler (`open` on macOS, `start` on Windows, `xdg-open`
+  elsewhere). Paths containing spaces were checked explicitly and arrive as a
+  single argument. `draw` also prints the path in plain text, so the file can
+  be opened by hand.
+- `draw` left a relative path in the link when the HTML file could not be
+  confirmed, which was the one case where an absolute path mattered most.
+
+### Changed
+
+- The install line in the README is a single line again. Wrapping it with
+  `///` made it impossible to paste into the Results window, which is where
+  people install from.
+
 ## 0.3.2 — 2026-08-21
 
 ### Fixed

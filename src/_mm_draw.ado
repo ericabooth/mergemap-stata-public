@@ -134,15 +134,22 @@ program define _mm_draw_html, sclass
         di as txt `"mergemap draw: fragment written; drop it into your page's body"'
         exit
     }
-    * absolute path for the link, portable across the cd
+    * absolute path, so the link still resolves after the user changes
+    * directory.  Note the missing-file case also gets an absolute path:
+    * an earlier version only absolutised when the file existed, which left
+    * a relative path in the link on the one occasion it mattered.
     local abs `"`hf'"'
-    capture confirm file `"`abs'"'
-    if !_rc & substr(`"`abs'"', 1, 1) != "/" & substr(`"`abs'"', 2, 1) != ":" {
+    if substr(`"`abs'"', 1, 1) != "/" & substr(`"`abs'"', 2, 1) != ":" {
         local abs `"`c(pwd)'/`hf'"'
     }
-    di as txt `"    {browse "file://`abs'":Open the diagram in your browser}"'
-    * auto-open only where a browser can exist: GUI, not batch/console
+    global MM_LASTOUT `"`abs'"'
+    * A {stata ...} link runs a Stata command.  Do NOT go back to
+    * {browse "file://..."}: SMCL hands that to the platform URL parser, and
+    * on macOS it throws inside NSURLComponents and aborts Stata outright.
+    di as txt `"    {stata _mm_open:Open the diagram in your browser}"'
+    di as txt `"    `abs'"'
+    * auto-open where a handler can exist: GUI, not batch or console
     if "`noopen'" == "" & "`c(mode)'" != "batch" & "`c(console)'" == "" {
-        capture view browse `"file://`abs'"'
+        capture _mm_open
     }
 end

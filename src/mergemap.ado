@@ -1,4 +1,4 @@
-*! version 0.3.2  21aug2026  Eric Booth
+*! version 0.3.3  21aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
