@@ -63,6 +63,13 @@ program define _mm_merge
     local uf    : copy global MM_R_UF
     local ufd   : copy global MM_R_UFD
     if `"`opts'"' == "" local opts "."
+    * Journal label for the using file.  _mm_lbl turns a path under c(tmpdir)
+    * into tempfile:<name>, which is how use, append, joinby and cross already
+    * record a tempfile; without this the merge row carried the raw
+    * /var/folders/.../St12345.000004 path and was the one event that did
+    * not say "tempfile", so a draw that hides tempfile traffic missed it.
+    _mm_lbl , path(`"`ufd'"')
+    local ulbl : copy global MM_R_LBL
 
     * ---------------- which categories survive the user's keep()? ---------
     local kept "1 2 3 4 5"
@@ -135,7 +142,7 @@ program define _mm_merge
     if `rc' {
         _mm_post , dofile(`"`dof'"') line(`mml') class(join) cmd(merge)      ///
             subtype(`"`sub'"') keys(`"`keys'"') master(work)                 ///
-            usingfile(`"`ufd'"') result(work) nin(`nin') kin(`kin')          ///
+            usingfile(`"`ulbl'"') result(work) nin(`nin') kin(`kin')         ///
             nusing(`nusing') kusing(`kusing') dupmaster(`dupm')              ///
             dupusing(`dupu') force(`oforce') opts(`"`opts'"')                ///
             severity(stop) keytypes(`"`ktype'"')                             ///
@@ -250,7 +257,7 @@ program define _mm_merge
     * ---------------- journal ----------------
     _mm_post , dofile(`"`dof'"') line(`mml') class(join) cmd(merge)          ///
         subtype(`"`sub'"') keys(`"`keys'"') master(work)                     ///
-        usingfile(`"`ufd'"') result(work)                                    ///
+        usingfile(`"`ulbl'"') result(work)                                   ///
         nin(`nin') kin(`kin') nusing(`nusing') kusing(`kusing')              ///
         nout(`nout') kout(`kout')                                            ///
         m1(`m1') m2(`m2') m3(`m3') m4(`m4') m5(`m5')                         ///
@@ -260,7 +267,7 @@ program define _mm_merge
 
     * ---------------- the ledger (PLAN section 5) ------------------------
     if "$MM_R_NOLED" == "" {
-        di as txt "mergemap: merge `sub' `keys' using " as res `"`ufd'"' ///
+        di as txt "mergemap: merge `sub' `keys' using " as res `"`ulbl'"' ///
             as txt "   (`dof' line `mml')"
         local kt = cond(`"`ktype'"' == ".", "", `"   `ktype'"')
         di as txt "    key: " as res `"`keys'"' as txt "`kt'"

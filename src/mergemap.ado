@@ -1,4 +1,4 @@
-*! version 0.4.1  21aug2026  Eric Booth
+*! version 0.5.0  21aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -21,12 +21,22 @@ program define mergemap, rclass
     else if `"`sub'"' == "receipt" {
         * render the receipt for an existing journal file
         local 0 `"`rest'"'
-        syntax anything(name=jfile id="journal file") [, CHECK]
+        syntax anything(name=jfile id="journal file") [, CHECK PATHS(string) ROOT(string asis)]
         gettoken jfile : jfile
         confirm file `"`jfile'"'
         local of ""
         if "`check'" != "" local of "onlyflagged"
-        _mm_receipt using `"`jfile'"', files(`jfile') mode(existing journal) `of'
+        * paths() and root() shorten the file labels, the same way they do
+        * for mergemap draw; the receipt itself still lists every event
+        local show `"`jfile'"'
+        if `"`paths'"' != "" | `"`root'"' != "" {
+            local po ""
+            if `"`paths'"' != "" local po `"`po' paths(`paths')"'
+            if `"`root'"'  != "" local po `"`po' root(`root')"'
+            _mm_jcut using `"`jfile'"', `po' quietly
+            local show `"`s(jfile)'"'
+        }
+        _mm_receipt using `"`show'"', files(`jfile') mode(existing journal) `of'
         _mm_stats using `"`jfile'"'
         return local files `"`jfile'"'
         return local journal `"`jfile'"'

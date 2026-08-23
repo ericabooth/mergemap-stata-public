@@ -2,6 +2,61 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.0 — 2026-08-23
+
+### Added
+
+- **Finer control over what a long map shows.** `norowfilters` hides only the
+  row filters (`keep if`, `drop if`); `novarfilters` hides only the variable
+  lists (`keep varlist`, `drop varlist`); `notempfiles` hides saves to, uses
+  of, and joins against tempfiles; `filesonly` is `joinsonly` plus
+  `notempfiles`, the joins between named files. All of them cut the journal
+  before any renderer reads it, so they apply to every export, and `draw` now
+  prints what it hid (`r(hidden)` holds the same line). Measured on a real
+  3,092-event run journal: the default HTML map was 221,997 px tall,
+  `nofilters` 51,756, `joinsonly` 35,404, `filesonly` 14,144.
+- **An `if` on `mergemap draw`**, evaluated on the journal's own columns with
+  the count columns as numbers: `mergemap draw if line < 400 & strpos(dofile,
+  "build")` pages a long pipeline; `if class == "join" & n_out < n_in` keeps
+  the joins that lost rows. The clause is read off the command line by a
+  quote- and parenthesis-aware splitter, because `syntax [if]` validates an
+  expression against the data in memory and the journal is not there.
+- **Shorter file labels.** `paths(base)`, `paths(parent)` and `paths(#)` keep
+  the last one, two or `#` components of each path; `root(folder)` makes every
+  path relative to a folder you name, so a project copied between machines
+  draws the same labels under any parent directory. Both work for `draw`,
+  `receipt`, `list` and `export`. The shortened label is always a trailing
+  substring of the original, so a Windows path keeps its backslashes.
+- **`mergemap export` to `.xlsx`**: three sheets, `events` (every event,
+  every column), `joins` (counts, `_merge` breakdown, coverage) and `filters`
+  (each keep/drop with rows removed and percent removed), with count columns
+  numeric so Excel sorts and filters them as numbers. The map can hide the
+  filters while the workbook keeps all of them. `format()` follows the
+  extension of `saving()` when omitted.
+- **`compact`, `nocounts` and `nokeys` now reach the HTML page.** They were
+  accepted and silently ignored there. `compact` and `nocounts` draw no
+  count lines; `nokeys` draws no key varlists. For PNG/SVG, mermaid and DOT,
+  which never took them, `draw` now says so instead of staying quiet.
+- `_mm_jcut`, the one implementation behind every hide and shorten option.
+
+### Changed
+
+- **A standalone HTML page no longer caps the map in a 32rem scroll box.**
+  The page is the page: the map runs full height and the browser scrolls it,
+  which is also what a headless browser needs to rasterise the whole thing.
+  The `embed` fragment keeps the bounded, resizable box, because it sits
+  inside someone else's page.
+
+### Fixed
+
+- **Run mode's `merge` recorded a tempfile's raw path.** `use`, `append`,
+  `joinby` and `cross` already journaled a tempfile as `tempfile:<name>`;
+  `merge` wrote the resolved `/var/folders/.../St12345.000004`, so a run
+  journal described the same tempfile two ways and anything looking for
+  tempfile traffic missed the merges. `merge` now labels its using file the
+  same way. For journals written by earlier versions, `notempfiles` also
+  recognises a path under this machine's `c(tmpdir)`.
+
 ## 0.4.1 — 2026-08-21
 
 ### Fixed

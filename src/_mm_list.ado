@@ -1,14 +1,23 @@
-*! version 0.3.1  20aug2026  Eric Booth
+*! version 0.5.0  23aug2026  Eric Booth
 *! _mm_list -- the journal as a table.  The receipt is the curated view; this
 *! is the data view: one line per event with the count columns run mode fills,
 *! and -full- for every column via -list- when you want to audit the record.
 
 program define _mm_list, rclass
     version 16
-    syntax [anything(name=jspec)] [, FULL]
+    syntax [anything(name=jspec)] [, FULL PATHS(string) ROOT(string asis)]
     _mm_jresolve `jspec'
     local jfile `"`s(jfile)'"'
-    _mm_jload using `"`jfile'"', frame(_mmlst)
+    * paths() and root() shorten the file labels, as for mergemap draw
+    local show `"`jfile'"'
+    if `"`paths'"' != "" | `"`root'"' != "" {
+        local po ""
+        if `"`paths'"' != "" local po `"`po' paths(`paths')"'
+        if `"`root'"'  != "" local po `"`po' root(`root')"'
+        _mm_jcut using `"`jfile'"', `po' quietly
+        local show `"`s(jfile)'"'
+    }
+    _mm_jload using `"`show'"', frame(_mmlst)
     frame _mmlst {
         quietly count
         local N = r(N)

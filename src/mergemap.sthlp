@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.4.1  21aug2026  Eric Booth}{...}
+{* *! version 0.5.0  23aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -86,7 +86,7 @@ it.{p_end}
 {opt fold:er(path)} {opt ex:amples(#)} {opt nochecks} {opt warn(#)} {opt stop(#)}]
 
 {p 8 17 2}
-{cmd:mergemap draw} [{it:journalfile}] [{cmd:,} {opt exp:ort(target)}
+{cmd:mergemap draw} [{it:journalfile}] [{cmd:if} {it:exp}] [{cmd:,} {opt exp:ort(target)}
 {opt sav:ing(filename)} {it:draw_options}]
 
 {p 8 17 2}
@@ -96,17 +96,17 @@ it.{p_end}
 {cmd:mergemap demo} [{it:foldername}] [{cmd:,} {opt fold:er(path)} {opt replace}]
 
 {p 8 17 2}
-{cmd:mergemap receipt} {it:journalfile} [{cmd:,} {opt check}]
+{cmd:mergemap receipt} {it:journalfile} [{cmd:,} {opt check} {opt paths(how)} {opt root(folder)}]
 
 {p 8 17 2}
-{cmd:mergemap list} [{it:journalfile}] [{cmd:,} {opt full}]
+{cmd:mergemap list} [{it:journalfile}] [{cmd:,} {opt full} {opt paths(how)} {opt root(folder)}]
 
 {p 8 17 2}
 {cmd:mergemap detail} {it:#} [{it:journalfile}] [{cmd:,} {opt teach}]
 
 {p 8 17 2}
-{cmd:mergemap export} [{it:journalfile}] [{cmd:,} {opt f:ormat(dta|csv)}
-{opt sav:ing(filename)} {opt replace}]
+{cmd:mergemap export} [{it:journalfile}] [{cmd:,} {opt f:ormat(dta|csv|xlsx)}
+{opt sav:ing(filename)} {opt replace} {opt paths(how)} {opt root(folder)}]
 
 {p 8 17 2}
 {cmd:mergemap clear}
@@ -128,7 +128,7 @@ Folders and patterns expand to their {cmd:.do} files in name order, and a missin
 {synopt :{opt receipt}}reprint the receipt from a saved journal{p_end}
 {synopt :{opt list}}the journal as a table; {opt full} for every column{p_end}
 {synopt :{opt detail} {it:#}}everything known about one event; {opt teach} draws it{p_end}
-{synopt :{opt export}}the journal as a dataset, {cmd:.dta} or {cmd:.csv}{p_end}
+{synopt :{opt export}}the journal as a dataset or workbook: {cmd:.dta}, {cmd:.csv}, {cmd:.xlsx}{p_end}
 {synopt :{opt clear}}forget the remembered journal; files are never touched{p_end}
 {synoptline}
 {p2colreset}{...}
@@ -249,6 +249,57 @@ parentheses were dropped from the result, and {cmd:!!} marks anything worth a
 look, always as text, never as colour alone.{p_end}
 
 {pstd}
+{bf:When the map is too long.} A real pipeline can journal thousands of events,
+and most of them are not joins: in one build of 3,092 events, 2,527 were
+{cmd:keep} and {cmd:drop} statements and 240 were the traffic of saving and
+re-reading tempfiles inside a program. A map of all of it is 220,000 pixels
+tall. The journal and the receipt always keep every event; {cmd:draw} is where
+you choose what to look at, and it tells you what it hid:{p_end}
+
+{phang2}{cmd:. mergemap draw, nofilters}{p_end}
+{phang2}{cmd:. mergemap draw, norowfilters}{p_end}
+{phang2}{cmd:. mergemap draw, novarfilters}{p_end}
+{phang2}{cmd:. mergemap draw, notempfiles}{p_end}
+{phang2}{cmd:. mergemap draw, filesonly}{p_end}
+{phang2}{cmd:. mergemap draw if line < 400 & strpos(dofile, "build")}{p_end}
+
+{pstd}
+{opt nofilters} hides every {cmd:keep} and {cmd:drop}; {opt norowfilters} hides
+only the row filters ({cmd:keep if}, {cmd:drop if}) and {opt novarfilters} only
+the variable lists ({cmd:keep varlist}, {cmd:drop varlist}), so you can keep the
+steps that change the row count and lose the ones that only trim columns.
+{opt notempfiles} hides saves to, uses of, and joins against a tempfile, which
+is most of what a loop inside a program produces. {opt joinsonly} is
+{opt notransforms} plus {opt nofilters}; {opt filesonly} adds {opt notempfiles}
+to that and leaves the joins between named files, which is the picture of how
+the files on disk relate. Note that a join whose using side is a tempfile goes
+with {opt notempfiles}; when that join is the one you care about, use an
+{cmd:if} instead.{p_end}
+
+{pstd}
+The {cmd:if} is evaluated on the journal's own columns, with the count columns
+as numbers and the text columns as text, so it can page a long pipeline any
+way the journal can be sliced: by do-file ({cmd:if strpos(dofile, "mask")}), by
+line range ({cmd:if line >= 400}), by event kind
+({cmd:if inlist(class, "join", "save")}), or by what happened
+({cmd:if n_out < n_in}). Column names are listed under
+{help mergemap##results:Stored results} and in the header of the journal
+file.{p_end}
+
+{pstd}
+{bf:When the labels are too long.} Run mode records the file paths it actually
+opened, so a map of a project that sits in
+{cmd:C:\Users\me\Documents\projects\ccmr\data\...} repeats that prefix in
+every box. {opt paths(base)} shows file names alone, {opt paths(parent)} the
+parent folder and the file name, and {opt paths(#)} the last {it:#} components.
+{opt root(folder)} cuts everything above a folder you name, so a path becomes
+relative to your project: with {opt root(ccmr)} the example above reads
+{cmd:data\...}. Naming the project folder, instead of typing a prefix, means
+the same command gives the same labels on every machine the project is copied
+to, whatever folders sit above it there. The same two options work for
+{cmd:mergemap receipt}, {cmd:mergemap list} and {cmd:mergemap export}.{p_end}
+
+{pstd}
 {bf:When the Results window is too small.} A window is a fixed-width space, so
 past {opt maxnodes(#)} events (default 8), or whenever {opt layout(horizontal)}
 is asked for, the SMCL drawing steps aside: {cmd:draw} writes the HTML page
@@ -364,11 +415,18 @@ as a gate that halts the build.{p_end}
 {synopt :{opt lay:out(vertical|horizontal)}}down the page (default) or across it{p_end}
 {synopt :{opt maxnodes(#)}}how much SMCL will attempt before handing over to HTML{p_end}
 {synopt :{opt forcesmcl}}draw in the Results window regardless of size{p_end}
-{synopt :{opt compact}}one line per box{p_end}
+{synopt :{opt compact}}one line per box (Results window); no count lines (HTML){p_end}
 {synopt :{opt nocounts} {opt nokeys} {opt noellipsis}}leave counts, keys, or loop detail out{p_end}
 {synopt :{opt notrans:forms}}hide {cmd:reshape}, {cmd:collapse}, {cmd:contract} and friends{p_end}
-{synopt :{opt nofilters}}hide {cmd:keep if}, {cmd:drop if}, and variable drops{p_end}
-{synopt :{opt joinsonly}}both of the above: draw the joins and nothing else{p_end}
+{synopt :{opt nofilters}}hide every {cmd:keep} and {cmd:drop}, on rows or variables{p_end}
+{synopt :{opt norow:filters}}hide {cmd:keep if} and {cmd:drop if} only{p_end}
+{synopt :{opt novar:filters}}hide {cmd:keep varlist} and {cmd:drop varlist} only{p_end}
+{synopt :{opt notemp:files}}hide saves to, uses of, and joins against tempfiles{p_end}
+{synopt :{opt joinsonly}}{opt notransforms} and {opt nofilters}: the joins and nothing else{p_end}
+{synopt :{opt filesonly}}{opt joinsonly} and {opt notempfiles}: joins between named files{p_end}
+{synopt :{cmd:if} {it:exp}}draw the events for which {it:exp} is true, on the journal's columns{p_end}
+{synopt :{opt paths(how)}}{cmd:full} (default), {cmd:base}, {cmd:parent}, or a number of trailing components{p_end}
+{synopt :{opt root(folder)}}show paths relative to this folder, wherever it sits{p_end}
 {synopt :{opt det:ails}}per-join ledgers folded into the HTML page{p_end}
 {synopt :{opt embed}}HTML as a fragment for someone else's page; see below{p_end}
 {synopt :{opt acc:ent(hex)}}the one colour used for flags and arrowheads{p_end}
@@ -378,6 +436,24 @@ as a gate that halts the build.{p_end}
 {synopt :{opt noopen}}write the HTML but do not open the browser{p_end}
 {synoptline}
 {p2colreset}{...}
+
+{dlgtab:Receipt, list and export}
+
+{synoptset 26 tabbed}{...}
+{synopt :{opt paths(how)}}shorten the file labels, as for {cmd:draw}{p_end}
+{synopt :{opt root(folder)}}paths relative to a folder, as for {cmd:draw}{p_end}
+{synopt :{opt f:ormat(dta|csv|xlsx)}}{cmd:export} only; follows the extension of {opt saving()} when omitted{p_end}
+{synoptline}
+{p2colreset}{...}
+
+{pstd}
+{cmd:mergemap export} to {cmd:.xlsx} writes three sheets: {bf:events}, every
+event and every column, which is the receipt with nothing hidden; {bf:joins},
+one row per join with its counts, {cmd:_merge} breakdown and coverage; and
+{bf:filters}, one row per {cmd:keep} or {cmd:drop} with the rows it removed and
+the percent that was. Count columns are numbers, so Excel sorts and filters
+them as numbers. The map can hide the filters while the workbook keeps all of
+them.{p_end}
 
 {dlgtab:Demo only}
 
@@ -437,6 +513,26 @@ anyway.{p_end}
 {phang2}{cmd:. mergemap draw, notransforms}{p_end}
 {phang2}{cmd:. mergemap draw, nofilters}{p_end}
 
+{pstd}{bf:Keep the row filters, which change the counts, and lose the column trims}{p_end}
+{phang2}{cmd:. mergemap draw, novarfilters}{p_end}
+
+{pstd}{bf:The files on disk and how they relate: no filters, no reshapes, no tempfiles}{p_end}
+{phang2}{cmd:. mergemap draw, filesonly export(html) saving(files.html) replace}{p_end}
+
+{pstd}{bf:A long pipeline one page at a time, cut by do-file and line}{p_end}
+{phang2}{cmd:. mergemap draw if strpos(dofile, "build") & line < 400, filesonly export(html) saving(step1.html) replace}{p_end}
+{phang2}{cmd:. mergemap draw if !(strpos(dofile, "build") & line < 400), filesonly export(html) saving(main.html) replace}{p_end}
+
+{pstd}{bf:Only the joins that lost rows}{p_end}
+{phang2}{cmd:. mergemap draw if class == "join" & n_out < n_in}{p_end}
+
+{pstd}{bf:Short labels: file names only, or relative to the project folder}{p_end}
+{phang2}{cmd:. mergemap draw, paths(base)}{p_end}
+{phang2}{cmd:. mergemap draw, root(ccmr) export(html) saving(map.html) replace}{p_end}
+
+{pstd}{bf:The HTML map with the count lines left out}{p_end}
+{phang2}{cmd:. mergemap draw, export(html) compact nokeys saving(thin.html) replace}{p_end}
+
 {pstd}{bf:Map a numbered folder of do-files, then draw only its joins}{p_end}
 {phang2}{cmd:. mergemap build/}{p_end}
 {phang2}{cmd:. mergemap draw, joinsonly export(png) saving(figures/joins) replace}{p_end}
@@ -468,6 +564,12 @@ anyway.{p_end}
 
 {pstd}{bf:The journal as a dataset, to audit or graph yourself}{p_end}
 {phang2}{cmd:. mergemap export, saving(joins.dta) replace}{p_end}
+
+{pstd}{bf:The same as a workbook: every event, the joins, and the filters on three sheets}{p_end}
+{phang2}{cmd:. mergemap export, saving(joins.xlsx) replace root(ccmr)}{p_end}
+
+{pstd}{bf:A receipt with file names only}{p_end}
+{phang2}{cmd:. mergemap receipt audit/joins.tsv, paths(base)}{p_end}
 
 {marker sql}{...}
 {title:Joins in Stata and SQL}
@@ -651,8 +753,22 @@ the seed and the output is identical to a plain run, which
 {synopt:{cmd:r(journal)}}path to the journal file{p_end}
 {synopt:{cmd:r(files)}}do-files scanned{p_end}
 {synopt:{cmd:r(output)}}after {cmd:draw}: the file it wrote{p_end}
-{synopt:{cmd:r(file)}}after {cmd:export}: the dataset it wrote{p_end}
+{synopt:{cmd:r(hidden)}}after {cmd:draw}: what the options and the {cmd:if} left out, in words{p_end}
+{synopt:{cmd:r(file)}}after {cmd:export}: the dataset or workbook it wrote{p_end}
 {p2colreset}{...}
+
+{pstd}
+The journal's columns, for an {cmd:if} on {cmd:mergemap draw} and for your own
+reading of the file:
+{cmd:seq dofile line class cmd subtype keys master usingfile result}
+{cmd:n_in k_in n_using k_using n_out k_out m1 m2 m3 m4 m5 dup_master dup_using}
+{cmd:force opts loop_n loop_first loop_last severity keytypes cover_master}
+{cmd:cover_using lifecycle flags}. {cmd:class} is one of
+{cmd:source join link transform filter save flow note}; a filter's
+{cmd:subtype} is {cmd:if} for a row filter and empty for a variable list;
+{cmd:opts} holds a filter's condition; {cmd:m1} through {cmd:m5} are the
+{cmd:_merge} counts; {cmd:usingfile} and {cmd:result} hold file paths,
+{cmd:tempfile:}{it:name}, or {cmd:frame:}{it:name}.{p_end}
 
 {marker related}{...}
 {title:Related commands}

@@ -1,4 +1,4 @@
-*! version 0.3.0  20aug2026  Eric Booth
+*! version 0.5.0  23aug2026  Eric Booth
 *! _mm_draw -- dispatcher behind -mergemap draw-.  Resolves which journal to
 *! draw, picks the renderer from export(), forwards only the options that
 *! renderer understands, and handles the SMCL-to-HTML auto-escalation plus
@@ -11,16 +11,30 @@
 
 program define _mm_draw, rclass
     version 16
+    * The command line is  [using] [journal] [if exp] [, options].  The if
+    * is split off before -syntax- sees the line: syntax rejects an if that
+    * was not declared, and a declared [if] is checked against the data in
+    * memory, where the journal is not.  _mm_jcut evaluates the expression
+    * against the journal's own columns instead.
+    _mm_splitif `"`0'"'
+    local 0     `"`s(rest)'"'
+    local ifexp `"`s(ifexp)'"'
     syntax [anything(name=jspec)] [, EXPort(string) SAVing(string)          ///
         STYLE(string) LAYout(string) WRAP(integer -1) MAXnodes(integer -1)  ///
         FORCEsmcl COMPact noCOUNTS noKEYS noTRANSFORMS noELLIPSIS           ///
-        noFILTERS JOINSonly                                                 ///
+        noFILTERS noROWfilters noVARfilters noTEMPfiles JOINSonly FILESonly ///
+        PATHS(string) ROOT(string asis)                                     ///
         DETails EMBed ACCent(string) PAGE(string) replace NOOPen]
 
     * ---- which journal --------------------------------------------------
     gettoken w1 rest : jspec
     if `"`w1'"' == "using" local jspec `"`rest'"'
-    gettoken jfile : jspec
+    gettoken jfile rest : jspec
+    if strtrim(`"`rest'"') != "" {
+        di as err `"mergemap draw: did not understand `rest'"'
+        di as err "    syntax is: mergemap draw [journal] [if exp] [, options]"
+        exit 198
+    }
     if `"`jfile'"' == "" local jfile `"$MM_LASTJ"'
     if `"`jfile'"' == "" {
         capture confirm file "journal.tsv"
@@ -48,31 +62,26 @@ program define _mm_draw, rclass
         exit 198
     }
 
-    * ---- hide whole classes of event, before any renderer sees them ------
-    * Doing this on the journal rather than inside one renderer means
-    * notransforms and nofilters work for every export, not just the
-    * Results-window drawing, and one implementation covers all of them.
-    if "`joinsonly'" != "" {
-        local transforms "notransforms"
-        local filters    "nofilters"
-    }
-    if "`transforms'" == "notransforms" | "`filters'" == "nofilters" {
-        local q = char(34)
-        local keepcls `"`q'source`q', `q'join`q', `q'link`q', `q'save`q', `q'flow`q', `q'note`q'"'
-        if "`transforms'" != "notransforms" local keepcls `"`keepcls', `q'transform`q'"'
-        if "`filters'"    != "nofilters"    local keepcls `"`keepcls', `q'filter`q'"'
-        tempfile jcut
-        local jcut `"`jcut'.tsv"'
-        preserve
-        quietly import delimited using `"`jfile'"', delimiter(tab) ///
-            varnames(1) stringcols(_all) clear
-        quietly keep if inlist(class, `keepcls')
-        quietly export delimited using `"`jcut'"', delimiter(tab) replace datafmt
-        restore
-        local jfile `"`jcut'"'
-    }
-
+    * ---- hide events and shorten labels, before any renderer sees them --
+    * Done on the journal rather than inside one renderer, so every option
+    * here works for every export, from one implementation (_mm_jcut).
+    local cutopts `"`transforms' `filters' `rowfilters' `varfilters' `tempfiles' `joinsonly' `filesonly'"'
+    if `"`paths'"' != "" local cutopts `"`cutopts' paths(`paths')"'
+    if `"`root'"'  != "" local cutopts `"`cutopts' root(`root')"'
+    if `"`ifexp'"' != "" local cutopts `"`cutopts' if(`ifexp')"'
+    _mm_jcut using `"`jfile'"', `cutopts'
+    local jfile `"`s(jfile)'"'
     return local journal `"`jfile'"'
+    return local hidden  `"`s(note)'"'
+
+    * compact, nocounts and nokeys thin each node; they reach the Results
+    * window and the HTML page.  For the other exports say so, rather than
+    * accept the option and change nothing.
+    if ("`compact'`counts'`keys'" != "") & !inlist("`export'", "smcl", "html") {
+        di as txt "mergemap draw: `compact' `counts' `keys' apply to the Results-window and"
+        di as txt "    HTML drawings; to shorten a `export' export, hide events instead:"
+        di as txt "    nofilters, notempfiles, filesonly, or an if on the journal columns"
+    }
 
     * ---- smcl -----------------------------------------------------------
     if "`export'" == "smcl" {
@@ -89,7 +98,7 @@ program define _mm_draw, rclass
             local hf `"`saving'"'
             if `"`hf'"' == "" local hf "mergemap_map.html"
             _mm_draw_html `"`jfile'"' `"`hf'"' `"`layout'"' `"`accent'"' ///
-                "`details'" "" "replace" "`noopen'"
+                "`details'" "" "replace" "`noopen'" "`compact' `counts' `keys'"
             return local output `"`s(out)'"'
         }
         exit
@@ -100,7 +109,7 @@ program define _mm_draw, rclass
         local hf `"`saving'"'
         if `"`hf'"' == "" local hf "mergemap_map.html"
         _mm_draw_html `"`jfile'"' `"`hf'"' `"`layout'"' `"`accent'"' ///
-            "`details'" "`embed'" "`replace'" "`noopen'"
+            "`details'" "`embed'" "`replace'" "`noopen'" "`compact' `counts' `keys'"
         return local output `"`s(out)'"'
         exit
     }
@@ -148,9 +157,9 @@ end
 * system browser in GUI sessions unless noopen.  An embed fragment is not a
 * standalone page, so it gets the path only, never an auto-open.
 program define _mm_draw_html, sclass
-    args jfile hf layout accent details embed replace noopen
+    args jfile hf layout accent details embed replace noopen thin
     if strlower(substr(`"`hf'"', -5, .)) != ".html" local hf `"`hf'.html"'
-    local o `"`details' `embed' `replace'"'
+    local o `"`details' `embed' `replace' `thin'"'
     if `"`layout'"' != "" local o `"`o' layout(`layout')"'
     if `"`accent'"' != "" local o `"`o' accent(`accent')"'
     _mm_renderhtml using `"`jfile'"', saving(`"`hf'"') `o'
@@ -176,4 +185,76 @@ program define _mm_draw_html, sclass
     if "`noopen'" == "" & "`c(mode)'" != "batch" & "`c(console)'" == "" {
         capture _mm_open
     }
+end
+
+* ---------------------------------------------------------------- splitif
+* Split "[using] [journal] if exp, options" into the line without its if,
+* s(rest), and the expression, s(ifexp).  The walk respects double quotes,
+* compound quotes and parentheses, so a comma inside
+* inlist(class,"join","link") is part of the expression and the comma that
+* starts the options is the first one at the top level.  A bare "if" word
+* counts only at the top level, so "if" inside a quoted path is left alone.
+program define _mm_splitif, sclass
+    args cmd
+    sreturn clear
+    sreturn local rest  `"`cmd'"'
+    sreturn local ifexp ""
+    local L = strlen(`"`cmd'"')
+    local i = 1
+    local dq = 0
+    local cq = 0
+    local par = 0
+    local comma = 0
+    local ifpos = 0
+    * Every test below is an expression on a substring of the line.  A
+    * single quote character is never expanded inside compound quotes: a
+    * lone `" or "' there opens or closes a nesting level and the line
+    * fails with "too few quotes".
+    while `i' <= `L' {
+        local copen  = (substr(`"`cmd'"', `i', 2) == char(96) + char(34))
+        local cclose = (substr(`"`cmd'"', `i', 2) == char(34) + char(39))
+        local isdq   = (substr(`"`cmd'"', `i', 1) == char(34))
+        if !`dq' & `copen' {
+            local ++cq
+            local i = `i' + 2
+            continue
+        }
+        if !`dq' & `cq' > 0 & `cclose' {
+            local --cq
+            local i = `i' + 2
+            continue
+        }
+        if `cq' == 0 & `isdq' {
+            local dq = 1 - `dq'
+            local ++i
+            continue
+        }
+        if !`dq' & `cq' == 0 {
+            if substr(`"`cmd'"', `i', 1) == "(" local ++par
+            if substr(`"`cmd'"', `i', 1) == ")" local --par
+            if `par' <= 0 & substr(`"`cmd'"', `i', 1) == "," {
+                local comma = `i'
+                continue, break
+            }
+            if `par' <= 0 & `ifpos' == 0 & substr(`"`cmd'"', `i', 2) == "if" {
+                local okb = (`i' == 1 | inlist(substr(`"`cmd'"', `i' - 1, 1), " ", char(9)))
+                local oka = (`i' + 2 > `L' | inlist(substr(`"`cmd'"', `i' + 2, 1), " ", char(9)))
+                if `okb' & `oka' local ifpos = `i'
+            }
+        }
+        local ++i
+    }
+    if `ifpos' == 0 exit
+    local head = substr(`"`cmd'"', 1, `ifpos' - 1)
+    if `comma' {
+        local ifexp = substr(`"`cmd'"', `ifpos' + 2, `comma' - `ifpos' - 2)
+        local tail  = substr(`"`cmd'"', `comma', .)
+    }
+    else {
+        local ifexp = substr(`"`cmd'"', `ifpos' + 2, .)
+        local tail ""
+    }
+    local ifexp = strtrim(`"`ifexp'"')
+    sreturn local rest  `"`head'`tail'"'
+    sreturn local ifexp `"`ifexp'"'
 end

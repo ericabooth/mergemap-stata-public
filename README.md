@@ -135,6 +135,38 @@ The HTML page is **self-contained**: no internet, no JavaScript, no external ass
 
 **When the Results window is too small.** A window is a fixed-width space, so past `maxnodes()` events (default 8), or whenever `layout(horizontal)` is asked for, the SMCL drawing steps aside and `draw` writes the HTML page instead. `forcesmcl` overrides. A PNG too dense for one readable image splits itself into one page per do-file, which is also available on demand as `page(dofile)`.
 
+### When the map is too long
+
+A real pipeline journals thousands of events, and most of them are not joins. One build we mapped produced 3,092 events: 2,527 were `keep` and `drop` statements, 240 were the traffic of saving and re-reading tempfiles inside a program, and the map of all of it was 220,000 pixels tall. The journal and the receipt always keep every event. `draw` is where you choose what to look at, and it prints what it hid:
+
+```stata
+mergemap draw, nofilters        // no keep/drop at all
+mergemap draw, norowfilters     // keep the column trims, lose keep if / drop if
+mergemap draw, novarfilters     // keep the row filters, lose the column trims
+mergemap draw, notempfiles      // no saves to, uses of, or joins against tempfiles
+mergemap draw, joinsonly        // notransforms + nofilters
+mergemap draw, filesonly        // joinsonly + notempfiles: joins between named files
+mergemap draw if strpos(dofile, "build") & line < 400     // one page of a long pipeline
+mergemap draw if class == "join" & n_out < n_in           // only the joins that lost rows
+```
+
+Measured on that 3,092-event journal, as HTML:
+
+| `mergemap draw ...` | events drawn | map height |
+|---|---|---|
+| (default) | 3,092 | 221,997 px |
+| `nofilters` | 565 | 51,756 px |
+| `joinsonly` | 407 | 35,404 px |
+| `filesonly` | 167 | 14,144 px |
+| `filesonly compact` | 167 | 11,700 px |
+| `if !(strpos(dofile,"build") & line < 400), filesonly` | 129 | 11,268 px |
+
+The `if` is evaluated on the journal's own columns, with the count columns as numbers, so a long pipeline can be paged by do-file, by line range, by kind of event, or by what happened. `compact` and `nokeys` thin each HTML node to its label. `mergemap draw if ...` has the same column names you see in `mergemap export`.
+
+**Short labels.** Run mode records the paths it actually opened, so every box repeats your machine's folder layout. `paths(base)` shows file names alone, `paths(parent)` the parent folder and the name, `paths(#)` the last `#` components. `root(folder)` cuts everything above a folder you name, so `C:\Users\me\projects\ccmr\data\x.dta` and `/home/me/work/ccmr/data/x.dta` both read `data\x.dta` and `data/x.dta`: the same command gives the same labels on every machine the project is copied to. Both options also work for `mergemap receipt`, `mergemap list` and `mergemap export`.
+
+**Everything, as a workbook.** `mergemap export, saving(joins.xlsx)` writes three sheets: **events** (every event, every column, the receipt with nothing hidden), **joins** (one row per join with counts, `_merge` breakdown and coverage) and **filters** (one row per `keep`/`drop`, with rows removed and the percent). Count columns arrive as numbers, so Excel sorts and filters them as numbers. The map can hide the filters; the workbook keeps all of them.
+
 ### It renders on GitHub, too
 
 `export(mermaid)` writes a flowchart this page can display. The block below came straight out of `mergemap draw, export(mermaid) joinsonly`, which leaves out the reshaping and filtering steps so the joins stand on their own. GitHub renders it with pan and zoom controls, so a dense map stays readable.
@@ -237,7 +269,7 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 | `mergemap sql` | teach any join form as a row-pairing picture |
 | `mergemap list` | the journal as a table; `full` for every column |
 | `mergemap detail` *#* | everything about one event; `teach` draws it with its counts |
-| `mergemap export` | the journal as a `.dta` or `.csv`, counts arriving numeric |
+| `mergemap export` | the journal as `.dta`, `.csv` or a three-sheet `.xlsx`, counts arriving numeric |
 | `mergemap receipt` *journal* | reprint a receipt from a saved journal |
 | `mergemap clear` | forget the remembered journal; files are never touched |
 
@@ -251,7 +283,11 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 
 **Run mode only.** `examples(#)` lists a few sample rows per join, showing the keys and `_merge` only. `nochecks` skips the duplicate-key scan of using files, which is the expensive part on large data.
 
-**Drawing.** `style(boxes|rail)` picks full boxes (the default) or a compact rail; `layout(vertical|horizontal)` picks down the page or across it; `compact`, `nocounts`, `nokeys` and `noellipsis` leave detail out; **`joinsonly` draws the joins and nothing else** (`notransforms` and `nofilters` do half of that each, and all three work for every export format); `details` folds per-join ledgers into the HTML; `accent(hex)` sets the single colour used for flags and arrowheads; `noopen` writes the HTML without opening a browser.
+**Drawing.** `style(boxes|rail)` picks full boxes (the default) or a compact rail; `layout(vertical|horizontal)` picks down the page or across it; `compact`, `nocounts`, `nokeys` and `noellipsis` leave detail out of each node, in the Results window and in HTML; `details` folds per-join ledgers into the HTML; `accent(hex)` sets the single colour used for flags and arrowheads; `noopen` writes the HTML without opening a browser.
+
+**Hiding events.** `notransforms`, `nofilters`, `norowfilters`, `novarfilters` and `notempfiles` each hide one kind of event; **`joinsonly`** is the first two together and **`filesonly`** adds the tempfiles, leaving the joins between named files. An `if` on the journal's columns (`mergemap draw if line < 400`) hides whatever it says. All of these cut the journal before any renderer reads it, so they work the same for every export format, and `draw` prints what it hid.
+
+**Shorter labels.** `paths(base|parent|#)` and `root(folder)` shorten file paths in the map, the receipt, the list and the export.
 
 ## Flags, and what to do about them
 

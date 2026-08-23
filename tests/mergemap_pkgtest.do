@@ -566,6 +566,227 @@ capture noisily mergemap draw "`j'", export(html) saving(dm16.html) replace join
 mm_assert `=(_rc == 0)' "joinsonly works for HTML"
 capture program drop mm_cls
 
+* ---- block 18: shortening a long map ---------------------------------------
+* Asked for from real use on a 3,092-event pipeline: row filters and variable
+* filters hidden separately, tempfile traffic hidden, an if on the journal's
+* columns, and file labels shortened or made relative to the project folder.
+* Everything here cuts the journal before a renderer reads it, so one set of
+* checks on the cut journal (r(journal)) covers every export.
+mm_block 18 "shortening a long map"
+capture mkdir dm18
+capture mkdir dm18/raw
+capture mkdir dm18/built
+tempname fh
+file open `fh' using dm18/01_cut.do, write text replace
+file write `fh' "sysuse auto, clear" _n
+file write `fh' "keep make price mpg foreign rep78" _n
+file write `fh' "keep if price < 12000" _n
+file write `fh' `"save "raw/cars.dta", replace"' _n
+file write `fh' "sysuse auto, clear" _n
+file write `fh' "keep make weight length" _n
+file write `fh' "drop if weight > 4500" _n
+file write `fh' "tempfile w" _n
+file write `fh' "save " _char(96) "w" _char(39) _n
+file write `fh' `"use "raw/cars.dta", clear"' _n
+file write `fh' "merge 1:1 make using " _char(96) "w" _char(39) _n
+file write `fh' "drop if _merge == 2" _n
+file write `fh' "drop _merge" _n
+file write `fh' "duplicates drop make, force" _n
+file write `fh' "collapse (mean) price mpg weight, by(foreign)" _n
+file write `fh' `"save "built/summary.dta", replace"' _n
+file close `fh'
+local here "`c(pwd)'"
+cd dm18
+capture noisily mergemap 01_cut.do, out(j18.tsv) noreceipt
+mm_assert `=(_rc == 0)' "the block-18 fixture scans"
+
+* count classes in whatever journal draw actually rendered
+program define mm_cnt, rclass
+    args jfile cond
+    tempname fr
+    capture frame drop `fr'
+    frame create `fr'
+    local n = 0
+    frame `fr' {
+        quietly import delimited using `"`jfile'"', delimiter(tab) varnames(1) ///
+            stringcols(_all) clear
+        quietly count if `cond'
+        local n = r(N)
+        quietly count
+        local N = r(N)
+    }
+    frame drop `fr'
+    return scalar n = `n'
+    return scalar N = `N'
+end
+mm_cnt j18.tsv `"class == "filter" & subtype == "if""'
+local nrow = r(n)
+mm_cnt j18.tsv `"class == "filter" & subtype != "if""'
+local nvar = r(n)
+mm_cnt j18.tsv `"strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
+local ntmp = r(n)
+mm_cnt j18.tsv `"class == "transform""'
+local ntr = r(n)
+local N0 = r(N)
+mm_assert `=(`nrow' == 3 & `nvar' == 3 & `ntmp' == 2 & `ntr' == 2)' ///
+    "fixture has 3 row filters, 3 variable filters, 2 tempfile events, 2 transforms"
+
+* each option removes its own kind and nothing else
+capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) norowfilters
+mm_assert `=(_rc == 0)' "norowfilters is accepted"
+mm_cnt `"`r(journal)'"' `"class == "filter" & subtype == "if""'
+local a = r(n)
+local b = r(N)
+mm_assert `=(`a' == 0 & `b' == `N0' - `nrow')' "norowfilters removes exactly the keep if / drop if events"
+
+capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) novarfilters
+mm_cnt `"`r(journal)'"' `"class == "filter" & subtype != "if""'
+local a = r(n)
+local b = r(N)
+mm_assert `=(`a' == 0 & `b' == `N0' - `nvar')' "novarfilters removes exactly the keep/drop varlist events"
+
+capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) notempfiles
+mm_cnt `"`r(journal)'"' `"strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
+local a = r(n)
+local b = r(N)
+mm_assert `=(`a' == 0 & `b' == `N0' - `ntmp')' "notempfiles removes exactly the tempfile save and merge"
+
+capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) filesonly
+mm_assert `=(_rc == 0)' "filesonly is accepted"
+local hid `"`r(hidden)'"'
+mm_cnt `"`r(journal)'"' `"inlist(class, "filter", "transform") | strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
+local a = r(n)
+local b = r(N)
+mm_assert `=(`a' == 0 & `b' == `N0' - `nrow' - `nvar' - `ntmp' - `ntr')' "filesonly = joinsonly + notempfiles"
+mm_assert `=(strpos(`"`hid'"', "tempfile") > 0 & strpos(`"`hid'"', "filters") > 0)' "draw reports what it hid in r(hidden)"
+
+* the if: numbers as numbers, text as text, commas inside functions
+capture noisily mergemap draw j18.tsv if line < 9, forcesmcl maxnodes(99)
+mm_assert `=(_rc == 0)' "an if on the line number is accepted"
+mm_cnt `"`r(journal)'"' `"real(line) >= 9"'
+mm_assert `=(r(n) == 0 & r(N) > 0)' "if line < 9 keeps only events before line 9"
+capture noisily mergemap draw j18.tsv if inlist(class, "join", "save") & strpos(dofile, "cut"), export(mermaid) saving(dm18_if) replace
+mm_assert `=(_rc == 0)' "an if with commas inside inlist() and a string compare is accepted"
+mm_cnt `"`r(journal)'"' `"!inlist(class, "join", "save")"'
+mm_assert `=(r(n) == 0)' "that if left only joins and saves"
+capture noisily mergemap draw j18.tsv if nosuchcolumn == 1, forcesmcl
+mm_assert `=(_rc == 111)' "an if on an unknown column fails with r(111) and a message, not a crash"
+capture noisily mergemap draw j18.tsv if class == "join", export(html) saving(dm18_if.html) replace noopen
+mm_assert `=(_rc == 0)' "the if works for HTML too"
+
+* html: compact/nokeys accepted, the standalone page has no height cap
+capture noisily mergemap draw j18.tsv, export(html) saving(dm18_c.html) replace noopen compact nokeys
+mm_assert `=(_rc == 0)' "compact nokeys are accepted for HTML"
+tempname fh
+local capped = 0
+local keyl = 0
+file open `fh' using dm18_c.html, read text
+file read `fh' line
+while r(eof) == 0 {
+    if strpos(`"`macval(line)'"', "max-height: 32rem") local capped = 1
+    if strpos(`"`macval(line)'"', "key: ") local keyl = 1
+    file read `fh' line
+}
+file close `fh'
+mm_assert `=(`capped' == 0)' "a standalone HTML page is not capped to a 32rem scroll box"
+mm_assert `=(`keyl' == 0)' "nokeys leaves no key line in the HTML"
+capture noisily mergemap draw j18.tsv, export(html) saving(dm18_e.html) replace noopen embed
+local capped = 0
+file open `fh' using dm18_e.html, read text
+file read `fh' line
+while r(eof) == 0 {
+    if strpos(`"`macval(line)'"', "max-height: 32rem") local capped = 1
+    file read `fh' line
+}
+file close `fh'
+mm_assert `=(`capped' == 1)' "an embed fragment keeps the bounded scroll box"
+capture noisily mergemap draw j18.tsv, export(dot) saving(dm18_d) replace compact
+mm_assert `=(_rc == 0)' "compact with a dot export is accepted, with a note"
+
+* paths() and root(): a journal with absolute paths in both separator styles
+local bs = char(92)
+tempname fh
+file open `fh' using jpath.tsv, write text replace
+file write `fh' "seq" _tab "dofile" _tab "line" _tab "class" _tab "cmd" _tab "subtype" _tab "keys" _tab "master" _tab "usingfile" _tab "result" _tab "n_in" _tab "k_in" _tab "n_using" _tab "k_using" _tab "n_out" _tab "k_out" _tab "m1" _tab "m2" _tab "m3" _tab "m4" _tab "m5" _tab "dup_master" _tab "dup_using" _tab "force" _tab "opts" _tab "loop_n" _tab "loop_first" _tab "loop_last" _tab "severity" _tab "keytypes" _tab "cover_master" _tab "cover_using" _tab "lifecycle" _tab "flags" _n
+local tail = "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "." + char(9) + "."
+file write `fh' "1" _tab "a.do" _tab "1" _tab "source" _tab "use" _tab "." _tab "." _tab "work" _tab "/home/me/work/proj/data/raw/x.dta" _tab "work" _tab "`tail'" _n
+file write `fh' "2" _tab "a.do" _tab "2" _tab "join" _tab "merge" _tab "1:1" _tab "id" _tab "work" _tab "C:`bs'Users`bs'me`bs'Documents`bs'proj`bs'data`bs'raw`bs'y.dta" _tab "work" _tab "`tail'" _n
+file write `fh' "3" _tab "a.do" _tab "3" _tab "save" _tab "save" _tab "." _tab "." _tab "work" _tab "." _tab "`bs'`bs'server`bs'share`bs'proj`bs'data`bs'built`bs'z.dta" _tab "`tail'" _n
+file write `fh' "4" _tab "a.do" _tab "4" _tab "source" _tab "use" _tab "." _tab "." _tab "work" _tab "tempfile:St1.000001" _tab "work" _tab "`tail'" _n
+file close `fh'
+capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) paths(base)
+mm_assert `=(_rc == 0)' "paths(base) is accepted"
+local jc `"`r(journal)'"'
+mm_jfld `"`jc'"' 1 usingfile
+mm_assert `=("`r(val)'" == "x.dta")' "paths(base): a unix path becomes its file name"
+mm_jfld `"`jc'"' 2 usingfile
+mm_assert `=("`r(val)'" == "y.dta")' "paths(base): a Windows drive path becomes its file name"
+mm_jfld `"`jc'"' 3 result
+mm_assert `=("`r(val)'" == "z.dta")' "paths(base): a UNC path becomes its file name"
+mm_jfld `"`jc'"' 4 usingfile
+mm_assert `=("`r(val)'" == "tempfile:St1.000001")' "paths(base) leaves a tempfile label alone"
+capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) paths(parent)
+local jc `"`r(journal)'"'
+mm_jfld `"`jc'"' 1 usingfile
+mm_assert `=("`r(val)'" == "raw/x.dta")' "paths(parent): parent folder and file name, separators kept"
+mm_jfld `"`jc'"' 2 usingfile
+mm_assert `=("`r(val)'" == "raw`bs'y.dta")' "paths(parent) keeps a Windows path's own backslash"
+capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(proj)
+local jc `"`r(journal)'"'
+mm_jfld `"`jc'"' 1 usingfile
+local v1 "`r(val)'"
+mm_jfld `"`jc'"' 2 usingfile
+local v2 "`r(val)'"
+mm_jfld `"`jc'"' 3 result
+local v3 "`r(val)'"
+mm_assert `=("`v1'" == "data/raw/x.dta" & "`v2'" == "data`bs'raw`bs'y.dta" & "`v3'" == "data`bs'built`bs'z.dta")' ///
+    "root(proj): every path becomes relative to the proj folder, whatever sat above it"
+capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(nosuchfolder)
+mm_jfld `"`r(journal)'"' 1 usingfile
+mm_assert `=("`r(val)'" == "/home/me/work/proj/data/raw/x.dta")' "root() leaves a path that does not contain the folder as it was"
+capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(/home/me/work)
+mm_jfld `"`r(journal)'"' 1 usingfile
+mm_assert `=("`r(val)'" == "proj/data/raw/x.dta")' "root() also accepts a path prefix"
+capture noisily mergemap draw jpath.tsv, forcesmcl paths(nonsense)
+mm_assert `=(_rc == 198)' "paths(nonsense) is refused with r(198)"
+
+* the same two options on receipt, list and export
+capture noisily mergemap receipt jpath.tsv, paths(base)
+mm_assert `=(_rc == 0)' "mergemap receipt accepts paths()"
+capture noisily mergemap list jpath.tsv, root(proj)
+mm_assert `=(_rc == 0)' "mergemap list accepts root()"
+
+* export to a workbook: three sheets, counts numeric, paths shortened
+capture noisily mergemap export j18.tsv, saving(j18.xlsx) replace paths(base)
+mm_assert `=(_rc == 0)' "mergemap export writes an xlsx"
+mm_assert `=(r(N_joins) == 1 & r(N_filters) == 6)' "the workbook counts 1 join and 6 filters"
+capture frame drop _t18
+frame create _t18
+frame _t18 {
+    capture import excel using j18.xlsx, sheet("filters") firstrow clear
+    local rc1 = _rc
+    local nf = _N
+    capture confirm numeric variable n_in
+    local rc2 = _rc
+    capture confirm variable condition kind removed pct_removed
+    local rc3 = _rc
+    capture import excel using j18.xlsx, sheet("joins") firstrow clear
+    local rc4 = _rc
+    local nj = _N
+    capture import excel using j18.xlsx, sheet("events") firstrow clear
+    local ne = _N
+    quietly count if strpos(usingfile, "/") > 0
+    local nslash = r(N)
+}
+frame drop _t18
+mm_assert `=(`rc1' == 0 & `nf' == 6 & `rc2' == 0 & `rc3' == 0)' "filters sheet: 6 rows, n_in numeric, kind/condition/removed/pct_removed present"
+mm_assert `=(`rc4' == 0 & `nj' == 1)' "joins sheet: one row for the one merge"
+mm_assert `=(`ne' == `N0' & `nslash' == 0)' "events sheet: every event, with paths(base) applied"
+capture noisily mergemap export j18.tsv, format(xlsx) saving(j18b) replace
+mm_assert `=(_rc == 0 & strpos("`r(file)'", ".xlsx") > 0)' "format(xlsx) supplies the extension"
+capture program drop mm_cnt
+cd "`here'"
+
 * ---- block 17: absolute-path detection is platform-neutral ----------------
 * An output path that is already absolute must not be sent back through
 * c(pwd).  The Windows forms are the ones that regressed: a UNC share and a

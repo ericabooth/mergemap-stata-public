@@ -1,8 +1,10 @@
-*! _mm_renderhtml.ado 0.2.0 19aug2026 Eric Booth
+*! _mm_renderhtml.ado 0.5.0 23aug2026 Eric Booth
 *! render a mergemap v2 journal (TSV, 34 columns) as HTML + inline SVG
 * syntax: _mm_renderhtml using journal.tsv, saving(x.html)
 *         [layout(vertical|horizontal) accent(hex) details embed idprefix(name)
-*          noheader noprovenance replace]
+*          noheader noprovenance replace compact nocounts nokeys]
+*   compact / nocounts : draw no count lines (each node is its label alone)
+*   nokeys             : draw no key varlists
 *
 * Two output shapes:
 *   page  (default) a self-contained document: <!DOCTYPE html> ... </html>
@@ -21,7 +23,8 @@
 program define _mm_renderhtml
     version 16.0
     syntax using/, SAVing(string) [LAYout(string) ACCent(string) DETails ///
-        EMBed IDPrefix(string) NOHEADer NOPROVenance REPLACE]
+        EMBed IDPrefix(string) NOHEADer NOPROVenance REPLACE              ///
+        COMPact noCOUNTS noKEYS]
 
     * ------------------------------------------------ options
     if "`layout'" == ""                     local layout "vertical"
@@ -110,6 +113,16 @@ program define _mm_renderhtml
     local N = r(N)
     frame `J': quietly count if n_out != "." | n_in != "."
     local runmode = (r(N) > 0)
+    * compact and nocounts thin every node to its label: the count lines are
+    * drawn as if the journal were a scan journal.  runmode itself stays
+    * true for the caption and the ledger, and RH_NOCNT keeps the scan-only
+    * "row change unknown until run" line off a run journal's filter nodes.
+    local showcnt = `runmode'
+    if "`compact'" != "" | "`counts'" == "nocounts" local showcnt = 0
+    global RH_NOCNT = (`runmode' & !`showcnt')
+    if "`keys'" == "nokeys" {
+        frame `J': quietly replace keys = "."
+    }
     frame `J': quietly count if inlist(severity, "warn", "stop") | strpos(flags, "!!")
     local nany = r(N)
     frame `J': quietly count if inlist(evclass, "join", "link")
@@ -132,8 +145,8 @@ program define _mm_renderhtml
     tempfile bodyf
     tempname B
     file open `B' using "`bodyf'", write text replace
-    if "`layout'" == "vertical"  _rh_body_v `B' `J' `N' `runmode'
-    else                         _rh_body_h `B' `J' `N' `runmode'
+    if "`layout'" == "vertical"  _rh_body_v `B' `J' `N' `showcnt'
+    else                         _rh_body_h `B' `J' `N' `showcnt'
     local svgw = `s(w)'
     local svgh = `s(h)'
     file close `B'
@@ -157,7 +170,7 @@ program define _mm_renderhtml
         * page chrome: element selectors are safe here, never in embed mode
         file write `H' `"body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #222; background: #fff; margin: 24px; max-width: 1100px; }"' _n
         file write `H' `"h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }"' _n
-        _rh_css `H' "`pfx'" "`accent'" "`layout'" `svgw'
+        _rh_css `H' "`pfx'" "`accent'" "`layout'" `svgw' ""
         file write `H' `"</style>"' _n
         file write `H' `"</head>"' _n
         file write `H' `"<body>"' _n
@@ -166,7 +179,7 @@ program define _mm_renderhtml
     else {
         file write `H' `"<!-- mergemap embed fragment: `jname' (`mode', `layout'). Scoped to .`pfx'; no element selectors; ids namespaced `pfx'-*. -->"' _n
         file write `H' `"<style type="text/css">"' _n
-        _rh_css `H' "`pfx'" "`accent'" "`layout'" `svgw'
+        _rh_css `H' "`pfx'" "`accent'" "`layout'" `svgw' "embed"
         file write `H' `"</style>"' _n
     }
 
@@ -175,6 +188,7 @@ program define _mm_renderhtml
     * syntax returns NOHEADer / NOPROVenance under their full names
     if "`noheader'" == "" {
         local cap `"mode: `mode' &#183; layout: `layout' &#183; `N' events"'
+        if "$RH_NOCNT" == "1" local cap `"`cap' &#183; counts hidden"'
         if `njoin' > 0 {
             if `nflag' == 0 local cap `"`cap' &#183; all `njoin' joins clean"'
             else {
@@ -256,15 +270,24 @@ end
 * class selector. No body/h1/h2/pre/details/summary/bare-svg: those restyled
 * the host report in testing (DECISIONS 20d).
 program define _rh_css
-    args H pfx accent layout svgw
+    args H pfx accent layout svgw embed
 
     local P ".`pfx'"
     local MONO "SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace"
     local SANS "-apple-system, Segoe UI, Helvetica, Arial, sans-serif"
 
     file write `H' `"`P' { margin: 1rem 0; }"' _n
-    * bounded, resizable viewport; the print query below lifts the cap (16k)
-    file write `H' `"`P' .mm-wrap { max-height: 32rem; overflow: auto; resize: vertical; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }"' _n
+    * The fragment gets a bounded, resizable viewport, because it sits inside
+    * someone else's page.  A standalone page is the page: its map runs full
+    * height and the browser scrolls it, which is also what a headless
+    * browser needs to rasterise the whole map.  The print query lifts the
+    * cap either way.
+    if "`embed'" != "" {
+        file write `H' `"`P' .mm-wrap { max-height: 32rem; overflow: auto; resize: vertical; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }"' _n
+    }
+    else {
+        file write `H' `"`P' .mm-wrap { overflow: auto; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }"' _n
+    }
     if "`layout'" == "horizontal" {
         * a horizontal diagram squeezed into a text column drops its labels
         * below 2px (DECISIONS 20h): keep native width, scroll sideways
@@ -1038,7 +1061,7 @@ program define _rh_nodelines, sclass
             local l`n' `"`a' `=char(4)' `s(o)' obs"'
             local c`n' "bn"
         }
-        if !`runmode' {
+        if !`runmode' & "$RH_NOCNT" != "1" {
             local ln "row change unknown until run"
             if strlen("`ln'") > `BMAX' local ln "rows: run mode only"
             local ++n
@@ -1849,7 +1872,7 @@ program define _rh_dropglobals
         RH_k_using RH_n_out RH_k_out RH_m1 RH_m2 RH_m3 RH_m4 RH_m5 ///
         RH_dup_master RH_dup_using RH_force RH_opts RH_loop_n RH_loop_first ///
         RH_loop_last RH_severity RH_keytypes RH_cover_master RH_cover_using ///
-        RH_lifecycle RH_flags RH_ACC RH_PFX
+        RH_lifecycle RH_flags RH_ACC RH_PFX RH_NOCNT
     forvalues k = 1/16 {
         capture macro drop MMAL`k' MMAC`k' MMBL`k' MMBC`k'
     }
