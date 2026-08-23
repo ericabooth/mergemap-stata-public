@@ -2,6 +2,54 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.1 — 2026-08-23
+
+### Changed
+
+- **The HTML page spends one line per fact.** Read against four real maps
+  (a 3,092-event run journal, its joins-only and scan versions), most of the
+  height inside each box went to four things: the same scan-mode advisory
+  repeated on every box it applied to ("path built from a macro" and "run
+  mode resolves it" on 64 boxes, "unresolved runtime list" on 43), a
+  three-line tempfile provenance, count lines that would have fit beside
+  their label, and a file read and saved straight away drawn as two boxes
+  and an arrow. Now: a read saved at once is one box with a
+  `-> #k saved: <file>` line (and, in run mode, the saved counts when hidden
+  filters changed them); provenance is one line, `[tempfile from line 412]`,
+  naming the do-file only when it is another one; a filter's or reshape's
+  row change sits on its command line when it fits and is one flagged line
+  otherwise, `!! 209,634 -> 203,115 (-6,519, 3.1%)`; a duplicates drop is
+  `!! a -> b (-d duplicates)`; a join that matched every row says
+  `all N matched, 100% of both sides` once; the coverage line reads
+  `cover: 99.7% of master . 99.2% of using` and no longer overflows; the
+  result `-> N x k` and an append's `+N obs` sit on the command line; and the
+  two scan-mode advisories are markers, `~` for a macro path and `x?` for a
+  loop over a runtime list, explained once in the legend with their counts.
+  Same information, fewer pixels: scan map 17,512 px to 13,220; joins-only
+  scan 9,922 to 6,088; joins-only run 35,404 to 26,955; `filesonly` 14,144 to
+  10,419. The hover text on every box keeps the full record.
+- Lines that restated another line are gone: `opts: nogenerate` (and
+  `generate()`, `noreport`, `nolabel`, `nonotes`, `sorted`, `force`, which
+  change no row or are already on the command line); `types: key long vs
+  long` when the types agree (a disagreement is still drawn, flagged);
+  `[tempfile]` under a label that already reads `tempfile:<name>` in a dashed
+  box; `N using-only dropped by keep()` when the breakdown already shows
+  `(N dropped)`; and `row change unknown until run` on every scan-mode
+  filter, which the legend now says once.
+- A loop on the spine shows `xN` after the file name; a loop that ran once
+  draws the one file it resolved to instead of the template with `x1`.
+- The page title, the mermaid header and the graph footer name the journal
+  you drew, not the tempfile copy that a hiding option or an `if` produced.
+
+### Fixed
+
+- **`mergemap run` rejected every one of its own options.** The dispatcher
+  built the pass-through list with a leading comma and then placed it after
+  `, out()`, so `_mm_run` received `, out(x) , noreceipt` and refused
+  `noreceipt`, `examples()`, `warn()`, `stop()` and `nochecks` alike with
+  "invalid 'noreceipt'". Calling `_mm_run` directly, which the transparency
+  suite does, never hit it.
+
 ## 0.5.0 — 2026-08-23
 
 ### Added

@@ -28,7 +28,7 @@
 program define _mm_rendertext
     version 16
     syntax using/, SAVing(string) ///
-        [ Format(string) LAYout(string) WRAP(integer 44) replace ]
+        [ Format(string) LAYout(string) WRAP(integer 44) replace NAME(string) ]
 
     if "`format'" == "" local format all
     if !inlist("`format'", "mermaid", "dot", "er", "all") {
@@ -103,6 +103,8 @@ program define _mm_rendertext
     local jname = substr("`using'", ///
         cond(max(strrpos("`using'", "/"), strrpos("`using'", char(92))) > 0, ///
         max(strrpos("`using'", "/"), strrpos("`using'", char(92))) + 1, 1), .)
+    * the caller may be drawing a cut copy; name() is the journal's own name
+    if `"`name'"' != "" local jname `"`name'"'
     _rt_git
     * c(flavor) reports the flavour Stata is *behaving* as (it says IC on an
     * MP binary); c(edition_real) is the build actually running, and is

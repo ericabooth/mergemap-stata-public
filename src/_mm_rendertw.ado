@@ -27,7 +27,7 @@ program define _mm_rendertw
     version 16
 
     syntax using/, SAVing(string) [LAYout(string) PAGE(string)      ///
-        MAXnodes(integer 12) noPROVenance]
+        MAXnodes(integer 12) noPROVenance NAME(string)]
 
     if "`layout'" == "" local layout vertical
     if !inlist("`layout'", "vertical", "horizontal") {
@@ -586,6 +586,7 @@ program define _mm_rendertw
         if `slp' local jb = substr(`"`jb'"', `slp' + 1, .)
         local slp = strrpos(`"`jb'"', "\")
         if `slp' local jb = substr(`"`jb'"', `slp' + 1, .)
+        if `"`name'"' != "" local jb `"`name'"'
         _rtw_prov , journal(`"`jb'"') dir(`"`c(pwd)'"')
         local prov `"`r(s)'"'
     }

@@ -1,4 +1,4 @@
-*! version 0.5.0  21aug2026  Eric Booth
+*! version 0.5.1  23aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -85,7 +85,9 @@ program define mergemap, rclass
         if `"`stop'"' != "" local runopts `"`runopts' stop(`stop')"'
         if `"`options'"' != "" local runopts `"`runopts' `options'"'
         local runopts = strtrim(`"`runopts'"')
-        if `"`runopts'"' != "" local runopts `", `runopts'"'
+        * the call below already opens the option list with ", out()"; a
+        * second comma here made _mm_run's syntax reject every option that
+        * came through this door (examples, warn, stop, nochecks, noreceipt)
         global MM_LASTJ `"`out'"'
         _mm_run `"`files'"', out(`"`out'"') `runopts'
         exit

@@ -1,4 +1,4 @@
-*! _mm_renderhtml.ado 0.5.0 23aug2026 Eric Booth
+*! _mm_renderhtml.ado 0.5.1 23aug2026 Eric Booth
 *! render a mergemap v2 journal (TSV, 34 columns) as HTML + inline SVG
 * syntax: _mm_renderhtml using journal.tsv, saving(x.html)
 *         [layout(vertical|horizontal) accent(hex) details embed idprefix(name)
@@ -24,7 +24,7 @@ program define _mm_renderhtml
     version 16.0
     syntax using/, SAVing(string) [LAYout(string) ACCent(string) DETails ///
         EMBed IDPrefix(string) NOHEADer NOPROVenance REPLACE              ///
-        COMPact noCOUNTS noKEYS]
+        COMPact noCOUNTS noKEYS NAME(string)]
 
     * ------------------------------------------------ options
     if "`layout'" == ""                     local layout "vertical"
@@ -139,6 +139,11 @@ program define _mm_renderhtml
     * globals the writers read (dropped at the end)
     global RH_ACC "`accent'"
     global RH_PFX "`pfx'"
+    * scan-mode advisories that every affected box used to repeat in full are
+    * hoisted into the legend: the box keeps a marker, the legend says what it
+    * means once.  The writers count them here.
+    global RH_NMACRO = 0
+    global RH_NLIST  = 0
 
     * ------------------------------------------------ SVG body to a tempfile
     * (written first because the <svg> tag needs the finished extent)
@@ -153,6 +158,9 @@ program define _mm_renderhtml
 
     * ------------------------------------------------ assemble
     local jname = substr("`using'", strrpos(subinstr("`using'","\","/",.), "/") + 1, .)
+    * the caller may have drawn a cut copy of the journal (a tempfile); name()
+    * is what the page should call it
+    if `"`name'"' != "" local jname `"`name'"'
     local mode  = cond(`runmode', "run", "scan")
     local jdir  = substr("`using'", 1, strrpos(subinstr("`using'","\","/",.), "/") - 1)
     if "`jdir'" == "" local jdir "."
@@ -207,7 +215,15 @@ program define _mm_renderhtml
             local cap `"`cap' &#183; `nother' other `ev' flagged"'
         }
         file write `H' `"<div class="mm-cap">`cap'</div>"' _n
-        file write `H' `"<div class="mm-leg"><span class="mm-legk">!!</span> = warning or stop (never colour alone) &#183; dashed box = tempfile &#183; &#215;N = collapsed loop &#183; #k = journal event &#183; hover a node for detail</div>"' _n
+        local leg2 ""
+        if $RH_NMACRO > 0 {
+            local leg2 `"`leg2' &#183; ~ = path built from a macro ($RH_NMACRO), run mode resolves it"'
+        }
+        if $RH_NLIST > 0 {
+            local leg2 `"`leg2' &#183; &#215;? = loop over a list built at run time ($RH_NLIST), run mode counts it"'
+        }
+        if !`runmode' local leg2 `"`leg2' &#183; scan mode: row changes are unknown until run"'
+        file write `H' `"<div class="mm-leg"><span class="mm-legk">!!</span> = warning or stop (never colour alone) &#183; dashed box = tempfile &#183; &#215;N = collapsed loop &#183; #k = journal event &#183; hover a node for detail`leg2'</div>"' _n
     }
 
     file write `H' `"<div class="mm-wrap">"' _n
@@ -364,7 +380,12 @@ program define _rh_body_v, sclass
     local prevnout  "."
     local prevkout  "."
 
+    local skipnext 0
     forvalues i = 1/`N' {
+        if `skipnext' {
+            local skipnext 0
+            continue
+        }
         _rh_getrow `J' `i'
         local seq     `"$RH_seq"'
         local dofile  `"$RH_dofile"'
@@ -400,6 +421,18 @@ program define _rh_body_v, sclass
             local boxcls "`s(boxcls)'"
             file write `B' `"<g class="mm-node">"' _n
             _rh_tip `B'
+            * a source that is saved straight away, with nothing drawn in
+            * between, shares one box with its save: "read X, saved as Y" is
+            * one unit of work, and two boxes and an arrow for it is what made
+            * an extract section twice as tall as it needed to be
+            _rh_passthru `J' `i' `N' `"`dofile'"'
+            if `s(merge)' {
+                _rh_getrow `J' `=`i'+1'
+                _rh_savelines `BMAX' `runmode' `nb' "`n_out'"
+                local nb = `s(n)'
+                if inlist("$RH_severity", "warn", "stop") & !inlist("`sev'", "stop") local sev "$RH_severity"
+                local skipnext 1
+            }
             _rh_boxout `B' `SBX' `y' `SBW' `nb' "`boxcls'" "`sev'" "#`seq'" 0
             file write `B' `"</g>"' _n
             local y = `s(y)'
@@ -531,7 +564,12 @@ program define _rh_body_h, sclass
     local prevkout "."
     local maxlab   0
 
+    local skipnext 0
     forvalues i = 1/`N' {
+        if `skipnext' {
+            local skipnext 0
+            continue
+        }
         _rh_getrow `J' `i'
         local seq     `"$RH_seq"'
         local dofile  `"$RH_dofile"'
@@ -556,10 +594,20 @@ program define _rh_body_h, sclass
             }
             if `havebox' local x = `x' + `GAPS'
             _rh_sourcelines `BMAX' `runmode'
-            local nb     = min(`s(n)', 4)
+            local nb     = `s(n)'
             local boxcls "`s(boxcls)'"
             file write `B' `"<g class="mm-node">"' _n
             _rh_tip `B'
+            * read X, saved as Y: one box (see the vertical layout)
+            _rh_passthru `J' `i' `N' `"`dofile'"'
+            if `s(merge)' {
+                _rh_getrow `J' `=`i'+1'
+                _rh_savelines `BMAX' `runmode' `nb' "`n_out'"
+                local nb = `s(n)'
+                if inlist("$RH_severity", "warn", "stop") & !inlist("`sev'", "stop") local sev "$RH_severity"
+                local skipnext 1
+            }
+            local nb = min(`nb', 4)
             _rh_hbox `B' `x' `SBY' `SBW' `SBH' "`boxcls'" "`sev'" "#`seq'" `nb'
             file write `B' `"</g>"' _n
             local x = `x' + `SBW'
@@ -727,21 +775,158 @@ program define _rh_clearlines
     }
 end
 
+* loop marker for a spine box (source or save) -> s(mk) " xN" for a loop
+* that ran N > 1 times, "" otherwise; s(lbl) the resolved file when the loop
+* ran once, "" otherwise (the caller then keeps the template label)
+program define _rh_loopmark, sclass
+    sreturn clear
+    sreturn local mk ""
+    sreturn local lbl ""
+    local loopn `"$RH_loop_n"'
+    if "`loopn'" == "." | "`loopn'" == "" exit
+    capture confirm integer number `loopn'
+    if _rc exit
+    if `loopn' > 1 sreturn local mk `" `=char(2)'`loopn'"'
+    else if `loopn' == 1 & `"$RH_loop_first"' != "." & `"$RH_loop_first"' != "" {
+        sreturn local lbl `"$RH_loop_first"'
+    }
+end
+
+* is row i a source that row i+1 saves straight away? -> s(merge)
+* The next row must be a save of the data in memory, in the same do-file.
+* Anything that was between them in the original journal has been cut by
+* the caller, and the counts on the two lines show what that cost.
+program define _rh_passthru, sclass
+    args J i N dofile
+    sreturn clear
+    sreturn local merge = 0
+    if `i' >= `N' exit
+    local j = `i' + 1
+    frame `J': local ncls = evclass[`j']
+    frame `J': local ndof = dofile[`j']
+    frame `J': local nmas = master[`j']
+    if "`ncls'" == "save" & `"`ndof'"' == `"`dofile'"' & inlist("`nmas'", "work", ".", "") {
+        sreturn local merge = 1
+    }
+end
+
+* the save half of a merged "read X, saved as Y" box.  RH_* hold the save
+* row; MMBL1..nsrc hold the source's lines.  Inserts the saved line second,
+* then the save's own counts when they differ from the source's, then its
+* flags.  -> s(n)
+program define _rh_savelines, sclass
+    args BMAX runmode nsrc srcnout
+    local n = `nsrc'
+    * make room at line 2
+    forvalues k = `n'(-1)2 {
+        global MMBL`=`k'+1' `"${MMBL`k'}"'
+        global MMBC`=`k'+1' `"${MMBC`k'}"'
+    }
+    local ++n
+    local word "saved:"
+    local lbl `"$RH_result"'
+    if "$RH_subtype" == "tempfile" | strpos(`"`lbl'"', "tempfile:") == 1 {
+        local word "tempfile:"
+        if strpos(`"`lbl'"', "tempfile:") == 1 local lbl = substr(`"`lbl'"', 10, .)
+    }
+    local pre `"`=char(4)' #$RH_seq `word' "'
+    _rh_mell `=max(10, `BMAX' - strlen(`"`pre'"'))' `"`lbl'"'
+    global MMBL2 `"`pre'`s(o)'"'
+    global MMBC2 "bl"
+    * the save's counts, when something between the two changed them
+    if `runmode' & `"$RH_n_out"' != "." & "$RH_n_out" != "`srcnout'" {
+        _rh_n $RH_n_out
+        local a `"`s(o)'"'
+        _rh_n $RH_k_out
+        local ++n
+        global MMBL`n' `"`a' `=char(2)' `s(o)' saved"'
+        global MMBC`n' "bn"
+    }
+    _rh_flagtext
+    local ftxt `"`s(o)'"'
+    if `"`ftxt'"' != "" {
+        _rh_flaglines `BMAX' 3 "$RH_severity" `"`ftxt'"'
+        local nf = `s(n)'
+        forvalues k = 1/`nf' {
+            local fl`k' `"`s(l`k')'"'
+            local fc`k' `"`s(c`k')'"'
+        }
+        forvalues k = 1/`nf' {
+            if `n' >= 8 continue, break
+            local ++n
+            global MMBL`n' `"`fl`k''"'
+            global MMBC`n' `"b`fc`k''"'
+        }
+    }
+    sreturn clear
+    sreturn local n = `n'
+end
+
+* provenance of a source, from its flags -> s(o), "" when there is none
+*   "tempfile from <dofile> line <n>"  -> [tempfile from line n]
+*   "produced by <dofile> line <n>"    -> [from line n]
+* with the do-file named only when it is not the one this section is in
+program define _rh_srcprov, sclass
+    args BMAX istmp
+    sreturn clear
+    sreturn local o ""
+    local f `"$RH_flags"'
+    local p = strpos(`"`f'"', "tempfile from ")
+    local kind "tempfile from"
+    local off = 14
+    if !`p' {
+        local p = strpos(`"`f'"', "produced by ")
+        local kind "from"
+        local off = 12
+    }
+    if !`p' exit
+    local rest = substr(`"`f'"', `p' + `off', .)
+    local q = strpos(`"`rest'"', ";")
+    if `q' local rest = substr(`"`rest'"', 1, `q' - 1)
+    local rest = trim(`"`rest'"')
+    * "<dofile> line <n>"
+    local w = strpos(`"`rest'"', " line ")
+    if !`w' exit
+    local dof = substr(`"`rest'"', 1, `w' - 1)
+    local ln  = trim(substr(`"`rest'"', `w' + 6, .))
+    if `"`dof'"' == `"$RH_dofile"' local o `"[`kind' line `ln']"'
+    else {
+        _rh_mell `=max(12, `BMAX' - strlen(`"[`kind'  line `ln']"'))' `"`dof'"'
+        local o `"[`kind' `s(o)' line `ln']"'
+    }
+    sreturn local o `"`o'"'
+end
+
 * --------------------------------------------------- source box (use/import)
 * fills MMBL*/MMBC*; s(n), s(boxcls)
 program define _rh_sourcelines, sclass
     args BMAX runmode
     _rh_clearlines B
     local n 1
-    _rh_mell `BMAX' `"$RH_usingf"'
-    global MMBL1 `"`s(o)'"'
+    _rh_mark
+    local mk `"`s(o)'"'
+    * a collapsed loop on the spine says how many times it ran; a loop that
+    * ran once shows the one file it resolved to
+    _rh_loopmark
+    local mk `"`s(mk)'`mk'"'
+    local lbl `"`s(lbl)'"'
+    if `"`lbl'"' == "" local lbl `"$RH_usingf"'
+    _rh_mell `=`BMAX' - strlen(`"`mk'"')' `"`lbl'"'
+    global MMBL1 `"`s(o)'`mk'"'
     global MMBC1 "bh"
     local boxcls "bx"
-    if strpos(`"$RH_usingf"', "tempfile:") == 1 {
+    local istmp = (strpos(`"`lbl'"', "tempfile:") == 1)
+    if `istmp' local boxcls "bt"
+    * provenance on one line: "[tempfile from line 412]" when the producer is
+    * the do-file this section is in, "[tempfile from 01_build.do line 412]"
+    * when it is another.  This used to be three lines: [tempfile], then the
+    * flag "tempfile from", then the do-file and line.  A label that already
+    * reads tempfile:<name>, in a dashed box, needs no [tempfile] line.
+    _rh_srcprov `BMAX' `istmp'
+    if `"`s(o)'"' != "" {
         local ++n
-        global MMBL`n' "[tempfile]"
+        global MMBL`n' `"`s(o)'"'
         global MMBC`n' "bn"
-        local boxcls "bt"
     }
     else if "$RH_lifecycle" == "overwrite" {
         local ++n
@@ -783,17 +968,22 @@ program define _rh_connlabels, sclass
     args LMAX runmode
     _rh_clearlines A
     local n 0
-    * 1. command line: #seq cmd subtype keys [force]
+    * 1. command line: #seq cmd subtype keys [force] [marker]
     local cl `"#$RH_seq $RH_cmd"'
     if `"$RH_subtype"' != "." local cl `"`cl' $RH_subtype"'
     if `"$RH_keys"'    != "." local cl `"`cl' $RH_keys"'
     if "$RH_force" == "1"     local cl `"`cl', force"'
+    _rh_mark
+    local mk `"`s(o)'"'
+    local LM1 = `LMAX' - strlen(`"`mk'"')
     local ++n
-    _rh_mell `LMAX' `"`cl'"'
+    _rh_mell `LM1' `"`cl'"'
     local l`n' `"`s(o)'"'
     local c`n' "cc"
-    * 2. collapsed loop stack
-    if `"$RH_loop_n"' != "." & `"$RH_loop_n"' != "" {
+    * 2. collapsed loop stack (a loop that ran once is drawn as its one file)
+    local loopn `"$RH_loop_n"'
+    if "`loopn'" == "." | "`loopn'" == "" local loopn 0
+    if `loopn' > 1 {
         _rh_mell 18 `"$RH_loop_first"'
         local lf `"`s(o)'"'
         _rh_mell 18 `"$RH_loop_last"'
@@ -822,6 +1012,14 @@ program define _rh_connlabels, sclass
                 else local parts `"`parts'`sep'`nm' `vf'"'
                 local sep `" `=char(3)' "'
             }
+            * a join that matched every row on both sides says so in one
+            * line, and the coverage line that would follow is folded in
+            local perfect = ("$RH_m1" == "0" & "$RH_m2" == "0" & "$RH_m3" != "." & "$RH_m3" != "0")
+            if `perfect' & !strpos(`"`parts'"', "dropped") {
+                _rh_n $RH_m3
+                local parts `"all `s(o)' matched, 100% of both sides"'
+                local nocover 1
+            }
             _rh_wrapn `LMAX' 2 `"`parts'"'
             local nw = `s(n)'
             local w1 `"`s(l1)'"'
@@ -835,16 +1033,17 @@ program define _rh_connlabels, sclass
                 local c`n' "cl"
             }
         }
-        * append: obs added
+        * append: obs added, on the command line when it fits
         if "$RH_cmd" == "append" & `"$RH_n_using"' != "." {
             _rh_n $RH_n_using
             local ln `"+`s(o)' obs"'
-            if `"$RH_loop_n"' != "." & `"$RH_loop_n"' != "" {
-                local ln `"`ln' from $RH_loop_n files"'
+            if `loopn' > 1 local ln `"`ln' from `loopn' files"'
+            if strlen(`"`l1' `ln'"') <= `LM1' local l1 `"`l1' `ln'"'
+            else {
+                local ++n
+                local l`n' `"`ln'"'
+                local c`n' "cl"
             }
-            local ++n
-            local l`n' `"`ln'"'
-            local c`n' "cl"
         }
         * update counts
         local u4 "$RH_m4"
@@ -875,44 +1074,71 @@ program define _rh_connlabels, sclass
         }
     }
     * 4. coverage percentages (16e), present whenever run mode measured them
+    *    and the breakdown line did not already say "100% of both sides"
+    if "`nocover'" == "" local nocover 0
     _rh_cover
-    if `"`s(o)'"' != "" {
+    if `"`s(o)'"' != "" & !`nocover' {
         local ++n
+        _rh_mell `LMAX' `"`s(o)'"'
         local l`n' `"`s(o)'"'
         local c`n' "cl"
     }
-    * 5. key storage types (16c); a drift is a flag, agreement is a note
+    * 5. key storage types (16c): a drift is a flag and is drawn; agreement
+    *    stays in the tooltip and the ledger, where it costs no height
     _rh_keytypes `"$RH_keytypes"'
-    if `"`s(o)'"' != "" {
-        local mis = `s(mis)'
-        local kt  `"`s(o)'"'
-        * a storage-type drift is a warning, and it says so in text as well as
-        * in colour
-        if `mis' local kt `"!! `kt'"'
+    if `"`s(o)'"' != "" & `s(mis)' {
+        local kt  `"!! `s(o)'"'
         local ++n
         _rh_mell `LMAX' `"`kt'"'
         local l`n' `"`s(o)'"'
-        local c`n' = cond(`mis', "cf", "cn")
+        local c`n' "cf"
     }
-    * 6. options (both modes: scan needs them to say anything at all)
-    if `"$RH_opts"' != "." & `"$RH_opts"' != "" & `"$RH_opts"' != "clear" {
-        _rh_mell `=`LMAX'-6' `"$RH_opts"'
+    * 6. options (both modes: scan needs them to say anything at all), less
+    *    the ones that change no row: nogenerate, generate(), noreport,
+    *    nolabel, nonotes, sorted
+    _rh_optshort `"$RH_opts"'
+    if `"`s(o)'"' != "" {
+        _rh_mell `=`LMAX'-6' `"`s(o)'"'
         local ++n
         local l`n' `"opts: `s(o)'"'
         local c`n' "cn"
     }
-    * 7. run-mode result
+    * 7. run-mode result, on the command line when it fits there
     if `runmode' & `"$RH_n_out"' != "." {
         _rh_n $RH_n_out
         local a `"`s(o)'"'
         _rh_n $RH_k_out
-        local ++n
-        local l`n' `"`=char(4)' `a' `=char(2)' `s(o)'"'
-        local c`n' "cl"
+        local res `"`=char(4)' `a' `=char(2)' `s(o)'"'
+        if strlen(`"`l1' `res'"') <= `LM1' local l1 `"`l1' `res'"'
+        else {
+            local ++n
+            local l`n' `"`res'"'
+            local c`n' "cl"
+        }
     }
-    * 8. flags, severity-marked
+    * 8. flags, severity-marked.  "N using-only dropped by keep(...)" is
+    *    what the breakdown line already shows as "(N dropped)", so it is
+    *    left out when that line was drawn.
     _rh_flagtext
     local ftxt `"`s(o)'"'
+    if `"`ftxt'"' != "" & `runmode' & (`"$RH_m3"' != "." | `"$RH_m1"' != ".") {
+        local keepf ""
+        local rest `"`ftxt'"'
+        while `"`rest'"' != "" {
+            local p = strpos(`"`rest'"', "; ")
+            if `p' {
+                local one = substr(`"`rest'"', 1, `p'-1)
+                local rest = substr(`"`rest'"', `p'+2, .)
+            }
+            else {
+                local one `"`rest'"'
+                local rest ""
+            }
+            if strpos(`"`one'"', "-only dropped by keep(") continue
+            local keepf `"`keepf'`=cond(`"`keepf'"' == "", "", "; ")'`one'"'
+        }
+        local ftxt `"`keepf'"'
+    }
     if `"`ftxt'"' != "" {
         _rh_flaglines `LMAX' 3 "$RH_severity" `"`ftxt'"'
         local nf = `s(n)'
@@ -926,6 +1152,7 @@ program define _rh_connlabels, sclass
             local c`n' `"c`fc`k''"'
         }
     }
+    local l1 `"`l1'`mk'"'
     if `n' > 16 local n 16
     forvalues k = 1/`n' {
         global MMAL`k' `"`l`k''"'
@@ -941,25 +1168,34 @@ program define _rh_usinglines, sclass
     args UMAX runmode
     _rh_clearlines B
     local n 1
-    _rh_mell `UMAX' `"$RH_usingf"'
-    global MMBL1 `"`s(o)'"'
+    local lbl `"$RH_usingf"'
+    local isloop 0
+    local loopn `"$RH_loop_n"'
+    if "`loopn'" == "." | "`loopn'" == "" local loopn 0
+    * a loop that ran once is not a stack: draw the one file it resolved to
+    if `loopn' == 1 {
+        if `"$RH_loop_first"' != "." & `"$RH_loop_first"' != "" local lbl `"$RH_loop_first"'
+        local loopn 0
+    }
+    * a path still holding a macro is a designed boundary, not a bug
+    * (NOVICE_UX B8); the box carries the ~ marker, the legend explains it
+    local mk ""
+    if !`loopn' & strpos(`"`lbl'"', char(6)) {
+        local mk " ~"
+        global RH_NMACRO = $RH_NMACRO + 1
+    }
+    _rh_mell `=`UMAX' - strlen("`mk'")' `"`lbl'"'
+    global MMBL1 `"`s(o)'`mk'"'
     global MMBC1 "bh"
     local boxcls "bu"
-    local isloop 0
-    if strpos(`"$RH_usingf"', "tempfile:") == 1 local boxcls "bt"
-    if `"$RH_loop_n"' != "." & `"$RH_loop_n"' != "" {
+    if strpos(`"`lbl'"', "tempfile:") == 1 local boxcls "bt"
+    if `loopn' > 1 {
         local isloop 1
         _rh_mell `=floor((`UMAX'-8)/2)' `"$RH_loop_first"'
         local lf `"`s(o)'"'
         _rh_mell `=floor((`UMAX'-8)/2)' `"$RH_loop_last"'
         local ++n
-        global MMBL`n' `"`=char(2)'$RH_loop_n: `lf' `=char(1)' `s(o)'"'
-        global MMBC`n' "bn"
-    }
-    * a path still holding a macro is a designed boundary, not a bug (NOVICE_UX B8)
-    if `"$RH_loop_n"' == "." & strpos(`"$RH_usingf"', char(6)) {
-        local ++n
-        global MMBL`n' "(macro path; run mode resolves it)"
+        global MMBL`n' `"`=char(2)'`loopn': `lf' `=char(1)' `s(o)'"'
         global MMBC`n' "bn"
     }
     local cnt ""
@@ -1004,6 +1240,65 @@ program define _rh_usinglines, sclass
     sreturn local isloop = `isloop'
 end
 
+* the row or variable change of a filter or transform, as one short line
+* -> s(o) the text, s(c) its class (bn note, bf flagged), s(skip) = 1 when
+* the journal's flag said the same thing and should not be drawn again
+*   plain          12,345 -> 12,300 obs
+*   flagged rows   !! 12,345 -> 12,300 (-45, 0.4%)
+*   duplicates     !! 12,345 -> 12,300 (-45 duplicates)
+*   variables      -2 vars, 43 left
+program define _rh_cost, sclass
+    args runmode
+    sreturn clear
+    sreturn local o ""
+    sreturn local c "bn"
+    sreturn local skip = 0
+    local f `"$RH_flags"'
+    if `"`f'"' == "." local f ""
+    * the cost line stands in for the journal's flag only when the flag says
+    * nothing else; a flag with more parts is drawn in full as well
+    local sole = (strpos(`"`f'"', ";") == 0)
+    local a "$RH_n_in"
+    local b "$RH_n_out"
+    local havecnt = (`runmode' & "`a'" != "." & "`b'" != "." & "`a'" != "" & "`b'" != "")
+    * variables removed: "removed N variables, N remaining"
+    if strpos(`"`f'"', "removed ") == 1 & strpos(`"`f'"', " variables, ") {
+        local d = substr(`"`f'"', 9, strpos(`"`f'"', " variables, ") - 9)
+        local r = substr(`"`f'"', strpos(`"`f'"', " variables, ") + 12, .)
+        local r = subinstr(`"`r'"', " remaining", "", .)
+        local q = strpos(`"`r'"', ";")
+        if `q' local r = substr(`"`r'"', 1, `q' - 1)
+        sreturn local o `"-`d' vars, `=trim(`"`r'"')' left"'
+        sreturn local skip = `sole'
+        exit
+    }
+    if !`havecnt' exit
+    _rh_n `a'
+    local af `"`s(o)'"'
+    _rh_n `b'
+    local bf `"`s(o)'"'
+    local d = real("`a'") - real("`b'")
+    local df = trim(string(`d', "%20.0fc"))
+    * duplicates dropped: "N duplicate[ key] obs dropped"
+    if strpos(`"`f'"', "duplicate ") & strpos(`"`f'"', " obs dropped") {
+        sreturn local o `"!! `af' `=char(4)' `bf' (-`df' duplicates)"'
+        sreturn local c "bf"
+        sreturn local skip = `sole'
+        exit
+    }
+    * rows removed and flagged: "removed N rows (p%), N remaining"
+    if strpos(`"`f'"', "removed ") == 1 & strpos(`"`f'"', " rows (") {
+        local p1 = strpos(`"`f'"', "(")
+        local p2 = strpos(`"`f'"', ")")
+        local pct = substr(`"`f'"', `p1' + 1, `p2' - `p1' - 1)
+        sreturn local o `"!! `af' `=char(4)' `bf' (-`df', `pct')"'
+        sreturn local c = cond("$RH_severity" == "stop", "bs", "bf")
+        sreturn local skip = `sole'
+        exit
+    }
+    sreturn local o `"`af' `=char(4)' `bf' obs"'
+end
+
 * --------------------------------------------------- spine box lines
 * transform / filter / save / note / flow; fills MMBL*/MMBC*; s(n), s(boxcls)
 program define _rh_nodelines, sclass
@@ -1013,12 +1308,18 @@ program define _rh_nodelines, sclass
     local boxcls "bx"
     if "$RH_evclass" == "save" {
         local ++n
-        _rh_mell `BMAX' `"$RH_result"'
-        local l`n' `"`s(o)'"'
+        _rh_loopmark
+        local mk `"`s(mk)'"'
+        local lbl `"`s(lbl)'"'
+        if `"`lbl'"' == "" local lbl `"$RH_result"'
+        _rh_mell `=`BMAX' - strlen(`"`mk'"')' `"`lbl'"'
+        local l`n' `"`s(o)'`mk'"'
         local c`n' "bh"
         local mark "[saved]"
-        if "$RH_subtype" == "tempfile" | strpos(`"$RH_result"', "tempfile:") == 1 {
-            local mark "[tempfile]"
+        if "$RH_subtype" == "tempfile" | strpos(`"`lbl'"', "tempfile:") == 1 {
+            * the label reads tempfile:<name> and the box is dashed: the word
+            * is not needed a second time
+            local mark ""
             local boxcls "bt"
         }
         else if "$RH_lifecycle" == "overwrite" local mark "[saved, overwrites]"
@@ -1028,18 +1329,32 @@ program define _rh_nodelines, sclass
             _rh_n $RH_n_out
             local cnt `"`s(o)'"'
             _rh_n $RH_k_out
-            local cnt `"`cnt' `=char(2)' `s(o)' `=char(3)' "'
+            local cnt `"`cnt' `=char(2)' `s(o)'"'
+            if `"`mark'"' != "" local cnt `"`cnt' `=char(3)' "'
         }
-        local ++n
-        local l`n' `"`cnt'`mark'"'
-        local c`n' "bl"
+        if `"`cnt'`mark'"' != "" {
+            local ++n
+            local l`n' `"`cnt'`mark'"'
+            local c`n' "bl"
+        }
     }
     else if "$RH_evclass" == "filter" {
-        * a slim spine node: what the condition was, and what it cost
+        * a slim spine node: what the condition was, and what it cost.  The
+        * cost goes on the condition's own line when it fits, so most filters
+        * are one line; scan mode says nothing about rows here, the legend
+        * says once that they are unknown until run.
         local boxcls "bfil"
         local hd "$RH_cmd"
         if `"$RH_opts"' != "." & `"$RH_opts"' != "" local hd `"`hd' $RH_opts"'
         else if `"$RH_subtype"' != "." local hd `"`hd' $RH_subtype"'
+        _rh_cost `runmode'
+        local cost `"`s(o)'"'
+        local ccls "`s(c)'"
+        local skipflag = `s(skip)'
+        if `"`cost'"' != "" & "`ccls'" == "bn" & strlen(`"`hd' `=char(3)' `cost'"') <= `BMAX' {
+            local hd `"`hd' `=char(3)' `cost'"'
+            local cost ""
+        }
         _rh_wrapn `BMAX' 2 `"`hd'"'
         local nw = `s(n)'
         local h1 `"`s(l1)'"'
@@ -1052,22 +1367,10 @@ program define _rh_nodelines, sclass
             local l`n' `"`h2'"'
             local c`n' "bh"
         }
-        if `runmode' & `"$RH_n_in"' != "." & `"$RH_n_out"' != "." & ///
-           `"$RH_flags"' == "." {
-            _rh_n $RH_n_in
-            local a `"`s(o)'"'
-            _rh_n $RH_n_out
+        if `"`cost'"' != "" {
             local ++n
-            local l`n' `"`a' `=char(4)' `s(o)' obs"'
-            local c`n' "bn"
-        }
-        if !`runmode' & "$RH_NOCNT" != "1" {
-            local ln "row change unknown until run"
-            if strlen("`ln'") > `BMAX' local ln "rows: run mode only"
-            local ++n
-            _rh_mell `BMAX' `"`ln'"'
-            local l`n' `"`s(o)'"'
-            local c`n' "bn"
+            local l`n' `"`cost'"'
+            local c`n' "`ccls'"
         }
     }
     else if "$RH_evclass" == "transform" {
@@ -1075,6 +1378,15 @@ program define _rh_nodelines, sclass
         local hd "$RH_cmd"
         if `"$RH_subtype"' != "." local hd `"`hd' $RH_subtype"'
         if "$RH_force" == "1"     local hd `"`hd', force"'
+        * the row change rides on the command line when it fits
+        _rh_cost `runmode'
+        local cost `"`s(o)'"'
+        local ccls "`s(c)'"
+        local skipflag = `s(skip)'
+        if `"`cost'"' != "" & "`ccls'" == "bn" & strlen(`"`hd' `=char(3)' `cost'"') <= `BMAX' {
+            local hd `"`hd' `=char(3)' `cost'"'
+            local cost ""
+        }
         local l`n' `"`hd'"'
         local c`n' "bh"
         if `"$RH_opts"' != "." & `"$RH_opts"' != "" {
@@ -1089,13 +1401,10 @@ program define _rh_nodelines, sclass
             local l`n' `"`s(o)'"'
             local c`n' "bl"
         }
-        if `runmode' & `"$RH_n_in"' != "." & `"$RH_n_out"' != "." {
-            _rh_n $RH_n_in
-            local a `"`s(o)'"'
-            _rh_n $RH_n_out
+        if `"`cost'"' != "" {
             local ++n
-            local l`n' `"`a' `=char(4)' `s(o)' obs"'
-            local c`n' "bn"
+            local l`n' `"`cost'"'
+            local c`n' "`ccls'"
         }
     }
     else {
@@ -1108,8 +1417,10 @@ program define _rh_nodelines, sclass
         local c`n' "bl"
         local boxcls "bw"
     }
+    if "`skipflag'" == "" local skipflag 0
     _rh_flagtext
     local ftxt `"`s(o)'"'
+    if `skipflag' local ftxt ""
     if `"`ftxt'"' != "" {
         _rh_flaglines `BMAX' 3 "$RH_severity" `"`ftxt'"'
         local nf = `s(n)'
@@ -1473,10 +1784,10 @@ program define _rh_cover, sclass
     local cm "$RH_cover_master"
     local cu "$RH_cover_using"
     local o ""
-    if "`cm'" != "." & "`cm'" != "" local o `"master `cm'% matched"'
+    if "`cm'" != "." & "`cm'" != "" local o `"`cm'% of master"'
     if "`cu'" != "." & "`cu'" != "" {
         if `"`o'"' != "" local o `"`o' `=char(3)' "'
-        local o `"`o'using `cu'% used"'
+        local o `"`o'`cu'% of using"'
     }
     if `"`o'"' != "" local o `"cover: `o'"'
     sreturn clear
@@ -1484,6 +1795,29 @@ program define _rh_cover, sclass
 end
 
 * key storage types -> s(o) text, s(mis)=1 when any side disagrees (16c)
+* options worth a line on the map -> s(o); "" when none are left.  Options
+* that change no row are dropped: nogenerate and generate() name the _merge
+* variable, noreport/nolabel/nonotes are display, sorted is a promise, and
+* force is already written on the command line.
+program define _rh_optshort, sclass
+    args o
+    sreturn clear
+    sreturn local o ""
+    if `"`o'"' == "." | `"`o'"' == "" | `"`o'"' == "clear" exit
+    local o = ustrregexra(`"`o'"', "\bgen[a-z]*\([^)]*\)", "")
+    local out ""
+    local rest `"`o'"'
+    while `"`rest'"' != "" {
+        gettoken tok rest : rest, bind
+        local t = strlower(`"`tok'"')
+        if inlist("`t'", "nogenerate", "nogen", "nogene", "nogener", "nogenera") continue
+        if inlist("`t'", "noreport", "norep", "nolabel", "nolab", "nonotes", "nonote", "sorted", "clear") continue
+        if "`t'" == "force" continue
+        local out `"`out' `tok'"'
+    }
+    sreturn local o `"`=strtrim(`"`out'"')'"'
+end
+
 program define _rh_keytypes, sclass
     args t
     local o ""
@@ -1637,6 +1971,24 @@ program define _rh_flaglines, sclass
         }
         * a bare "tempfile" flag is redundant with the [tempfile] marker
         if `"`one'"' == "tempfile" continue
+        * scan-mode advisories: hoisted to the legend, the box carries a
+        * marker (see _rh_mark); count them for the legend line
+        if `"`one'"' == "path built from a macro" {
+            global RH_NMACRO = $RH_NMACRO + 1
+            continue
+        }
+        if `"`one'"' == "run mode resolves it" continue
+        if `"`one'"' == "unresolved runtime list" {
+            global RH_NLIST = $RH_NLIST + 1
+            continue
+        }
+        * provenance is drawn by the source box itself (one line)
+        if strpos(`"`one'"', "tempfile from ") == 1 continue
+        if strpos(`"`one'"', "produced by ") == 1 continue
+        * shorter wordings of the same facts, so each fits one line
+        if `"`one'"' == "duplicate rows on the key will be dropped" local one "rows with duplicate keys dropped"
+        if `"`one'"' == "cd path built from a macro" local one "cd to a macro path"
+        if `"`one'"' == "later relative paths cannot be resolved" local one "later relative paths unresolved"
         if strpos(`"`one'"', "!!") == 1 {
             local cls = cond("`sev'" == "stop", "s", "f")
         }
@@ -1666,6 +2018,16 @@ program define _rh_flaglines, sclass
         sreturn local l`k' `"`l`k''"'
         sreturn local c`k' `"`c`k''"'
     }
+end
+
+* marker suffix for the current row's hoisted advisories -> s(o)
+* ~ = path built from a macro; ×? = loop over a list built at run time
+program define _rh_mark, sclass
+    local m ""
+    if strpos(`"$RH_flags"', "path built from a macro")  local m `"`m' ~"'
+    if strpos(`"$RH_flags"', "unresolved runtime list")  local m `"`m' `=char(2)'?"'
+    sreturn clear
+    sreturn local o `"`m'"'
 end
 
 * sanitize an id/class prefix -> s(o)

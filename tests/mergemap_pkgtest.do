@@ -787,6 +787,85 @@ mm_assert `=(_rc == 0 & strpos("`r(file)'", ".xlsx") > 0)' "format(xlsx) supplie
 capture program drop mm_cnt
 cd "`here'"
 
+* ---- block 19: the HTML page spends one line per fact ----------------------
+* Scanned from four real maps (3,092 events, 222,000 px tall): most of the
+* height was the same advisory repeated on every box, a three-line
+* provenance, count lines that fit beside their label, and a read that is
+* saved straight away drawn as two boxes and an arrow.  These checks pin the
+* compact forms so they do not drift back.
+mm_block 19 "the HTML page spends one line per fact"
+* lines in a file that contain a string -> r(n)
+program define mm_fcount, rclass
+    args f str
+    tempname fh
+    local n = 0
+    file open `fh' using `"`f'"', read text
+    file read `fh' line
+    while r(eof) == 0 {
+        if strpos(`"`macval(line)'"', `"`str'"') local ++n
+        file read `fh' line
+    }
+    file close `fh'
+    return scalar n = `n'
+end
+cd dm18
+* (a) a scan with a macro path, a loop over a runtime list, and a read saved
+*     straight away
+tempname fh
+file open `fh' using p19.do, write text replace
+file write `fh' "use " _char(36) "{RAW}/cars.dta, clear" _n
+file write `fh' "local fl : dir . files " _char(34) "*.dta" _char(34) _n
+file write `fh' "foreach f of local fl {" _n
+file write `fh' "    append using " _char(96) "f" _char(39) _n
+file write `fh' "}" _n
+file write `fh' `"save "built/all.dta", replace"' _n
+file write `fh' `"use "raw/cars.dta", clear"' _n
+file write `fh' `"save "built/copy.dta", replace"' _n
+file close `fh'
+capture noisily mergemap p19.do, out(j19.tsv) noreceipt
+mm_assert `=(_rc == 0)' "the block-19 scan fixture scans"
+capture noisily mergemap draw j19.tsv, export(html) saving(s19.html) replace noopen
+mm_assert `=(_rc == 0)' "its HTML page renders"
+mm_fcount s19.html "row change unknown until run"
+mm_assert `=(r(n) == 0)' "scan mode: no box repeats 'row change unknown until run'"
+mm_fcount s19.html "scan mode: row changes are unknown until run"
+mm_assert `=(r(n) == 1)' "scan mode: the legend says it once"
+* a drawn line is <text ...>path built from a macro</text>; the tooltip keeps
+* the full flag text on lines of its own, which is where it belongs
+mm_fcount s19.html ">path built from a macro"
+local onbox = r(n)
+mm_fcount s19.html "= path built from a macro"
+mm_assert `=(r(n) == 1 & `onbox' == 0)' "a macro path is explained once, in the legend, not on the box"
+mm_fcount s19.html "loop over a list built at run time"
+mm_assert `=(r(n) == 1)' "a runtime list is explained once, in the legend"
+mm_fcount s19.html "saved: "
+mm_assert `=(r(n) >= 1)' "a read saved straight away is one box: '#k saved: ...' inside it"
+* (b) the same run journal draws its counts compactly
+capture noisily mergemap run 01_cut.do, out(r19.tsv) noreceipt
+mm_assert `=(_rc == 0)' "the block-18 fixture runs (and mergemap run accepts noreceipt)"
+capture noisily mergemap draw r19.tsv, export(html) saving(r19.html) replace noopen
+mm_assert `=(_rc == 0)' "the run-mode HTML page renders"
+* auto's make is unique, so this duplicates drop removes nothing: the row
+* change rides on the command line, "duplicates drop . 69 -> 69 obs"
+mm_fcount r19.html ">duplicates drop &#183; "
+mm_assert `=(r(n) >= 1)' "a transform's row change rides on its command line when it fits"
+mm_fcount r19.html ">keep if price "
+local kl = r(n)
+mm_fcount r19.html "(-"
+mm_assert `=(`kl' >= 1 & r(n) >= 1)' "a flagged filter is one line: a -> b (-d, p%)"
+mm_fcount r19.html "opts: nogenerate"
+mm_assert `=(r(n) == 0)' "an option that changes no row (nogenerate) is not a line"
+mm_fcount r19.html "% matched"
+mm_assert `=(r(n) == 0)' "the old 'master N% matched . using N% used' wording is gone"
+mm_fcount r19.html "tempfile:w"
+local tfw = r(n)
+mm_fcount r19.html "[tempfile]"
+mm_assert `=(r(n) == 0)' "a box labelled tempfile:<name> does not add a [tempfile] line"
+capture noisily mergemap draw r19.tsv, export(html) saving(r19c.html) replace noopen compact
+mm_assert `=(_rc == 0)' "compact still renders on the compact page"
+cd ..
+capture program drop mm_fcount
+
 * ---- block 17: absolute-path detection is platform-neutral ----------------
 * An output path that is already absolute must not be sent back through
 * c(pwd).  The Windows forms are the ones that regressed: a UNC share and a

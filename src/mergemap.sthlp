@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.0  23aug2026  Eric Booth}{...}
+{* *! version 0.5.1  23aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -239,14 +239,33 @@ file to draw something older.{p_end}
 
 {pstd}
 {bf:Reading it.} A box is a dataset: a file, a frame, or the data in memory at
-that point. {bf:[saved]} marks a file your code writes; {bf:[tempfile]} marks a
-temporary file, shown with the do-file and line that created it. A stacked box
+that point. {bf:[saved]} marks a file your code writes; a dashed box is a
+tempfile, and {bf:[tempfile from line 412]} says where it was made. A stacked box
 labelled {cmd:x4:} is a loop drawn once, naming its first and last file
-({opt noellipsis} expands it). Filters appear as slim nodes on the spine, because
-a {cmd:drop if} explains a shrinking dataset at least as often as any merge.
-Arrows are the flow of data; joined-in files enter from the side. Counts in
-parentheses were dropped from the result, and {cmd:!!} marks anything worth a
-look, always as text, never as colour alone.{p_end}
+({opt noellipsis} expands it); a box on the spine that a loop wrote shows
+{cmd:x4} after its name, and a loop that ran once shows the one file it
+resolved to. Filters appear as slim nodes on the spine, because a {cmd:drop if}
+explains a shrinking dataset at least as often as any merge. Arrows are the
+flow of data; joined-in files enter from the side. Counts in parentheses were
+dropped from the result, and {cmd:!!} marks anything worth a look, always as
+text, never as colour alone.{p_end}
+
+{pstd}
+{bf:Reading the HTML page.} Each box spends one line per fact. A file that is
+read and saved straight away, with nothing drawn between, is one box:
+{cmd:grad2023.dta} over {cmd:-> #4 saved: hs_stu_grd_2023.dta}, and in run
+mode the two count lines under it show what any hidden filters cost. A filter
+or reshape puts its row change on its own line when it fits,
+{cmd:keep if price < 12000 . 74 -> 60 obs}; a flagged one reads
+{cmd:!! 209,634 -> 203,115 (-6,519, 3.1%)}. A join that matched every row
+says {cmd:all 40 matched, 100% of both sides} in one line; otherwise the
+{cmd:_merge} breakdown and {cmd:cover: 99.7% of master . 99.2% of using}
+follow, and the result {cmd:-> 8 x 63} sits at the end of the command line. Two markers
+are explained once, in the legend, instead of on every box they apply to:
+{cmd:~} after a name means the path was built from a macro and run mode
+resolves it; {cmd:x?} means a loop over a list built at run time, which run
+mode counts. Hover any box for its full record, including what the one-line
+forms leave out.{p_end}
 
 {pstd}
 {bf:When the map is too long.} A real pipeline can journal thousands of events,

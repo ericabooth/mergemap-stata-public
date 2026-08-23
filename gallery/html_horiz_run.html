@@ -7,7 +7,7 @@
 body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #222; background: #fff; margin: 24px; max-width: 1100px; }
 h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
 .mm-html-horiz-run { margin: 1rem 0; }
-.mm-html-horiz-run .mm-wrap { max-height: 32rem; overflow: auto; resize: vertical; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }
+.mm-html-horiz-run .mm-wrap { overflow: auto; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }
 .mm-html-horiz-run .mm-svg { width: 7016px; max-width: none; height: auto; display: block; }
 .mm-html-horiz-run .mm-cap { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 12px; color: #666; margin: 0 0 3px 0; }
 .mm-html-horiz-run .mm-leg { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 11px; color: #888; margin: 0 0 8px 0; }
@@ -56,7 +56,7 @@ h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
 <div class="mm-cap">mode: run &#183; layout: horizontal &#183; 22 events &#183; 3 of 9 joins flagged: 1 stop, 2 warn &#183; 2 other events flagged</div>
 <div class="mm-leg"><span class="mm-legk">!!</span> = warning or stop (never colour alone) &#183; dashed box = tempfile &#183; &#215;N = collapsed loop &#183; #k = journal event &#183; hover a node for detail</div>
 <div class="mm-wrap">
-<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 7016 465" width="7016" height="465">
+<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 7016 439" width="7016" height="439">
 <title>mergemap join map for journal_run.tsv (run mode)</title>
 <desc>Boxes are datasets in memory or on disk; arrows are joins, filters and saves, top to bottom, in do-file order.</desc>
 <defs>
@@ -85,10 +85,9 @@ file: raw/cps_&#96;y'.dta
 in 52,431 &#215; 24 &#8594; out 209,634 &#215; 24
 using 157,203 &#215; 24
 </title>
-<text x="228" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#2 append</text>
+<text x="228" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#2 append +157,203 obs from 3 files</text>
 <text x="228" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#215;3: raw/cps_2020.dta &#8230; raw/cps_2022.dta</text>
-<text x="228" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">+157,203 obs from 3 files</text>
-<text x="228" y="345" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 209,634 &#215; 24</text>
+<text x="228" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 209,634 &#215; 24</text>
 <rect x="274" y="106" width="250" height="62" class="mm-bstk" fill="#ffffff" stroke="#999" stroke-width="1" />
 <rect x="269" y="111" width="250" height="62" class="mm-bstk" fill="#ffffff" stroke="#999" stroke-width="1" />
 <rect x="264" y="116" width="250" height="62" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
@@ -108,20 +107,17 @@ file: xwalk/county_key.dta
 in 209,634 &#215; 24 &#8594; out 209,634 &#215; 26
 using 254 &#215; 3
 matched 209,101 &#183; master-only 533 &#183; using-only 2
-cover: master 99.7% matched &#183; using 99.2% used
+cover: 99.7% of master &#183; 99.2% of using
 types: county str5 vs str5
 dup-key obs: master 0 &#183; using 0
 opts: keep(1 3) nogenerate
 2 using-only dropped by keep(1 3)
 </title>
-<text x="728" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#3 merge m:1 county</text>
+<text x="728" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#3 merge m:1 county &#8594; 209,634 &#215; 26</text>
 <text x="728" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 209,101 &#183; master-only 533</text>
 <text x="728" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#160;&#160;using-only (2 dropped)</text>
-<text x="728" y="345" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 99.7% matched &#183; using 99.2% used</text>
-<text x="728" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: county str5 vs str5</text>
-<text x="728" y="371" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: keep(1 3) nogenerate</text>
-<text x="728" y="384" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 209,634 &#215; 26</text>
-<text x="728" y="397" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">2 using-only dropped by keep(1 3)</text>
+<text x="728" y="345" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 99.7% of master &#183; 99.2% of using</text>
+<text x="728" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: keep(1 3)</text>
 <rect x="764" y="132" width="250" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
 <text x="772" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">xwalk/county_key.dta</text>
 <text x="772" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">254 &#215; 3 &#183; key: county</text>
@@ -137,8 +133,7 @@ removed 6,519 rows (3.1%), 203,115 remaining
 <rect x="1024" y="222" width="190" height="54" class="mm-bfil mm-sevw" fill="#fbfbfb" stroke="#222" stroke-width="1.7" />
 <text x="1027" y="217" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#4</text>
 <text x="1032" y="242" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop if missing(wage)</text>
-<text x="1032" y="258" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! removed 6,519 rows</text>
-<text x="1032" y="274" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">&#160;&#160;(3.1%), 203,115</text>
+<text x="1032" y="258" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 209,634 &#8594; 203,115 (-6,519, 3.1%)</text>
 </g>
 <line x1="1214" y1="249" x2="1276" y2="249" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-horiz-run-ag)" />
 <g class="mm-node">
@@ -193,8 +188,7 @@ severity: warn
 <text x="2155" y="205" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#8</text>
 <text x="2160" y="230" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">duplicates drop</text>
 <text x="2160" y="246" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">keys: pid</text>
-<text x="2160" y="262" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">8,914 &#8594; 8,902 obs</text>
-<text x="2160" y="278" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 12 duplicate pid obs</text>
+<text x="2160" y="262" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 8,914 &#8594; 8,902 (-12 duplicates)</text>
 </g>
 <line x1="2382" y1="249" x2="2650" y2="249" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-horiz-run-ag)" />
 <g class="mm-node">
@@ -204,19 +198,17 @@ file: raw/visits.dta
 in 8,902 &#215; 12 &#8594; out 41,520 &#215; 17
 using 41,210 &#215; 6
 matched 41,210 &#183; master-only 310 &#183; using-only 0
-cover: master 96.5% matched &#183; using 100.0% used
+cover: 96.5% of master &#183; 100.0% of using
 types: pid long vs long
 dup-key obs: master 0 &#183; using 32,618
 310 master-only kept (no visits)
 </title>
-<text x="2356" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#9 merge 1:m pid</text>
+<text x="2356" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#9 merge 1:m pid &#8594; 41,520 &#215; 17</text>
 <text x="2356" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 41,210 &#183; master-only 310</text>
 <text x="2356" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#160;&#160;using-only 0</text>
 <text x="2356" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">dup-key obs: master 0 &#183; using 32,618</text>
-<text x="2356" y="358" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 96.5% matched &#183; using 100.0% used</text>
-<text x="2356" y="371" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: pid long vs long</text>
-<text x="2356" y="384" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 41,520 &#215; 17</text>
-<text x="2356" y="397" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">310 master-only kept (no visits)</text>
+<text x="2356" y="358" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 96.5% of master &#183; 100.0% of using</text>
+<text x="2356" y="371" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">310 master-only kept (no visits)</text>
 <rect x="2392" y="132" width="250" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
 <text x="2400" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/visits.dta</text>
 <text x="2400" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">41,210 &#215; 6 &#183; key: pid</text>
@@ -232,7 +224,7 @@ tempfile
 <rect x="2652" y="210" width="230" height="78" class="mm-bt" fill="#ffffff" stroke="#666" stroke-width="1" stroke-dasharray="5 3" />
 <text x="2655" y="205" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#10</text>
 <text x="2660" y="230" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">tempfile:__visits</text>
-<text x="2660" y="246" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">41,520 &#215; 17 &#183; [tempfile]</text>
+<text x="2660" y="246" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">41,520 &#215; 17</text>
 </g>
 <g class="mm-node">
 <title>#11 &#183; 02_panel.do line 19 &#183; use
@@ -287,9 +279,8 @@ tempfile from 02_panel.do line 16
 <rect x="3802" y="210" width="230" height="78" class="mm-bt" fill="#ffffff" stroke="#666" stroke-width="1" stroke-dasharray="5 3" />
 <text x="3805" y="205" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#14</text>
 <text x="3810" y="230" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">tempfile:__visits</text>
-<text x="3810" y="246" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[tempfile]</text>
+<text x="3810" y="246" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[tempfile from 02_panel.do line 16]</text>
 <text x="3810" y="262" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">41,520 &#215; 17</text>
-<text x="3810" y="278" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">tempfile from 02_panel.do</text>
 </g>
 <line x1="4032" y1="249" x2="4300" y2="249" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-horiz-run-ag)" />
 <g class="mm-node">
@@ -299,19 +290,17 @@ file: built/county_wide.dta
 in 41,520 &#215; 17 &#8594; out 41,520 &#215; 25
 using 762 &#215; 9
 matched 41,425 &#183; master-only 95 &#183; using-only 0
-cover: master 99.8% matched &#183; using 94.1% used
+cover: 99.8% of master &#183; 94.1% of using
 types: county str5 vs str5
 dup-key obs: master 0 &#183; using 0
 opts: keep(1 3) nogenerate
 95 master-only kept
 </title>
-<text x="4006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#15 merge m:1 county</text>
+<text x="4006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#15 merge m:1 county &#8594; 41,520 &#215; 25</text>
 <text x="4006" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 41,425 &#183; master-only 95 &#183; using-only 0</text>
-<text x="4006" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 99.8% matched &#183; using 94.1% used</text>
-<text x="4006" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: county str5 vs str5</text>
-<text x="4006" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: keep(1 3) nogenerate</text>
-<text x="4006" y="371" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 41,520 &#215; 25</text>
-<text x="4006" y="384" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">95 master-only kept</text>
+<text x="4006" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 99.8% of master &#183; 94.1% of using</text>
+<text x="4006" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: keep(1 3)</text>
+<text x="4006" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">95 master-only kept</text>
 <rect x="4042" y="132" width="250" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
 <text x="4050" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">built/county_wide.dta</text>
 <text x="4050" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">762 &#215; 9 &#183; key: county</text>
@@ -327,20 +316,18 @@ key: staff
 file: raw/staff_assign.dta
 in 41,520 &#215; 25 &#8594; out 44,873 &#215; 28
 using 118 &#215; 4
-cover: master 100.0% matched &#183; using 100.0% used
+cover: 100.0% of master &#183; 100.0% of using
 types: staff byte vs byte
 dup-key obs: master 0 &#183; using 74
 opts: unmatched(none)
 severity: warn
 row multiplication x1.08
 </title>
-<text x="4506" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#16 joinby m:m staff</text>
+<text x="4506" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#16 joinby m:m staff &#8594; 44,873 &#215; 28</text>
 <text x="4506" y="319" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">dup-key obs: master 0 &#183; using 74</text>
-<text x="4506" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 100.0% matched &#183; using 100.0% used</text>
-<text x="4506" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: staff byte vs byte</text>
-<text x="4506" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: unmatched(none)</text>
-<text x="4506" y="371" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 44,873 &#215; 28</text>
-<text x="4506" y="384" class="mm-t mm-hf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! row multiplication x1.08</text>
+<text x="4506" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 100.0% of master &#183; 100.0% of using</text>
+<text x="4506" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: unmatched(none)</text>
+<text x="4506" y="358" class="mm-t mm-hf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! row multiplication x1.08</text>
 <rect x="4542" y="132" width="250" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
 <text x="4550" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/staff_assign.dta</text>
 <text x="4550" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">118 &#215; 4 &#183; key: staff</text>
@@ -357,21 +344,19 @@ file: raw/corrections.dta
 in 44,873 &#215; 28 &#8594; out 44,873 &#215; 28
 using 400 &#215; 5
 matched 0 &#183; master-only 44,473 &#183; using-only 0 &#183; missing-updated 350 &#183; conflict-updated 50
-cover: master 0.9% matched &#183; using 100.0% used
+cover: 0.9% of master &#183; 100.0% of using
 types: pid long vs long
 dup-key obs: master 0 &#183; using 0
 opts: update replace
 severity: warn
 50 nonmissing conflicts overwritten
 </title>
-<text x="5006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#17 merge 1:1 pid visitid</text>
+<text x="5006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#17 merge 1:1 pid visitid &#8594; 44,873 &#215; 28</text>
 <text x="5006" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 0 &#183; master-only 44,473 &#183; using-only 0</text>
 <text x="5006" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">updated: 350 missing &#183; 50 conflicts</text>
-<text x="5006" y="345" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 0.9% matched &#183; using 100.0% used</text>
-<text x="5006" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: pid long vs long</text>
-<text x="5006" y="371" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: update replace</text>
-<text x="5006" y="384" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 44,873 &#215; 28</text>
-<text x="5006" y="397" class="mm-t mm-hf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! 50 nonmissing conflicts overwritten</text>
+<text x="5006" y="345" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 0.9% of master &#183; 100.0% of using</text>
+<text x="5006" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: update replace</text>
+<text x="5006" y="371" class="mm-t mm-hf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! 50 nonmissing conflicts overwritten</text>
 <rect x="5042" y="132" width="250" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
 <text x="5050" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/corrections.dta</text>
 <text x="5050" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">400 &#215; 5 &#183; key: pid visitid</text>
@@ -388,19 +373,17 @@ file: frame:counties
 in 44,873 &#215; 28 &#8594; out 44,873 &#215; 29
 using 254 &#215; 7
 matched 44,778 &#183; master-only 95
-cover: master 99.8% matched &#183; using 93.7% used
+cover: 99.8% of master &#183; 93.7% of using
 types: county str5 vs str5
 dup-key obs: master 0 &#183; using 0
 opts: frame(counties)
 95 obs unmatched to frame
 </title>
-<text x="5506" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#18 frlink m:1 county</text>
+<text x="5506" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#18 frlink m:1 county &#8594; 44,873 &#215; 29</text>
 <text x="5506" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 44,778 &#183; master-only 95</text>
-<text x="5506" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 99.8% matched &#183; using 93.7% used</text>
-<text x="5506" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">types: county str5 vs str5</text>
-<text x="5506" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: frame(counties)</text>
-<text x="5506" y="371" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 44,873 &#215; 29</text>
-<text x="5506" y="384" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">95 obs unmatched to frame</text>
+<text x="5506" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 99.8% of master &#183; 93.7% of using</text>
+<text x="5506" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: frame(counties)</text>
+<text x="5506" y="358" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">95 obs unmatched to frame</text>
 <rect x="5542" y="132" width="250" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
 <text x="5550" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">frame:counties</text>
 <text x="5550" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">254 &#215; 7 &#183; key: county</text>
@@ -416,9 +399,8 @@ file: frame:counties
 in 44,873 &#215; 29 &#8594; out 44,873 &#215; 31
 opts: povrate slots, from(cnty)
 </title>
-<text x="6006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#19 frget</text>
+<text x="6006" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#19 frget &#8594; 44,873 &#215; 31</text>
 <text x="6006" y="319" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: povrate slots, from(cnty)</text>
-<text x="6006" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 44,873 &#215; 31</text>
 <rect x="6042" y="148" width="250" height="30" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
 <text x="6050" y="169" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">frame:counties</text>
 <line x1="6167" y1="178" x2="6167" y2="245" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-horiz-run-aa)" />
@@ -433,7 +415,7 @@ removed 753 rows (1.7%), 44,120 remaining
 <text x="6305" y="217" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#20</text>
 <text x="6310" y="242" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep if inrange(year</text>
 <text x="6310" y="258" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">&#160;&#160;2019, 2022)</text>
-<text x="6310" y="274" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">removed 753 rows</text>
+<text x="6310" y="274" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 44,873 &#8594; 44,120 (-753, 1.7%)</text>
 </g>
 <line x1="6492" y1="249" x2="6760" y2="249" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-html-horiz-run-ag)" />
 <g class="mm-node">
@@ -443,7 +425,7 @@ file: raw/schedules.dta
 in 44,120 &#215; 31 &#8594; out 44,120 &#215; 33
 using 560 &#215; 6
 matched 43,906 &#183; master-only 210 &#183; using-only 4
-cover: master 99.5% matched &#183; using 99.3% used
+cover: 99.5% of master &#183; 99.3% of using
 types: schednote byte vs str8
 dup-key obs: master 3,110 &#183; using 102
 opts: force
@@ -452,17 +434,15 @@ severity: stop
 !! m:m pairs rows by order within key (not a join)
 !! force: schednote str8 vs byte
 </title>
-<text x="6466" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#21 merge m:m staff, force</text>
+<text x="6466" y="306" class="mm-t mm-hb" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#111">#21 merge m:m staff, force &#8594; 44,120 &#215; 33</text>
 <text x="6466" y="319" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">matched 43,906 &#183; master-only 210</text>
 <text x="6466" y="332" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#160;&#160;using-only 4</text>
 <text x="6466" y="345" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">dup-key obs: master 3,110 &#183; using 102</text>
-<text x="6466" y="358" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: master 99.5% matched &#183; using 99.3% used</text>
+<text x="6466" y="358" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">cover: 99.5% of master &#183; 99.3% of using</text>
 <text x="6466" y="371" class="mm-t mm-hf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! types: schednote byte vs str8</text>
-<text x="6466" y="384" class="mm-t mm-hn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#666">opts: force</text>
-<text x="6466" y="397" class="mm-t mm-hc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="normal" fill="#333">&#8594; 44,120 &#215; 33</text>
-<text x="6466" y="410" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! m:m pairs rows by order within key (not a</text>
-<text x="6466" y="423" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">&#160;&#160;join)</text>
-<text x="6466" y="436" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! force: schednote str8 vs byte</text>
+<text x="6466" y="384" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! m:m pairs rows by order within key (not a</text>
+<text x="6466" y="397" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">&#160;&#160;join)</text>
+<text x="6466" y="410" class="mm-t mm-hs" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="10" font-weight="bold" fill="#4a6d8c">!! force: schednote str8 vs byte</text>
 <rect x="6502" y="132" width="250" height="46" class="mm-bu mm-sevs" fill="#fcfcfc" stroke="#4a6d8c" stroke-width="2.2" />
 <text x="6510" y="153" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">raw/schedules.dta</text>
 <text x="6510" y="169" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">560 &#215; 6 &#183; key: staff</text>
@@ -482,7 +462,7 @@ lifecycle: create
 </g>
 </svg>
 </div>
-<div class="mm-foot">mergemap &#183; journal journal_run.tsv &#183; run mode, horizontal layout, 22 events &#183; generated 21 Aug 2026 08:33:24 &#183; Stata 19.5 MP &#183; git main @ 057d6df &#183; self-contained: no scripts, no external assets</div>
+<div class="mm-foot">mergemap &#183; journal journal_run.tsv &#183; run mode, horizontal layout, 22 events &#183; generated 23 Aug 2026 09:24:31 &#183; Stata 19.5 MP &#183; git main @ 3b907cc &#183; self-contained: no scripts, no external assets</div>
 </div>
 </body>
 </html>

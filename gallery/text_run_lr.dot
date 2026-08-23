@@ -1,8 +1,8 @@
-// mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df
+// mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 23 Aug 2026 09:24:38 - Stata 19.5 MP - git main@3b907cc
 // mergemap data-flow map of journal_run.tsv
 digraph mergemap {
   rankdir=LR;
-  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontcolor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 21 Aug 2026 08:33:32 - Stata 19.5 MP - git main@057d6df"];
+  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontcolor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal journal_run.tsv - rendered 23 Aug 2026 09:24:38 - Stata 19.5 MP - git main@3b907cc"];
   node  [shape=box, fontname="Helvetica", fontsize=10, color="#606060", fontcolor="#202020"];
   edge  [fontname="Helvetica", fontsize=9, color="#606060", fontcolor="#202020"];
   subgraph cluster_1 {

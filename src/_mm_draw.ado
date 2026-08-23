@@ -69,10 +69,17 @@ program define _mm_draw, rclass
     if `"`paths'"' != "" local cutopts `"`cutopts' paths(`paths')"'
     if `"`root'"'  != "" local cutopts `"`cutopts' root(`root')"'
     if `"`ifexp'"' != "" local cutopts `"`cutopts' if(`ifexp')"'
+    local jorig `"`jfile'"'
     _mm_jcut using `"`jfile'"', `cutopts'
     local jfile `"`s(jfile)'"'
     return local journal `"`jfile'"'
     return local hidden  `"`s(note)'"'
+    * the page, the mermaid header and the graph footer name the journal;
+    * when a cut copy is drawn they should still name the journal you gave
+    local jname `"`jorig'"'
+    local p = max(strrpos(`"`jname'"', "/"), strrpos(`"`jname'"', char(92)))
+    if `p' local jname = substr(`"`jname'"', `p' + 1, .)
+    local nameopt `"name(`jname')"'
 
     * compact, nocounts and nokeys thin each node; they reach the Results
     * window and the HTML page.  For the other exports say so, rather than
@@ -98,7 +105,7 @@ program define _mm_draw, rclass
             local hf `"`saving'"'
             if `"`hf'"' == "" local hf "mergemap_map.html"
             _mm_draw_html `"`jfile'"' `"`hf'"' `"`layout'"' `"`accent'"' ///
-                "`details'" "" "replace" "`noopen'" "`compact' `counts' `keys'"
+                "`details'" "" "replace" "`noopen'" "`compact' `counts' `keys' `nameopt'"
             return local output `"`s(out)'"'
         }
         exit
@@ -109,7 +116,7 @@ program define _mm_draw, rclass
         local hf `"`saving'"'
         if `"`hf'"' == "" local hf "mergemap_map.html"
         _mm_draw_html `"`jfile'"' `"`hf'"' `"`layout'"' `"`accent'"' ///
-            "`details'" "`embed'" "`replace'" "`noopen'" "`compact' `counts' `keys'"
+            "`details'" "`embed'" "`replace'" "`noopen'" "`compact' `counts' `keys' `nameopt'"
         return local output `"`s(out)'"'
         exit
     }
@@ -124,7 +131,7 @@ program define _mm_draw, rclass
                 local stub = substr(`"`stub'"', 1, strlen(`"`stub'"') - 4)
             }
         }
-        local o ""
+        local o `"`nameopt'"'
         if `"`layout'"' != "" local o `"`o' layout(`layout')"'
         if `"`page'"'   != "" local o `"`o' page(`page')"'
         if `maxnodes' >= 0    local o `"`o' maxnodes(`maxnodes')"'
@@ -145,7 +152,7 @@ program define _mm_draw, rclass
     if "`fmt'" == "text" local fmt "all"
     local stub `"`saving'"'
     if `"`stub'"' == "" local stub "mergemap_map"
-    local o `"format(`fmt') `replace'"'
+    local o `"format(`fmt') `replace' `nameopt'"'
     if `"`layout'"' != "" local o `"`o' layout(`layout')"'
     if `wrap' >= 0        local o `"`o' wrap(`wrap')"'
     _mm_rendertext using `"`jfile'"', saving(`"`stub'"') `o'
