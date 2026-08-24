@@ -1,10 +1,9 @@
-*! version 0.3.1  20aug2026  Eric Booth
-*! _mm_detail -- everything the journal knows about one event, printed as a
-*! ledger.  With -teach-, a join event is also drawn as a row-pairing picture
-*! in the style of -mergemap sql-, but built from ITS observed counts, so the
-*! teaching picture and your own pipeline become the same picture.  A scanned
-*! event has no counts, so teach falls back to the generic picture for that
-*! join form and says why.
+*! version 0.5.2  23aug2026  Eric Booth
+*! _mm_detail -- the full record of one journal event, printed as a ledger.
+*! With -draw- (synonym: teach), a join event is also diagrammed as a row
+*! pairing in the style of -mergemap sql-, built from ITS observed counts.
+*! A scanned event has no counts, so -draw- shows the worked example for
+*! that join form and says why.
 
 program define _mm_detail, rclass
     version 16
@@ -15,7 +14,8 @@ program define _mm_detail, rclass
         di as err `"    the receipt and {stata mergemap list:mergemap list} number them"'
         exit 198
     }
-    syntax [anything(name=jspec)] [, TEACH]
+    syntax [anything(name=jspec)] [, DRAW TEACH]
+    if "`teach'" != "" local draw "draw"
     _mm_jresolve `jspec'
     local jfile `"`s(jfile)'"'
     _mm_jload using `"`jfile'"', frame(_mmdet)
@@ -83,11 +83,11 @@ program define _mm_detail, rclass
     di as txt "  {hline 62}"
     return local journal `"`jfile'"'
 
-    if "`teach'" == "" exit
+    if "`draw'" == "" exit
 
     * ---- the bridge: this event, drawn with its own counts ---------------
     if !inlist("`class'", "join", "link") {
-        di as txt "mergemap detail: teach draws join events; event `seq' is a `class'"
+        di as txt "mergemap detail, draw diagrams join events; event `seq' is a `class'"
         exit
     }
     if "`m3'" == "." {
@@ -102,12 +102,12 @@ program define _mm_detail, rclass
         else if strpos(`"`opts'"', "keep(1 3)")      local pic "left"
         else if inlist("`subtype'", "m:1", "1:1")    local pic "full"
         if "`pic'" == "" {
-            di as txt "mergemap detail: no teaching picture for `cmd'"
+            di as txt "mergemap detail: no diagram for `cmd'"
             exit
         }
         di as txt ""
         di as txt "This event was scanned, not run, so there are no observed"
-        di as txt "counts to draw; the generic picture for its form instead"
+        di as txt "counts to draw; the worked example for its form instead"
         di as txt "({stata mergemap run:mergemap run} fills it with your data):"
         _mm_sql `pic'
         exit

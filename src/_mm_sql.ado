@@ -1,8 +1,8 @@
 *! version 0.3.0  20aug2026  Eric Booth
-*! _mm_sql -- teach mode: joins drawn as row pairings, not Venn circles.
+*! _mm_sql -- each join form drawn as a row pairing, not Venn circles.
 *! A join is a cartesian product with a filter, which is why a join can
 *! return more rows than either input and why overlapping circles are the
-*! wrong picture.  Each picture shows two small key-labelled row stacks,
+*! wrong picture.  Each diagram shows two small key-labelled row stacks,
 *! the operator, the result stack (dropped rows in parentheses, padded
 *! rows marked), the size rule, and the SQL / dplyr / pandas equivalent.
 
@@ -43,7 +43,7 @@ program define _mm_sql
         exit
     }
     if "`what'" != "" & "`what'" != "table" {
-        di as err `"mergemap sql: no picture called "`what'""'
+        di as err `"mergemap sql: no diagram named "`what'""'
     }
     _mm_sql_table
 end

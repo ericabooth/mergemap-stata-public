@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta charset="utf-8" />
+<title>mergemap &#183; gallery_run.tsv (run, vertical)</title>
+<style type="text/css">
+body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; color: #222; background: #fff; margin: 24px; max-width: 1100px; }
+h1 { font-size: 19px; margin: 0 0 2px 0; font-weight: 600; }
+.mm-g-map-run { margin: 1rem 0; }
+.mm-g-map-run .mm-wrap { overflow: auto; border: 1px solid #e4e4e4; border-radius: 4px; padding: 6px; background: #fff; }
+.mm-g-map-run .mm-svg { max-width: 100%; height: auto; display: block; }
+.mm-g-map-run .mm-cap { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 12px; color: #666; margin: 0 0 3px 0; }
+.mm-g-map-run .mm-leg { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 11px; color: #888; margin: 0 0 8px 0; }
+.mm-g-map-run .mm-legk { color: #4a6d8c; font-weight: 700; }
+.mm-g-map-run .mm-foot { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 10px; color: #999; margin: 10px 0 0 0; line-height: 1.5; }
+.mm-g-map-run .mm-h2 { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; font-size: 15px; font-weight: 600; color: #222; margin: 18px 0 6px 0; }
+.mm-g-map-run .mm-det { margin: 6px 0; border: 1px solid #ddd; border-radius: 3px; }
+.mm-g-map-run .mm-sum { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; font-size: 12px; padding: 5px 8px; cursor: pointer; background: #f7f7f7; }
+.mm-g-map-run .mm-pre { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; font-size: 12px; line-height: 1.35; color: #222; background: #fff; margin: 0; padding: 8px 12px; overflow-x: auto; }
+.mm-g-map-run .mm-flag { font-weight: 700; color: #4a6d8c; }
+.mm-g-map-run .mm-node { cursor: help; }
+.mm-g-map-run .mm-t { font-family: SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace; }
+.mm-g-map-run .mm-bh { font-size: 12px; font-weight: 700; fill: #111; }
+.mm-g-map-run .mm-bl { font-size: 12px; fill: #333; }
+.mm-g-map-run .mm-bn { font-size: 11px; fill: #666; }
+.mm-g-map-run .mm-bf { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-bs { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-cc { font-size: 11px; font-weight: 700; fill: #111; }
+.mm-g-map-run .mm-cl { font-size: 11px; fill: #333; }
+.mm-g-map-run .mm-cn { font-size: 11px; fill: #666; }
+.mm-g-map-run .mm-cf { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-cs { font-size: 11px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-dof { font-size: 13px; font-weight: 700; fill: #222; }
+.mm-g-map-run .mm-hc { font-size: 10px; fill: #333; }
+.mm-g-map-run .mm-hn { font-size: 10px; fill: #666; }
+.mm-g-map-run .mm-hb { font-size: 10px; font-weight: 700; fill: #111; }
+.mm-g-map-run .mm-hf { font-size: 10px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-hs { font-size: 10px; font-weight: 700; fill: #4a6d8c; }
+.mm-g-map-run .mm-bx { fill: #f7f7f7; stroke: #333; stroke-width: 1.1; }
+.mm-g-map-run .mm-bu { fill: #fcfcfc; stroke: #666; stroke-width: 1; }
+.mm-g-map-run .mm-bt { fill: #fff; stroke: #666; stroke-width: 1; stroke-dasharray: 5 3; }
+.mm-g-map-run .mm-bstk { fill: #fff; stroke: #999; stroke-width: 1; }
+.mm-g-map-run .mm-bw { fill: #fff; stroke: #999; stroke-width: 1; }
+.mm-g-map-run .mm-bfil { fill: #fbfbfb; stroke: #888; stroke-width: 1; }
+.mm-g-map-run .mm-sevw { stroke: #222; stroke-width: 1.7; }
+.mm-g-map-run .mm-sevs { stroke: #4a6d8c; stroke-width: 2.2; }
+.mm-g-map-run .mm-sp { stroke: #444; stroke-width: 1.2; fill: none; }
+.mm-g-map-run .mm-spd { stroke: #777; stroke-width: 1.1; fill: none; stroke-dasharray: 4 3; }
+.mm-g-map-run .mm-hl { stroke: #ccc; stroke-width: 1; }
+@media print { .mm-g-map-run .mm-wrap { max-height: none; overflow: visible; resize: none; border: 0; padding: 0; } }
+</style>
+</head>
+<body>
+<h1>mergemap &#183; gallery_run.tsv</h1>
+<div class="mm-embed mm-g-map-run">
+<div class="mm-cap">mode: run &#183; layout: vertical &#183; 31 events &#183; 3 of 5 joins flagged: 3 warn &#183; 4 other events flagged</div>
+<div class="mm-leg"><span class="mm-legk">!!</span> = warning or stop (never colour alone) &#183; dashed box = tempfile &#183; &#215;N = collapsed loop &#183; #k = journal event &#183; hover a node for detail</div>
+<div class="mm-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 880 2548" width="880" height="2548">
+<title>mergemap join map for gallery_run.tsv (run mode)</title>
+<desc>Boxes are datasets in memory or on disk; arrows are joins, filters and saves, top to bottom, in do-file order.</desc>
+<defs>
+<marker id="mm-g-map-run-ag" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#444" /></marker>
+<marker id="mm-g-map-run-aa" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4a6d8c" /></marker>
+</defs>
+<text x="40" y="20" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">01_cars.do</text>
+<line x1="40" y1="26" x2="860" y2="26" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<g class="mm-node">
+<title>#1 &#183; 01_cars.do line 13 &#183; save
+saved to: cars_all.dta
+in 74 &#215; 14 &#8594; out 74 &#215; 14
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="38" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="54" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#1</text>
+<text x="48" y="62" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_all.dta</text>
+<text x="48" y="78" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 14 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#2 &#183; 01_cars.do line 16 &#183; use
+file: cars_all.dta
+out 74 &#215; 14
+using 74 &#215; 14
+opts: clear
+lifecycle: read
+produced by 01_cars.do line 13
+</title>
+<rect x="40" y="98" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="114" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#2</text>
+<text x="48" y="122" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_all.dta</text>
+<text x="48" y="138" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from line 13]</text>
+<text x="48" y="154" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 14</text>
+</g>
+<line x1="195" y1="160" x2="195" y2="185" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#3 &#183; 01_cars.do line 17 &#183; keep if
+in 74 &#215; 14 &#8594; out 37 &#215; 14
+opts: if carid &lt;= 37
+severity: warn
+removed 37 rows (50.0%), 37 remaining
+</title>
+<rect x="58" y="186" width="274" height="40" class="mm-bfil mm-sevw" fill="#fbfbfb" stroke="#222" stroke-width="1.7" />
+<text x="28" y="202" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#3</text>
+<text x="66" y="207" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep if carid &lt;= 37</text>
+<text x="66" y="222" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 74 &#8594; 37 (-37, 50.0%)</text>
+</g>
+<line x1="195" y1="226" x2="195" y2="251" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#4 &#183; 01_cars.do line 18 &#183; save
+saved to: cars_early.dta
+in 37 &#215; 14 &#8594; out 37 &#215; 14
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="252" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="268" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#4</text>
+<text x="48" y="276" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_early.dta</text>
+<text x="48" y="292" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">37 &#215; 14 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#5 &#183; 01_cars.do line 20 &#183; use
+file: cars_all.dta
+out 74 &#215; 14
+using 74 &#215; 14
+opts: clear
+lifecycle: read
+produced by 01_cars.do line 13
+</title>
+<rect x="40" y="312" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="328" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#5</text>
+<text x="48" y="336" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_all.dta</text>
+<text x="48" y="352" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from line 13]</text>
+<text x="48" y="368" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 14</text>
+</g>
+<line x1="195" y1="374" x2="195" y2="399" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#6 &#183; 01_cars.do line 21 &#183; keep if
+in 74 &#215; 14 &#8594; out 37 &#215; 14
+opts: if carid &gt; 37
+severity: warn
+removed 37 rows (50.0%), 37 remaining
+</title>
+<rect x="58" y="400" width="274" height="40" class="mm-bfil mm-sevw" fill="#fbfbfb" stroke="#222" stroke-width="1.7" />
+<text x="28" y="416" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#6</text>
+<text x="66" y="421" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep if carid &gt; 37</text>
+<text x="66" y="436" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 74 &#8594; 37 (-37, 50.0%)</text>
+</g>
+<line x1="195" y1="440" x2="195" y2="465" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#7 &#183; 01_cars.do line 22 &#183; save
+saved to: cars_late.dta
+in 37 &#215; 14 &#8594; out 37 &#215; 14
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="466" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="482" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#7</text>
+<text x="48" y="490" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_late.dta</text>
+<text x="48" y="506" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">37 &#215; 14 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#8 &#183; 01_cars.do line 25 &#183; use
+file: cars_all.dta
+out 74 &#215; 14
+using 74 &#215; 14
+opts: clear
+lifecycle: read
+produced by 01_cars.do line 13
+</title>
+<rect x="40" y="526" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="542" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#8</text>
+<text x="48" y="550" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_all.dta</text>
+<text x="48" y="566" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from line 13]</text>
+<text x="48" y="582" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 14</text>
+</g>
+<line x1="195" y1="588" x2="195" y2="613" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#9 &#183; 01_cars.do line 26 &#183; drop if
+in 74 &#215; 14 &#8594; out 69 &#215; 14
+opts: if missing(rep78)
+severity: warn
+removed 5 rows (6.8%), 69 remaining
+</title>
+<rect x="58" y="614" width="274" height="40" class="mm-bfil mm-sevw" fill="#fbfbfb" stroke="#222" stroke-width="1.7" />
+<text x="28" y="630" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#9</text>
+<text x="66" y="635" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop if missing(rep78)</text>
+<text x="66" y="650" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 74 &#8594; 69 (-5, 6.8%)</text>
+</g>
+<line x1="195" y1="654" x2="195" y2="679" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#10 &#183; 01_cars.do line 27 &#183; collapse
+key: rep78
+in 69 &#215; 14 &#8594; out 5 &#215; 2
+opts: (mean) rep_mpg = mpg, by(rep78)
+</title>
+<rect x="40" y="680" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="696" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#10</text>
+<text x="48" y="704" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">collapse &#183; 69 &#8594; 5 obs</text>
+<text x="48" y="720" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">(mean) rep_mpg = mpg, by(rep78)</text>
+</g>
+<line x1="195" y1="726" x2="195" y2="751" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#11 &#183; 01_cars.do line 28 &#183; save
+saved to: rep_lookup.dta
+in 5 &#215; 2 &#8594; out 5 &#215; 2
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="752" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="768" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#11</text>
+<text x="48" y="776" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">rep_lookup.dta</text>
+<text x="48" y="792" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">5 &#215; 2 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#12 &#183; 01_cars.do line 31 &#183; use
+file: cars_all.dta
+out 74 &#215; 14
+using 74 &#215; 14
+opts: clear
+lifecycle: read
+produced by 01_cars.do line 13
+</title>
+<rect x="40" y="812" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="828" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#12</text>
+<text x="48" y="836" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_all.dta</text>
+<text x="48" y="852" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from line 13]</text>
+<text x="48" y="868" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 14</text>
+</g>
+<line x1="195" y1="874" x2="195" y2="899" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#13 &#183; 01_cars.do line 32 &#183; keep
+in 74 &#215; 14 &#8594; out 74 &#215; 2
+opts: carid price
+removed 12 variables, 2 remaining
+</title>
+<rect x="58" y="900" width="274" height="25" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="916" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#13</text>
+<text x="66" y="921" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep carid price &#183; -12 vars, 2 left</text>
+</g>
+<line x1="195" y1="925" x2="195" y2="950" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#14 &#183; 01_cars.do line 34 &#183; drop
+in 74 &#215; 3 &#8594; out 74 &#215; 2
+opts: price
+removed 1 variables, 2 remaining
+</title>
+<rect x="58" y="951" width="274" height="25" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="967" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#14</text>
+<text x="66" y="972" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop price &#183; -1 vars, 2 left</text>
+</g>
+<line x1="195" y1="976" x2="195" y2="1001" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#15 &#183; 01_cars.do line 35 &#183; save
+saved to: price_index.dta
+in 74 &#215; 2 &#8594; out 74 &#215; 2
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="1002" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1018" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#15</text>
+<text x="48" y="1026" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">price_index.dta</text>
+<text x="48" y="1042" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 2 &#183; [saved, overwrites]</text>
+</g>
+<text x="40" y="1068" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">02_join.do</text>
+<line x1="40" y1="1074" x2="860" y2="1074" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<g class="mm-node">
+<title>#16 &#183; 02_join.do line 4 &#183; use
+file: cars_early.dta
+out 37 &#215; 14
+using 37 &#215; 14
+opts: clear
+lifecycle: read
+produced by 01_cars.do line 18
+</title>
+<rect x="40" y="1100" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1116" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#16</text>
+<text x="48" y="1124" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_early.dta</text>
+<text x="48" y="1140" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from 01_cars.do line 18]</text>
+<text x="48" y="1156" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">37 &#215; 14</text>
+</g>
+<line x1="195" y1="1162" x2="195" y2="1229" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#17 &#183; 02_join.do line 7 &#183; append
+file: cars_late.dta
+in 37 &#215; 14 &#8594; out 74 &#215; 14
+using 37 &#215; 14
+</title>
+<text x="215" y="1181" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#17 append +37 obs &#8594; 74 &#215; 14</text>
+<line x1="520" y1="1197" x2="203" y2="1197" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-aa)" />
+<rect x="520" y="1174" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1195" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_late.dta</text>
+<text x="528" y="1211" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">37 &#215; 14</text>
+</g>
+<rect x="40" y="1230" width="310" height="46" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1254" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after append)</text>
+<text x="48" y="1270" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">74 &#215; 14</text>
+<line x1="195" y1="1276" x2="195" y2="1415" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#18 &#183; 02_join.do line 10 &#183; merge m:1
+key: rep78
+file: rep_lookup.dta
+in 74 &#215; 14 &#8594; out 74 &#215; 15
+using 5 &#215; 2
+matched 69 &#183; master-only 5 &#183; using-only 0 &#183; missing-updated 0 &#183; conflict-updated 0
+cover: 93.2% of master &#183; 100.0% of using
+types: rep78 int vs int
+dup-key obs: master 68 &#183; using 0
+opts: keep(1 3) nogenerate
+severity: warn
+5 master-only kept
+</title>
+<text x="215" y="1295" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#18 merge m:1 rep78 &#8594; 74 &#215; 15</text>
+<text x="215" y="1310" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">matched 69 &#183; master-only 5 &#183; using-only 0</text>
+<text x="215" y="1325" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">dup-key obs: master 68 &#183; using 0</text>
+<text x="215" y="1340" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">cover: 93.2% of master &#183; 100.0% of using</text>
+<text x="215" y="1355" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: keep(1 3)</text>
+<text x="215" y="1370" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 5 master-only kept</text>
+<line x1="520" y1="1383" x2="203" y2="1383" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-aa)" />
+<rect x="520" y="1360" width="340" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
+<text x="528" y="1381" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">rep_lookup.dta</text>
+<text x="528" y="1397" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">5 &#215; 2 &#183; key: rep78</text>
+</g>
+<rect x="40" y="1416" width="310" height="46" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="1440" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after merge)</text>
+<text x="48" y="1456" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">74 &#215; 15</text>
+<line x1="195" y1="1462" x2="195" y2="1541" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#19 &#183; 02_join.do line 13 &#183; merge 1:1
+key: carid
+file: price_index.dta
+in 74 &#215; 15 &#8594; out 74 &#215; 16
+using 74 &#215; 2
+matched 74 &#183; master-only 0 &#183; using-only 0 &#183; missing-updated 0 &#183; conflict-updated 0
+cover: 100.0% of master &#183; 100.0% of using
+types: carid int vs int
+dup-key obs: master 0 &#183; using 0
+opts: nogenerate
+</title>
+<text x="215" y="1481" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#19 merge 1:1 carid &#8594; 74 &#215; 16</text>
+<text x="215" y="1496" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">all 74 matched, 100% of both sides</text>
+<line x1="520" y1="1509" x2="203" y2="1509" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-aa)" />
+<rect x="520" y="1486" width="340" height="46" class="mm-bu" fill="#fcfcfc" stroke="#666" stroke-width="1" />
+<text x="528" y="1507" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">price_index.dta</text>
+<text x="528" y="1523" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">74 &#215; 2 &#183; key: carid</text>
+</g>
+<g class="mm-node">
+<title>#20 &#183; 02_join.do line 17 &#183; drop if
+in 74 &#215; 16 &#8594; out 69 &#215; 16
+opts: if missing(rep_mpg)
+severity: warn
+removed 5 rows (6.8%), 69 remaining
+</title>
+<rect x="58" y="1542" width="274" height="40" class="mm-bfil mm-sevw" fill="#fbfbfb" stroke="#222" stroke-width="1.7" />
+<text x="28" y="1558" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#20</text>
+<text x="66" y="1563" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop if missing(rep_mpg)</text>
+<text x="66" y="1578" class="mm-t mm-bf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! 74 &#8594; 69 (-5, 6.8%)</text>
+</g>
+<line x1="195" y1="1582" x2="195" y2="1607" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#21 &#183; 02_join.do line 19 &#183; save
+saved to: cars_joined.dta
+in 69 &#215; 16 &#8594; out 69 &#215; 16
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="1608" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1624" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#21</text>
+<text x="48" y="1632" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_joined.dta</text>
+<text x="48" y="1648" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">69 &#215; 16 &#183; [saved, overwrites]</text>
+</g>
+<text x="40" y="1674" class="mm-t mm-dof" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="13" font-weight="bold" fill="#222">03_report.do</text>
+<line x1="40" y1="1680" x2="860" y2="1680" class="mm-hl" stroke="#cccccc" stroke-width="1" fill="none" />
+<line x1="195" y1="1692" x2="195" y2="1717" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#22 &#183; 03_report.do line 5 &#183; keep
+in 50 &#215; 13 &#8594; out 50 &#215; 3
+opts: state region pop
+removed 10 variables, 3 remaining
+</title>
+<rect x="58" y="1718" width="274" height="40" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="1734" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#22</text>
+<text x="66" y="1739" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">keep state region pop</text>
+<text x="66" y="1754" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">-10 vars, 3 left</text>
+</g>
+<line x1="195" y1="1758" x2="195" y2="1783" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#23 &#183; 03_report.do line 6 &#183; save
+saved to: census_states.dta
+in 50 &#215; 3 &#8594; out 50 &#215; 3
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="1784" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1800" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#23</text>
+<text x="48" y="1808" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">census_states.dta</text>
+<text x="48" y="1824" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">50 &#215; 3 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#24 &#183; 03_report.do line 9 &#183; use
+file: census_states.dta
+out 50 &#215; 3
+using 50 &#215; 3
+opts: clear
+lifecycle: read
+produced by 03_report.do line 6
+</title>
+<rect x="40" y="1844" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1860" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#24</text>
+<text x="48" y="1868" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">census_states.dta</text>
+<text x="48" y="1884" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from line 6]</text>
+<text x="48" y="1900" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">50 &#215; 3</text>
+</g>
+<line x1="195" y1="1906" x2="195" y2="1931" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#25 &#183; 03_report.do line 10 &#183; collapse
+key: region
+in 50 &#215; 3 &#8594; out 4 &#215; 2
+opts: (sum) region_pop = pop, by(region)
+</title>
+<rect x="40" y="1932" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="1948" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#25</text>
+<text x="48" y="1956" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">collapse &#183; 50 &#8594; 4 obs</text>
+<text x="48" y="1972" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">(sum) region_pop = pop, by(region)</text>
+</g>
+<line x1="195" y1="1978" x2="195" y2="2003" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#26 &#183; 03_report.do line 11 &#183; save
+saved to: region_totals.dta
+in 4 &#215; 2 &#8594; out 4 &#215; 2
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="2004" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="2020" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#26</text>
+<text x="48" y="2028" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">region_totals.dta</text>
+<text x="48" y="2044" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">4 &#215; 2 &#183; [saved, overwrites]</text>
+</g>
+<g class="mm-node">
+<title>#27 &#183; 03_report.do line 13 &#183; use
+file: cars_joined.dta
+out 69 &#215; 16
+using 69 &#215; 16
+opts: clear
+lifecycle: read
+produced by 02_join.do line 19
+</title>
+<rect x="40" y="2064" width="310" height="62" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="2080" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#27</text>
+<text x="48" y="2088" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">cars_joined.dta</text>
+<text x="48" y="2104" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">[from 02_join.do line 19]</text>
+<text x="48" y="2120" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">69 &#215; 16</text>
+</g>
+<line x1="195" y1="2126" x2="195" y2="2265" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#28 &#183; 03_report.do line 14 &#183; merge m:1
+key: region
+file: region_totals.dta
+in 69 &#215; 16 &#8594; out 69 &#215; 17
+using 4 &#215; 2
+matched 69 &#183; master-only 0 &#183; using-only 0 &#183; missing-updated 0 &#183; conflict-updated 0
+cover: 100.0% of master &#183; 100.0% of using
+types: region byte vs int
+dup-key obs: master 65 &#183; using 0
+opts: keep(1 3) nogenerate
+severity: warn
+!! key type drift: region: byte vs int
+</title>
+<text x="215" y="2145" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#28 merge m:1 region &#8594; 69 &#215; 17</text>
+<text x="215" y="2160" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">all 69 matched, 100% of both sides</text>
+<text x="215" y="2175" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">dup-key obs: master 65 &#183; using 0</text>
+<text x="215" y="2190" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! types: region byte vs int</text>
+<text x="215" y="2205" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">opts: keep(1 3)</text>
+<text x="215" y="2220" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! key type drift: region: byte vs int</text>
+<line x1="520" y1="2233" x2="203" y2="2233" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-aa)" />
+<rect x="520" y="2210" width="340" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
+<text x="528" y="2231" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">region_totals.dta</text>
+<text x="528" y="2247" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">4 &#215; 2 &#183; key: region</text>
+</g>
+<rect x="40" y="2266" width="310" height="46" class="mm-bw" fill="#ffffff" stroke="#999" stroke-width="1" />
+<text x="48" y="2290" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">work (after merge)</text>
+<text x="48" y="2306" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">69 &#215; 17</text>
+<line x1="195" y1="2312" x2="195" y2="2436" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#29 &#183; 03_report.do line 19 &#183; merge m:m
+key: region
+file: census_states.dta
+in 69 &#215; 17 &#8594; out 69 &#215; 20
+using 50 &#215; 3
+matched 69 &#183; master-only 0 &#183; using-only 0 &#183; missing-updated 0 &#183; conflict-updated 0
+cover: 100.0% of master &#183; 100.0% of using
+types: region int vs int
+dup-key obs: master 65 &#183; using 46
+severity: warn
+!! m:m pairs rows by row order within key (not a join)
+</title>
+<text x="215" y="2331" class="mm-t mm-cc" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#111">#29 merge m:m region &#8594; 69 &#215; 20</text>
+<text x="215" y="2346" class="mm-t mm-cl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#333">all 69 matched, 100% of both sides</text>
+<text x="215" y="2361" class="mm-t mm-cn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">dup-key obs: master 65 &#183; using 46</text>
+<text x="215" y="2376" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">!! m:m pairs rows by row order within key</text>
+<text x="215" y="2391" class="mm-t mm-cf" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="bold" fill="#4a6d8c">&#160;&#160;(not a join)</text>
+<line x1="520" y1="2404" x2="203" y2="2404" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-aa)" />
+<rect x="520" y="2381" width="340" height="46" class="mm-bu mm-sevw" fill="#fcfcfc" stroke="#222" stroke-width="1.7" />
+<text x="528" y="2402" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">census_states.dta</text>
+<text x="528" y="2418" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">50 &#215; 3 &#183; key: region</text>
+</g>
+<g class="mm-node">
+<title>#30 &#183; 03_report.do line 20 &#183; drop
+in 69 &#215; 20 &#8594; out 69 &#215; 19
+opts: _merge
+removed 1 variables, 19 remaining
+</title>
+<rect x="58" y="2437" width="274" height="25" class="mm-bfil" fill="#fbfbfb" stroke="#888" stroke-width="1" />
+<text x="28" y="2453" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#30</text>
+<text x="66" y="2458" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">drop _merge &#183; -1 vars, 19 left</text>
+</g>
+<line x1="195" y1="2462" x2="195" y2="2487" class="mm-sp" stroke="#444" stroke-width="1.2" fill="none" marker-end="url(#mm-g-map-run-ag)" />
+<g class="mm-node">
+<title>#31 &#183; 03_report.do line 22 &#183; save
+saved to: demo_analysis.dta
+in 69 &#215; 19 &#8594; out 69 &#215; 19
+opts: replace
+lifecycle: overwrite
+</title>
+<rect x="40" y="2488" width="310" height="46" class="mm-bx" fill="#f7f7f7" stroke="#333" stroke-width="1.1" />
+<text x="10" y="2504" class="mm-t mm-bn" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="11" font-weight="normal" fill="#666">#31</text>
+<text x="48" y="2512" class="mm-t mm-bh" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="bold" fill="#111">demo_analysis.dta</text>
+<text x="48" y="2528" class="mm-t mm-bl" font-family="SF Mono, Menlo, Consolas, DejaVu Sans Mono, monospace" font-size="12" font-weight="normal" fill="#333">69 &#215; 19 &#183; [saved, overwrites]</text>
+</g>
+</svg>
+</div>
+<div class="mm-foot">mergemap &#183; journal gallery_run.tsv &#183; run mode, vertical layout, 31 events &#183; generated 23 Aug 2026 19:37:45 &#183; Stata 19.5 MP &#183; git main @ 9727234 &#183; self-contained: no scripts, no external assets</div>
+</div>
+</body>
+</html>

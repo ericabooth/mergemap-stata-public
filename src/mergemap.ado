@@ -1,8 +1,8 @@
-*! version 0.5.1  23aug2026  Eric Booth
+*! version 0.5.2  23aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
-*! proto/JOURNAL_SCHEMA.md). Scan mode executes nothing.
+*! docs/JOURNAL_SCHEMA.md). Scan mode executes nothing.
 
 program define mergemap, rclass
     version 16

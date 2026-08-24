@@ -8,15 +8,15 @@
 
 ## Why you'd reach for this
 
-**You inherited a project.** Six numbered do-files, a `build/` folder, and no idea which file feeds which. One command gives you the shape of it before you read a line.
+**You inherited a project** with six numbered do-files, a `build/` folder, and no record of which file feeds which. Scanning them prints that record, before you have read a line of the code.
 
 **A merge went wrong and you cannot find where.** The dataset came out at 1,448 rows and you expected 1,936. `mergemap` points you at the `drop if missing(hours)` on line 31 that took 488 of them. When a dataset comes out smaller than expected the merge usually gets the blame, and a `drop if` three lines later is usually the culprit, so both appear in the picture.
 
-**Your methods appendix needs a figure of the data pipeline.** So might a data-management memo, or a slide explaining to a client how twelve raw files became one analysis file. `mergemap draw, export(png)` gives you the figure; `export(html)` gives you a page; `export(mermaid)` gives you text GitHub and Quarto render themselves.
+**Your methods appendix needs a figure of the data pipeline.** So might a data-management memo, or a slide explaining to a client how twelve raw files became one analysis file. `mergemap draw, export(png)` gives you the figure; `export(html)` gives you a page; `export(mermaid)` gives you the diagram as plain text in the mermaid format, which GitHub, Quarto, and VS Code draw on sight (the block further down this page is one).
 
-**You want to know what your joins actually did.** You learn that 99.1% of the master matched, that 95.2% of the crosswalk was ever used, that the key is `str5` on both sides, that 1,895 key values repeat in the master, and that `keep(1 3)` dropped the two unmatched using rows.
+**You want to know what your joins actually did.** Run mode executes the do-files with instrumentation and tells you that 99.1% of the master matched, that 95.2% of the crosswalk was ever used, that the key is `str5` on both sides, that 1,895 key values repeat in the master, and that `keep(1 3)` dropped the two unmatched using rows.
 
-**Someone needs to learn what a join actually does.** `mergemap sql` draws every join form as row pairings with its size rule, and `mergemap detail #, teach` draws *your* join the same way, with your counts in it.
+**Someone on the team is unsure what a merge form actually does.** `mergemap sql` draws each form as two toy tables and the rows it pairs, with the rule for how many rows come out, and `mergemap detail #, draw` draws one of *your* joins the same way, with your counts in it.
 
 > [!NOTE]
 > `mergemap` describes work you have already done. It reads your code and reports what it finds, leaving both the code and the data alone; in its default mode it executes nothing.
@@ -81,7 +81,7 @@ Every scan prints a numbered index of what was found, in the order the code perf
 6 events. Severity: !! marks warn and stop.
 ```
 
-`#` is the event number and `file`/`line` say where to go and fix it. `F` marks `force`, which lets Stata push past a type mismatch it would otherwise refuse. `!!` marks anything suspicious. It prints as text in every format, so it survives a log file and a monochrome printout. A loop appears once, as `x3`, so four near-identical merges take a single line.
+`#` is the event number and `file`/`line` say where to go and fix it. `F` marks `force`, which lets Stata push past a type mismatch it would otherwise refuse. `!!` marks anything suspicious. It prints as text in every format, so it survives a log file and a monochrome printout. A loop appears once, as `×3`, so three near-identical appends take a single line.
 
 ## Scan mode and run mode
 
@@ -105,7 +105,7 @@ mergemap: merge m:1 county using ../raw/county_key.dta   (01_build.do line 22)
 Coverage is reported as a **share of each side** because the same count means different things at different sizes: 500 unmatched rows reads one way at 2% and another at 40%, and a lookup table that goes mostly unused usually means the key is wrong. The unmatched-keys line separates "500 rows failed to match" from "one key failed to match 500 times".
 
 > [!IMPORTANT]
-> **Run mode does not change your results.** The wrappers call the real commands and pass your options through untouched, and the regression suite proves it: the pipeline is run plainly, then again under `mergemap run`, and every saved dataset must come out identical on `datasignature`, `cf _all`, the sort flag, and `describe`. Getting there turned up a subtle failure: the instrumentation's own bookkeeping advanced Stata's sort RNG, which changed how `collapse` broke ties, which changed group means in their last bits. Every measurement helper now saves and restores `c(sortrngstate)` and `c(rngstate)` on every exit path.
+> **Run mode does not change your results.** The wrappers call the real commands and pass your options through untouched, and the regression suite proves it: the test pipeline is run plainly, then again under `mergemap run`, and every saved dataset must come out identical on `datasignature`, `cf _all`, the sort flag, and `describe`. That guarantee covers the quiet channels too: the instrumentation saves and restores Stata's random-number and sort-tie-breaking state on every path, so even a `collapse` downstream of a random tie-break gives the same last bit.
 
 Use scan when you want the shape of the pipeline. Use run when you want the numbers.
 
@@ -127,17 +127,17 @@ The HTML page is **self-contained**: no internet, no JavaScript, no external ass
 | `export()` | what you get |
 |---|---|
 | `smcl` | the drawing in the Results window (the default) |
-| `html` | a self-contained page, hover a node for its full ledger |
+| `html` | a self-contained page; hover a node for its full journal record |
 | `png` / `svg` | a picture through Stata's own graph engine |
-| `mermaid` | text GitHub, Quarto and VS Code render with nothing installed |
-| `dot` | Graphviz text; online viewers cover anyone without Graphviz |
-| `erdiagram` | mermaid's ER flavour: keys as attributes, crow's-foot cardinality |
+| `mermaid` | the diagram as plain text in the mermaid format; GitHub, Quarto and VS Code draw it with nothing installed |
+| `dot` | the same in Graphviz's DOT language; online viewers cover anyone without Graphviz |
+| `erdiagram` | a mermaid variant with the merge keys listed inside each box |
 
 **When the Results window is too small.** A window is a fixed-width space, so past `maxnodes()` events (default 8), or whenever `layout(horizontal)` is asked for, the SMCL drawing steps aside and `draw` writes the HTML page instead. `forcesmcl` overrides. A PNG too dense for one readable image splits itself into one page per do-file, which is also available on demand as `page(dofile)`.
 
 ### When the map is too long
 
-A real pipeline journals thousands of events, and most of them are not joins. One build we mapped produced 3,092 events: 2,527 were `keep` and `drop` statements, 240 were the traffic of saving and re-reading tempfiles inside a program, and the map of all of it was 220,000 pixels tall. The journal and the receipt always keep every event. `draw` is where you choose what to look at, and it prints what it hid:
+Suppose your build is a real one: a dozen do-files that read raw files, trim them, and merge them into an analysis file. Scanning a build like that can record a few thousand events, and most of them are not joins. In one pipeline used to test this package, 3,092 events broke down as 2,527 `keep` and `drop` statements, 240 saves and re-reads of tempfiles inside a single program, and 63 joins, and the map of all of it came out 220,000 pixels tall. Nothing needs to be thrown away to fix that: the journal and the receipt always keep every event, and what you control is the drawing. Each option below hides one kind of event, the options combine, and `draw` prints a line saying exactly what it hid, so anyone reading the map knows it is a chosen view of the record, not the record:
 
 ```stata
 mergemap draw, nofilters        // no keep/drop at all
@@ -163,7 +163,7 @@ Measured on that 3,092-event journal, as HTML:
 
 The `if` is evaluated on the journal's own columns, with the count columns as numbers, so a long pipeline can be paged by do-file, by line range, by kind of event, or by what happened. `compact` and `nokeys` thin each HTML node to its label. `mergemap draw if ...` has the same column names you see in `mergemap export`.
 
-**One line per fact.** Reading those four maps also showed where the height went inside each box: the same scan-mode advisory repeated on every box it applied to, a three-line tempfile provenance, count lines that fit beside their label, and a file read and saved straight away drawn as two boxes and an arrow. The HTML page now spends one line per fact. A read that is saved at once is one box (`grad2023.dta` over `→ #4 saved: hs_stu_grd_2023.dta`); a filter's row change goes on its own line (`keep if price < 12000 · 74 → 60 obs`, or flagged, `!! 209,634 → 203,115 (−6,519, 3.1%)`); a join that matched everything says `all 40 matched, 100% of both sides`; and the two scan-mode advisories became markers, `~` for a macro path and `×?` for a loop over a runtime list, explained once in the legend. Same information, fewer pixels: the scan map above went from 17,512 px to 13,220, the joins-only scan map from 9,922 to 6,088, the joins-only run map from 35,404 to 26,955, and `filesonly` from 14,144 to 10,419. The full record of every event is still on the box's hover text and in the workbook.
+**One line per fact.** Inside each box, the HTML page keeps every fact to one line. A file that is read and saved straight away is one box (`grad2023.dta` over `→ #4 saved: hs_stu_grd_2023.dta`); a filter's row change goes on its own line (`keep if price < 12000 · 74 → 60 obs`, or flagged, `!! 209,634 → 203,115 (−6,519, 3.1%)`); a join that matched every row says `all 40 matched, 100% of both sides`; and two scan-mode advisories appear as markers explained once in the legend, `~` for a path built from a macro and `×?` for a loop over a list that only exists at run time. The full record of every event is on the box's hover text and in the Excel export described below.
 
 **Short labels.** Run mode records the paths it actually opened, so every box repeats your machine's folder layout. `paths(base)` shows file names alone, `paths(parent)` the parent folder and the name, `paths(#)` the last `#` components. `root(folder)` cuts everything above a folder you name, so `C:\Users\me\projects\ccmr\data\x.dta` and `/home/me/work/ccmr/data/x.dta` both read `data\x.dta` and `data/x.dta`: the same command gives the same labels on every machine the project is copied to. Both options also work for `mergemap receipt`, `mergemap list` and `mergemap export`.
 
@@ -204,16 +204,16 @@ For Word or LaTeX, `export(png)` or `export(svg)` and insert the file as a figur
 mergemap draw, export(html) saving(pipe_frag.html) embed details replace
 ```
 
-That writes a **fragment** for insertion into an existing page: every CSS selector scoped under `.mm-`, every id namespaced per diagram, and an SVG that declares only a `viewBox`. It flows and prints with the report, and its styles stay inside the diagram. Drop a standalone page into the same slot and it restyles the document around it, which is what the webdoc2 testing behind `embed` turned up.
+That writes a **fragment** you paste into an existing page: every CSS selector scoped under `.mm-`, every id namespaced per diagram, and an SVG that declares only a `viewBox`. It flows and prints with the report, and its styles stay inside the diagram. A standalone page dropped into the same slot would restyle the document around it, which is why the fragment form exists.
 
-## Teaching the joins
+## What each merge form does
 
 ```stata
 mergemap sql            // the Stata / SQL / dplyr / pandas translation table
-mergemap sql joinby     // one form, drawn as row pairings with its size rule
+mergemap sql joinby     // one form, drawn as a worked example
 ```
 
-A join is a cartesian product with a filter. That is why a join can return *more* rows than either input, and why the familiar overlapping-circles picture cannot explain the joins that actually go wrong.
+`mergemap sql` is for the moments when you, a student, or a collaborator from the R or Python side needs to see what a Stata merge form does to rows. It prints a table matching each Stata form to its name in SQL, dplyr, and pandas (the subcommand is named for SQL because that is where the shared join vocabulary comes from), and it draws any form as a worked example: two toy tables, the command, and the result, with the rule for how many rows come out. A join pairs every row of one table with every row of the other and then keeps the pairs that satisfy a condition, which is why it can return *more* rows than either input, and why the familiar overlapping-circles picture cannot explain the joins that go wrong.
 
 ```
 mergemap sql: joinby id using B  (the real many-to-many)
@@ -236,9 +236,9 @@ product inside the key
   SQL: INNER JOIN, dup keys  |  dplyr: many-to-many  |  pandas: validate="m:m"
 ```
 
-Pictures exist for `full`, `left`, `inner`, `fanout`, `joinby`, `append`, `cross`, and `mm`.
+Worked examples exist for `full`, `left`, `inner`, `fanout`, `joinby`, `append`, `cross`, and `mm`.
 
-**And they connect back to your own work.** `mergemap detail #, teach` draws event `#` from your journal in the same style, with the toy rows replaced by its observed counts:
+The same diagram is available for your own joins: `mergemap detail #, draw` takes event `#` from your journal and draws its row pairing with the observed counts in place of the toy rows:
 
 ```
 event 4, drawn: merge m:1 county
@@ -268,9 +268,9 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 | `mergemap check` *dofiles* | print only the flagged events |
 | `mergemap run` *dofiles* | execute with instrumentation and record what happened |
 | `mergemap draw` | draw the map: Results window, HTML, PNG/SVG, mermaid, DOT, ER |
-| `mergemap sql` | teach any join form as a row-pairing picture |
+| `mergemap sql` | each merge form as a worked example, with its SQL, dplyr and pandas names |
 | `mergemap list` | the journal as a table; `full` for every column |
-| `mergemap detail` *#* | everything about one event; `teach` draws it with its counts |
+| `mergemap detail` *#* | the journal's full record of one event; `draw` diagrams its row pairing |
 | `mergemap export` | the journal as `.dta`, `.csv` or a three-sheet `.xlsx`, counts arriving numeric |
 | `mergemap receipt` *journal* | reprint a receipt from a saved journal |
 | `mergemap clear` | forget the remembered journal; files are never touched |
@@ -287,7 +287,7 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 
 **Drawing.** `style(boxes|rail)` picks full boxes (the default) or a compact rail; `layout(vertical|horizontal)` picks down the page or across it; `compact`, `nocounts`, `nokeys` and `noellipsis` leave detail out of each node, in the Results window and in HTML; `details` folds per-join ledgers into the HTML; `accent(hex)` sets the single colour used for flags and arrowheads; `noopen` writes the HTML without opening a browser.
 
-**Hiding events.** `notransforms`, `nofilters`, `norowfilters`, `novarfilters` and `notempfiles` each hide one kind of event; **`joinsonly`** is the first two together and **`filesonly`** adds the tempfiles, leaving the joins between named files. An `if` on the journal's columns (`mergemap draw if line < 400`) hides whatever it says. All of these cut the journal before any renderer reads it, so they work the same for every export format, and `draw` prints what it hid.
+**Hiding events.** `notransforms`, `nofilters`, `norowfilters`, `novarfilters` and `notempfiles` each hide one kind of event; **`joinsonly`** is the first two together and **`filesonly`** adds the tempfiles, leaving the joins between named files. An `if` on the journal's columns (`mergemap draw if line < 400`) hides whatever it says. All of these cut a temporary copy of the journal before any renderer reads it (the journal itself is never touched), so they work the same for every export format, and `draw` prints what it hid.
 
 **Shorter labels.** `paths(base|parent|#)` and `root(folder)` shorten file paths in the map, the receipt, the list and the export.
 
@@ -310,11 +310,11 @@ Here is a do-file with real problems in it: a many-to-many `joinby` that more th
 
 In scan mode, anything built at run time stays unresolved. A file name assembled from a macro appears as it is written in your code, and a loop over a list built from a directory listing cannot be counted. `mergemap` flags both, and run mode resolves them.
 
-The scanner matches command names in your source, so a join it never sees by name stays off the map. That covers a join performed inside a command you wrote yourself, a join built up as text and then executed, and the merge wrappers on SSC: if your code uses `mmerge`, `dmerge`, `mergeall` or `pullin`, `mergemap` records the wrapper and stops there.
+The scanner matches command names in your source, so a join it never sees by name stays off the map. That covers a join performed inside a command you wrote yourself, a join built up as text and then executed, and the merge wrappers on SSC: if your code uses `mmerge`, `dmerge`, `mergeall` or `pullin`, that join does not appear on the map at all, and nothing warns you, so on such a project expect the map to understate the joins.
 
 `mergemap run` rewrites your do-files into temporary copies with instrumented command names, keeping your line numbers. It does not alter your files. If a do-file uses `#delimit ;`, the scan is best-effort and says so, and run mode leaves that region uninstrumented. Avoid nesting `mergemap run` inside `webdoc do`, because both take control of how a do-file is executed.
 
-On Stata 16, run mode cannot hold the sort seed steady, because `c(sortseed)` came in after that release. The instrumentation's own bookkeeping advances Stata's sort RNG, so a later `sort` or `collapse` that breaks a tie at random can land differently than it would in a plain run. The gap sits below display precision, and run mode prints a note when it starts. Scan mode, the default, executes nothing and is unaffected. On a newer Stata, run mode restores the seed and produces output identical to a plain run, which `tests/runmode/transparency.do` checks on every commit.
+On Stata 16, run mode cannot hold the sort seed steady, because `c(sortseed)` came in after that release. The instrumentation's own bookkeeping advances Stata's sort RNG, so a later `sort` or `collapse` that breaks a tie at random can resolve differently than it would in a plain run. The difference stays below display precision, and run mode prints a note when it starts. Scan mode, the default, executes nothing and is unaffected. On a newer Stata, run mode restores the seed and produces output identical to a plain run, which `tests/runmode/transparency.do` checks on every commit.
 
 ## See also
 
@@ -330,10 +330,10 @@ On Stata 16, run mode cannot hold the sort seed steady, because `c(sortseed)` ca
 | path | contents |
 |---|---|
 | `src/` | the package: `mergemap.ado`, the `_mm_*` helpers, and the help file |
+| `docs/` | the journal's column-by-column schema, with a scan and a run journal as examples |
 | `tests/` | test data, 21 scenarios, a 3-file pipeline, and the regression battery |
 | `tests/runmode/` | the run-mode transparency regression |
-| `proto/` | the journal schema and the design notes behind it |
-| `gallery/` | every renderer's output assembled into one self-contained page |
+| `gallery/` | a tour of every output as one page, `gallery.html`, and the do-files that build it |
 
 Running the tests:
 
@@ -342,7 +342,7 @@ cd tests
 do mergemap_pkgtest.do
 ```
 
-`PLAN.md` documents the design and the reasoning behind it, `DECISIONS.md` records the choices made and rejected, `CONCEPTMAP.md` a table mapping every Stata combining verb to its SQL, dplyr and pandas equivalent, and `CHANGELOG.md` what changed and when.
+`CHANGELOG.md` records what changed and when.
 
 ## Author and license
 

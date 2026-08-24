@@ -573,7 +573,7 @@ program define _rt_build
                 }
                 * notes hang off the chain; `cur' does not move
             }
-            * class == "flow" (do/preserve/restore): no node in the prototype
+            * class == "flow" (do/preserve/restore): no node drawn for these
         }
 
         quietly drop _rt*

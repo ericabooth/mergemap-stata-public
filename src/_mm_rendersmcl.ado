@@ -1,4 +1,4 @@
-*! _mm_rendersmcl.ado  --  SMCL diagram renderer for mergemap journals (prototype)
+*! _mm_rendersmcl.ado  --  SMCL diagram renderer for mergemap journals
 *! version 0.2  19aug2026  Eric Booth
 *
 * _mm_rendersmcl using <journal.tsv> [, style(boxes|rail) layout(vertical|horizontal)
@@ -6,7 +6,7 @@
 *                                   nocounts nokeys notransforms noellipsis]
 *
 * Reads a mergemap journal (tab separated; schema v2, 34 columns, see
-* proto/JOURNAL_SCHEMA.md) into a frame and draws a vertical pipeline diagram
+* docs/JOURNAL_SCHEMA.md) into a frame and draws a vertical pipeline diagram
 * in SMCL.  Two styles:
 *   boxes : left spine of boxes, using-files boxed to the right of each join.
 *           THIS IS THE DEFAULT.

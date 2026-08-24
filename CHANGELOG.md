@@ -2,6 +2,37 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.2 — 2026-08-23
+
+### Changed
+
+- **The help file and README assume a reader who has never seen the
+  package.** The words the documentation depends on are defined before they
+  are used: the receipt (the numbered table on screen), the journal (the
+  same record as a tab-separated file that every later command reads back),
+  and the map (the drawing). The syntax section now says, correctly, that
+  files, folders, and patterns mix freely in one call and that `folder()`
+  is the same thing written as an option. Mermaid and DOT are introduced as
+  plain-text diagram languages rather than assumed. The section on
+  `mergemap sql` explains what the subcommand is for and why it is named
+  for SQL; the worked-example wording replaces "teach mode" throughout, and
+  `mergemap detail #, draw` is the documented spelling of what was
+  `detail #, teach` (`teach` still works). The `!! also saved by` flag's
+  entry now says what happened and what to do about it.
+- **The gallery is a webdoc2 report built from a do-file.**
+  `gallery/build_gallery.do` rebuilds `gallery/gallery.html`: one section
+  per output, each with the generating Stata code in a collapsible panel,
+  the HTML maps embedded live, and the mermaid export drawn on the page by
+  the mermaid library so a reader sees the diagram, not just its text.
+  Run mode's journal is prepared by `gallery_prep.do` outside the webdoc
+  build, because run mode and `webdoc do` both need control of how a
+  do-file executes.
+- **The repository carries only what a user needs.** The design notes,
+  prototypes, developer test fixtures, and the webdoc compatibility
+  investigation moved out of the repository (kept locally under
+  `_archive/`, which git ignores). The journal's column-by-column schema
+  and its two example journals now live in `docs/`.
+
 ## 0.5.1 — 2026-08-23
 
 ### Changed

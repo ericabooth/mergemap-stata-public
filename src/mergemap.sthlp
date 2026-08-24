@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.1  23aug2026  Eric Booth}{...}
+{* *! version 0.5.2  23aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -44,8 +44,10 @@ or point it at a folder and let it take the {cmd:.do} files in name order:{p_end
 {phang2}{cmd:. mergemap build/}{p_end}
 
 {pstd}
-Nothing is executed. {bf:mergemap} reads your code the way you would read it and
-prints a numbered receipt of every join it found. Then draw it:{p_end}
+Nothing is executed. {bf:mergemap} reads your code the way you would read it,
+prints a numbered table of every join it found (the {bf:receipt}), and writes
+the same record to a small file (the {bf:journal}, {cmd:journal.tsv} unless you
+choose a name). Then draw it:{p_end}
 
 {phang2}{cmd:. mergemap draw}{p_end}
 
@@ -57,7 +59,12 @@ self-contained HTML page when it does not.{p_end}
 {title:Installation}
 
 {pstd}
-From a local clone:{p_end}
+From GitHub:{p_end}
+
+{phang2}{cmd:. net install mergemap, from("https://raw.githubusercontent.com/ericabooth/mergemap-stata-public/main/") replace}{p_end}
+
+{pstd}
+or from a copy of the repository on your machine:{p_end}
 
 {phang2}{cmd:. net install mergemap, from("/path/to/mergemap") replace}{p_end}
 
@@ -90,7 +97,7 @@ it.{p_end}
 {opt sav:ing(filename)} {it:draw_options}]
 
 {p 8 17 2}
-{cmd:mergemap sql} [{it:picture}]
+{cmd:mergemap sql} [{cmd:full}|{cmd:left}|{cmd:inner}|{cmd:fanout}|{cmd:joinby}|{cmd:append}|{cmd:cross}|{cmd:mm}]
 
 {p 8 17 2}
 {cmd:mergemap demo} [{it:foldername}] [{cmd:,} {opt fold:er(path)} {opt replace}]
@@ -102,7 +109,7 @@ it.{p_end}
 {cmd:mergemap list} [{it:journalfile}] [{cmd:,} {opt full} {opt paths(how)} {opt root(folder)}]
 
 {p 8 17 2}
-{cmd:mergemap detail} {it:#} [{it:journalfile}] [{cmd:,} {opt teach}]
+{cmd:mergemap detail} {it:#} [{it:journalfile}] [{cmd:,} {opt draw}]
 
 {p 8 17 2}
 {cmd:mergemap export} [{it:journalfile}] [{cmd:,} {opt f:ormat(dta|csv|xlsx)}
@@ -112,9 +119,22 @@ it.{p_end}
 {cmd:mergemap clear}
 
 {pstd}
-{it:dofile} may be a file name, a folder, or a pattern such as {cmd:0*.do}.
-Folders and patterns expand to their {cmd:.do} files in name order, and a missing
-{cmd:.do} extension is supplied for you.{p_end}
+{it:dofile} may be a file name, a folder, or a pattern such as {cmd:0*.do}, and
+you may give several of any kind in one call: {cmd:mergemap build/ mask/ extra.do}
+scans two folders and then one file, in the order you list them. A folder
+contributes its {cmd:.do} files in name order, a pattern contributes its matches
+in name order, and a missing {cmd:.do} extension is supplied for you.
+{opt folder(path)} is the same thing written as an option; it exists for programs
+that assemble the call, and you will not usually need it.{p_end}
+
+{pstd}
+{it:journalfile} names a {bf:journal}: the file {cmd:mergemap} writes when it
+scans or runs your do-files, one line per thing it found. Each recorded thing,
+a join, a save, a {cmd:keep if}, is called an {bf:event}, and the receipt's
+numbers ({cmd:#1}, {cmd:#2}, ...) count them. Every other subcommand reads a
+journal back. Leave the name out and each subcommand uses the most recent
+journal, so the usual sequence is {cmd:mergemap build/} and then plain
+{cmd:mergemap draw}.{p_end}
 
 {synoptset 26 tabbed}{...}
 {synopthdr:subcommand}
@@ -124,10 +144,10 @@ Folders and patterns expand to their {cmd:.do} files in name order, and a missin
 {synopt :{opt check}}show only the events that were flagged{p_end}
 {synopt :{opt run}}run the do-files and record what actually happened{p_end}
 {synopt :{opt draw}}draw the map: Results window, HTML, PNG/SVG, mermaid, DOT{p_end}
-{synopt :{opt sql}}teach a join form as a row-pairing picture{p_end}
+{synopt :{opt sql}}how each merge form pairs rows, with its name in SQL, R, and Python{p_end}
 {synopt :{opt receipt}}reprint the receipt from a saved journal{p_end}
 {synopt :{opt list}}the journal as a table; {opt full} for every column{p_end}
-{synopt :{opt detail} {it:#}}everything known about one event; {opt teach} draws it{p_end}
+{synopt :{opt detail} {it:#}}the journal's full record of event {it:#}; {opt draw} diagrams a join's row pairing{p_end}
 {synopt :{opt export}}the journal as a dataset or workbook: {cmd:.dta}, {cmd:.csv}, {cmd:.xlsx}{p_end}
 {synopt :{opt clear}}forget the remembered journal; files are never touched{p_end}
 {synoptline}
@@ -146,9 +166,21 @@ that change how many rows you have ({cmd:keep if}, {cmd:drop if}), and reports t
 in the order your code performs them.{p_end}
 
 {pstd}
-Filters are included for a reason. When a dataset ends up smaller than expected, the
-merge usually gets the blame and a {cmd:drop if} three lines later is usually the
-culprit. Showing both in one picture is the point.{p_end}
+Four words come up throughout this help file. An {bf:event} is one thing
+{cmd:mergemap} found in your code: a join, a reshaping step, a {cmd:keep} or
+{cmd:drop}, a {cmd:use}, or a {cmd:save}. The {bf:receipt} is the numbered
+table printed in the Results window, one row per event. The {bf:journal} is the
+same record written to a tab-separated file, one line per event with every
+column the receipt shows and more; every drawing, list, and export is produced
+by reading a journal back, which is why you can draw this week what you scanned
+last week. The {bf:map} is the drawing itself.{p_end}
+
+{pstd}
+The {cmd:keep} and {cmd:drop} statements are reported alongside the joins
+because they change the row count too. When a dataset comes out smaller than you
+expected, the cause is at least as often a {cmd:drop if} a few lines below the
+merge as the merge itself, and a report that shows both, in order, lets you
+compare them in one place.{p_end}
 
 {pstd}
 It does not write joins for you and it does not change your code. It describes work
@@ -165,7 +197,7 @@ Every run prints a receipt first. It is a numbered index of what was found, one 
 per event, in the order the code performs them:{p_end}
 
 {p 8 8 2}{c TLC}{hline 72}{c TRC}{p_end}
-{p 8 8 2}{c |} {space 1}# {space 1}file{space 11}line{space 1}command{space 5}subtype{space 2}keys{space 6}using{space 12}F{space 1}flags{space 1}{c |}{p_end}
+{p 8 8 2}{c |} {space 1}# {space 1}file{space 11}line{space 1}command{space 6}keys{space 6}using/result{space 6}F{space 1}flags{space 1}{c |}{p_end}
 {p 8 8 2}{c BLC}{hline 72}{c BRC}{p_end}
 
 {phang2}
@@ -176,15 +208,16 @@ per event, in the order the code performs them:{p_end}
 it.{p_end}
 
 {phang2}
-{bf:command} and {bf:subtype} are the Stata command and its form: {cmd:merge} with
-{cmd:m:1}, {cmd:reshape} with {cmd:wide}, and so on.{p_end}
+{bf:command} is the Stata command with its form: {cmd:merge m:1},
+{cmd:reshape wide}, and so on.{p_end}
 
 {phang2}
 {bf:keys} lists the variables the join matches on. Blank means the command does not
 take a key ({cmd:append}, {cmd:xpose}).{p_end}
 
 {phang2}
-{bf:using} is the file, tempfile, or frame being brought in.{p_end}
+{bf:using/result} is the file, tempfile, or frame being brought in, or, for a
+{cmd:save}, the file being written.{p_end}
 
 {phang2}
 {bf:F} marks {cmd:force}. Any mark in this column deserves a look: {cmd:force} tells
@@ -207,12 +240,14 @@ match counts, and no duplicate-key checks.{p_end}
 {pstd}
 {bf:Run mode} executes your do-files with instrumentation around each join and
 records what actually happened: observations in and out, the {cmd:_merge}
-breakdown, whether the key had duplicates on either side, and whether the observed
-cardinality matched the one you declared. Your results are unchanged; the wrappers
-call the real commands and pass your options through untouched.{p_end}
+breakdown, how many rows shared a key value on each side, and what share of
+each side found a partner. Your results are unchanged; the wrappers call the
+real commands and pass your options through untouched.{p_end}
 
 {pstd}
-Use scan when you want the shape. Use run when you want the truth.{p_end}
+Start with scan mode, which costs nothing and cannot break anything. Switch to
+run mode when you need the observed counts, or when a scanned map shows an
+unresolved macro or loop that only execution can fill in.{p_end}
 
 {marker draw}{...}
 {title:Drawing the map}
@@ -220,8 +255,9 @@ Use scan when you want the shape. Use run when you want the truth.{p_end}
 {pstd}
 {cmd:mergemap draw} turns the most recent journal into a picture. With no
 argument it draws whatever the last {cmd:mergemap}, {cmd:mergemap run}, or
-{cmd:mergemap demo} recorded, in this session or a later one; name a journal
-file to draw something older.{p_end}
+{cmd:mergemap demo} recorded in this session; in a fresh session it falls back
+to {cmd:journal.tsv} in the working directory, which is where a scan writes by
+default. Name a journal file to draw anything else.{p_end}
 
 {pstd}
 {opt export()} picks the medium:{p_end}
@@ -231,30 +267,43 @@ file to draw something older.{p_end}
 {synopt :{opt export(html)}}a self-contained page: no internet, no JavaScript{p_end}
 {synopt :{opt export(png)}}a picture through Stata's own graph engine{p_end}
 {synopt :{opt export(svg)}}the same drawing, scalable{p_end}
-{synopt :{opt export(mermaid)}}text that GitHub, Quarto, and VS Code render{p_end}
-{synopt :{opt export(dot)}}Graphviz text{p_end}
-{synopt :{opt export(erdiagram)}}mermaid's entity-relationship flavour, keys as attributes{p_end}
+{synopt :{opt export(mermaid)}}a text description of the diagram; see below{p_end}
+{synopt :{opt export(dot)}}the same in Graphviz's DOT language{p_end}
+{synopt :{opt export(erdiagram)}}mermaid text again, in a variant that lists each dataset's merge keys inside its box{p_end}
 {synoptline}
 {p2colreset}{...}
 
 {pstd}
+{bf:Mermaid} and {bf:DOT} are plain-text diagram languages: the export is a
+small text file that names the boxes and arrows, and other software draws it.
+Paste mermaid text into GitHub, Quarto, VS Code, or {browse "https://mermaid.live":mermaid.live}
+and it renders as a diagram with nothing installed; DOT is read by Graphviz and
+by several online viewers. Reach for these when you want the map inside a
+README, a Quarto document, or a wiki rather than as a separate image file. In
+a GitHub README, put the exported text in a fenced code block marked
+{cmd:```mermaid} and GitHub draws it.{p_end}
+
+{pstd}
 {bf:Reading it.} A box is a dataset: a file, a frame, or the data in memory at
-that point. {bf:[saved]} marks a file your code writes; a dashed box is a
-tempfile, and {bf:[tempfile from line 412]} says where it was made. A stacked box
-labelled {cmd:x4:} is a loop drawn once, naming its first and last file
-({opt noellipsis} expands it); a box on the spine that a loop wrote shows
+that point. The boxes run down a central column, the {bf:spine}, in the order
+your code touches them; joined-in files enter from the side, and arrows are the
+flow of data. {bf:[saved]} marks a file your code writes; a dashed box is a
+tempfile, and {bf:[tempfile from line 412]} says where it was made. A stacked
+box labelled {cmd:x4:} is a loop drawn once, naming its first and last file
+({opt noellipsis} expands it); a file on the spine that a loop wrote shows
 {cmd:x4} after its name, and a loop that ran once shows the one file it
-resolved to. Filters appear as slim nodes on the spine, because a {cmd:drop if}
-explains a shrinking dataset at least as often as any merge. Arrows are the
-flow of data; joined-in files enter from the side. Counts in parentheses were
-dropped from the result, and {cmd:!!} marks anything worth a look, always as
-text, never as colour alone.{p_end}
+resolved to. {cmd:keep} and {cmd:drop} steps appear as slim boxes on the spine,
+because a {cmd:drop if} explains a shrinking dataset at least as often as any
+merge. Counts in parentheses were dropped from the result, and {cmd:!!} marks
+anything worth a look, always as text, never as colour alone.{p_end}
 
 {pstd}
 {bf:Reading the HTML page.} Each box spends one line per fact. A file that is
-read and saved straight away, with nothing drawn between, is one box:
-{cmd:grad2023.dta} over {cmd:-> #4 saved: hs_stu_grd_2023.dta}, and in run
-mode the two count lines under it show what any hidden filters cost. A filter
+read and saved straight away, with nothing drawn between, is one box: the
+file's name, then {cmd:-> #4 saved:} and the name it was saved under. If you
+hid the filters between the read and the save with one of the options above,
+the two count lines in that box still betray them: rows in and rows saved
+differ. A filter
 or reshape puts its row change on its own line when it fits,
 {cmd:keep if price < 12000 . 74 -> 60 obs}; a flagged one reads
 {cmd:!! 209,634 -> 203,115 (-6,519, 3.1%)}. A join that matched every row
@@ -268,12 +317,17 @@ mode counts. Hover any box for its full record, including what the one-line
 forms leave out.{p_end}
 
 {pstd}
-{bf:When the map is too long.} A real pipeline can journal thousands of events,
-and most of them are not joins: in one build of 3,092 events, 2,527 were
-{cmd:keep} and {cmd:drop} statements and 240 were the traffic of saving and
-re-reading tempfiles inside a program. A map of all of it is 220,000 pixels
-tall. The journal and the receipt always keep every event; {cmd:draw} is where
-you choose what to look at, and it tells you what it hid:{p_end}
+{bf:When the map is too long.} Suppose your build is a real one: a dozen
+do-files that read raw files, trim them, and merge them into an analysis file.
+Scanning a build like that can record a few thousand events, and most of them
+are not joins. In one pipeline used to test this package, 3,092 events broke
+down as 2,527 {cmd:keep} and {cmd:drop} statements, 240 saves and re-reads of
+tempfiles inside a single program, and 63 joins, and the map of all of it came
+out 220,000 pixels tall. Nothing needs to be thrown away to fix that: the
+journal and the receipt always keep every event, and what you control is the
+drawing. Each option below hides one kind of event from the map, the options
+combine, and {cmd:draw} prints a line saying exactly what it hid, so anyone
+reading the map knows it is a chosen view of the record, not the record:{p_end}
 
 {phang2}{cmd:. mergemap draw, nofilters}{p_end}
 {phang2}{cmd:. mergemap draw, norowfilters}{p_end}
@@ -288,7 +342,9 @@ only the row filters ({cmd:keep if}, {cmd:drop if}) and {opt novarfilters} only
 the variable lists ({cmd:keep varlist}, {cmd:drop varlist}), so you can keep the
 steps that change the row count and lose the ones that only trim columns.
 {opt notempfiles} hides saves to, uses of, and joins against a tempfile, which
-is most of what a loop inside a program produces. {opt joinsonly} is
+is most of what a loop inside a program produces. {opt notransforms} hides the
+reshaping steps ({cmd:reshape}, {cmd:collapse}, {cmd:contract}, {cmd:duplicates}
+and kin). {opt joinsonly} is
 {opt notransforms} plus {opt nofilters}; {opt filesonly} adds {opt notempfiles}
 to that and leaves the joins between named files, which is the picture of how
 the files on disk relate. Note that a join whose using side is a tempfile goes
@@ -307,7 +363,7 @@ file.{p_end}
 
 {pstd}
 {bf:When the labels are too long.} Run mode records the file paths it actually
-opened, so a map of a project that sits in
+opened, so a map of a project stored under
 {cmd:C:\Users\me\Documents\projects\ccmr\data\...} repeats that prefix in
 every box. {opt paths(base)} shows file names alone, {opt paths(parent)} the
 parent folder and the file name, and {opt paths(#)} the last {it:#} components.
@@ -315,16 +371,17 @@ parent folder and the file name, and {opt paths(#)} the last {it:#} components.
 relative to your project: with {opt root(ccmr)} the example above reads
 {cmd:data\...}. Naming the project folder, instead of typing a prefix, means
 the same command gives the same labels on every machine the project is copied
-to, whatever folders sit above it there. The same two options work for
+to, whatever folders hold it there. The same two options work for
 {cmd:mergemap receipt}, {cmd:mergemap list} and {cmd:mergemap export}.{p_end}
 
 {pstd}
 {bf:When the Results window is too small.} A window is a fixed-width space, so
-past {opt maxnodes(#)} events (default 8), or whenever {opt layout(horizontal)}
-is asked for, the SMCL drawing steps aside: {cmd:draw} writes the HTML page
+past {opt maxnodes(#)} join, reshape, and filter events (default 8), or whenever
+{opt layout(horizontal)} is asked for, the SMCL drawing steps aside: {cmd:draw} writes the HTML page
 instead, prints the path along with a clickable link that opens it, and opens it
-for you in GUI sessions unless {opt noopen}. {opt forcesmcl} overrides the count. A PNG too dense for one
-readable image is split into one page per do-file on its own.{p_end}
+for you in GUI sessions unless {opt noopen}. {opt forcesmcl} overrides the
+count. When a PNG would be too dense for one readable image, {cmd:draw} splits
+it into one page per do-file and says so.{p_end}
 
 {marker naming}{...}
 {title:Naming files so they map well}
@@ -421,7 +478,7 @@ as a gate that halts the build.{p_end}
 {dlgtab:Run mode only}
 
 {synoptset 26 tabbed}{...}
-{synopt :{opt ex:amples(#)}}list {it:#} sample rows per join, showing the keys and {cmd:_merge}{p_end}
+{synopt :{opt ex:amples(#)}}after each join, list up to {it:#} of its unmatched rows, keys and {cmd:_merge} only{p_end}
 {synopt :{opt nochecks}}skip the duplicate-key check on using files, which is faster on large files{p_end}
 {synoptline}
 {p2colreset}{...}
@@ -430,7 +487,7 @@ as a gate that halts the build.{p_end}
 
 {synoptset 26 tabbed}{...}
 {synopt :{opt sav:ing(filename)}}where to write; sensible defaults per medium{p_end}
-{synopt :{opt style(boxes|rail)}}full boxes (default) or the compact rail{p_end}
+{synopt :{opt style(boxes|rail)}}Results-window style: full boxes (default), or {cmd:rail}, one line per event{p_end}
 {synopt :{opt lay:out(vertical|horizontal)}}down the page (default) or across it{p_end}
 {synopt :{opt maxnodes(#)}}how much SMCL will attempt before handing over to HTML{p_end}
 {synopt :{opt forcesmcl}}draw in the Results window regardless of size{p_end}
@@ -445,8 +502,8 @@ as a gate that halts the build.{p_end}
 {synopt :{opt filesonly}}{opt joinsonly} and {opt notempfiles}: joins between named files{p_end}
 {synopt :{cmd:if} {it:exp}}draw the events for which {it:exp} is true, on the journal's columns{p_end}
 {synopt :{opt paths(how)}}{cmd:full} (default), {cmd:base}, {cmd:parent}, or a number of trailing components{p_end}
-{synopt :{opt root(folder)}}show paths relative to this folder, wherever it sits{p_end}
-{synopt :{opt det:ails}}per-join ledgers folded into the HTML page{p_end}
+{synopt :{opt root(folder)}}show every path relative to this folder{p_end}
+{synopt :{opt det:ails}}under the HTML map, a written record of each join (the hover text's facts, in prose), each folded until clicked{p_end}
 {synopt :{opt embed}}HTML as a fragment for someone else's page; see below{p_end}
 {synopt :{opt acc:ent(hex)}}the one colour used for flags and arrowheads{p_end}
 {synopt :{opt page(dofile)}}PNG/SVG as one image per do-file{p_end}
@@ -459,6 +516,7 @@ as a gate that halts the build.{p_end}
 {dlgtab:Receipt, list and export}
 
 {synoptset 26 tabbed}{...}
+{synopt :{opt check}}{cmd:receipt} only: print only the flagged events, as {cmd:mergemap check} does{p_end}
 {synopt :{opt paths(how)}}shorten the file labels, as for {cmd:draw}{p_end}
 {synopt :{opt root(folder)}}paths relative to a folder, as for {cmd:draw}{p_end}
 {synopt :{opt f:ormat(dta|csv|xlsx)}}{cmd:export} only; follows the extension of {opt saving()} when omitted{p_end}
@@ -525,7 +583,7 @@ anyway.{p_end}
 {pstd}{bf:Draw what I just scanned}{p_end}
 {phang2}{cmd:. mergemap draw}{p_end}
 
-{pstd}{bf:Just the joins: no reshapes, no collapses, no row filters}{p_end}
+{pstd}{bf:Just the joins: no reshapes, no collapses, no keep or drop steps}{p_end}
 {phang2}{cmd:. mergemap draw, joinsonly}{p_end}
 
 {pstd}{bf:Keep the filters but drop the reshaping steps, or the reverse}{p_end}
@@ -568,7 +626,7 @@ anyway.{p_end}
 {pstd}{bf:Text I can paste into a GitHub README or a Quarto document}{p_end}
 {phang2}{cmd:. mergemap draw, export(mermaid) saving(pipeline) replace}{p_end}
 
-{pstd}{bf:A fragment for a webdoc2 report, with the per-join ledgers folded in}{p_end}
+{pstd}{bf:A fragment for a webdoc2 report, with the written record of each join folded in ({opt details})}{p_end}
 {phang2}{cmd:. mergemap draw, export(html) saving(pipe_frag.html) embed details replace}{p_end}
 
 {pstd}{bf:Show me what a joinby actually does to row counts}{p_end}
@@ -579,7 +637,7 @@ anyway.{p_end}
 
 {pstd}{bf:The journal as a table, then one event in depth, drawn with its counts}{p_end}
 {phang2}{cmd:. mergemap list}{p_end}
-{phang2}{cmd:. mergemap detail 4, teach}{p_end}
+{phang2}{cmd:. mergemap detail 4, draw}{p_end}
 
 {pstd}{bf:The journal as a dataset, to audit or graph yourself}{p_end}
 {phang2}{cmd:. mergemap export, saving(joins.dta) replace}{p_end}
@@ -618,18 +676,23 @@ also the fastest way to see what Stata's forms actually do.{p_end}
 {synoptline}
 
 {pstd}
-Each row of that table has a picture. {cmd:mergemap sql} alone prints the table
-with the pictures linked; {cmd:mergemap sql joinby} (or {cmd:left}, {cmd:inner},
-{cmd:full}, {cmd:fanout}, {cmd:append}, {cmd:cross}, {cmd:mm}) draws one form as
-two small row stacks, the operator, and the result, with the size rule
-underneath.{p_end}
+{cmd:mergemap sql} prints this table in the Results window. Follow it with one
+of {cmd:full}, {cmd:left}, {cmd:inner}, {cmd:fanout}, {cmd:joinby},
+{cmd:append}, {cmd:cross}, or {cmd:mm} and it adds a worked example of that
+form: two toy tables of a few rows each, the command between them, and the
+result, with lines showing which row paired with which and a rule underneath
+for how many rows come out. The subcommand is named {cmd:sql} because the join
+vocabulary most teams share ({it:left join}, {it:inner join}, and the rest)
+comes from SQL; nothing about it requires SQL, and it never touches your
+data.{p_end}
 
 {pstd}
-And the pictures connect back to your own work: {cmd:mergemap detail} {it:#}{cmd:,}
-{cmd:teach} draws event {it:#} from the journal in the same style, with the toy
-rows replaced by that join's observed counts. When the event was only scanned,
-there are no counts yet, so the generic picture for its form appears instead and
-says why.{p_end}
+The same diagram is available for your own joins. {cmd:mergemap detail}
+{it:#}{cmd:, draw} takes event {it:#} from the journal and draws its row
+pairing with the observed counts in place of the toy rows, so you can see, for
+example, where event 3's 533 master-only rows sit. If the event comes from a
+scan there are no counts to draw, and the worked example for its form is shown
+instead, with a note saying why.{p_end}
 
 {pstd}
 Venn diagrams are a popular way to explain joins and they are the wrong picture. A
@@ -654,9 +717,13 @@ a variable stored as a string in one file and numeric in the other. The merge
 succeeds and the values may be wrong. Check the variable named in the flag.{p_end}
 
 {phang}
-{bf:!! declared/observed} {space 2}You wrote {cmd:1:1} but the data behaved like
-{cmd:m:1}, or similar. In run mode {cmd:mergemap} names an example key value so you
-can look at it directly.{p_end}
+{bf:!! merge failed} {space 2}The pipeline stopped at this event, and the flag
+carries Stata's error code. On a {cmd:1:1} or {cmd:m:1} merge the commonest
+cause is a key that is not actually unique on the side you declared unique;
+{cmd:duplicates report} on the key will show it. Run mode also records how many
+rows share a key value on each side ({cmd:dup_master} and {cmd:dup_using} in
+the journal, {cmd:dup-key obs} on the map), so you can see the problem coming
+on the merges that did not fail.{p_end}
 
 {phang}
 {bf:!! unmatched} {space 2}Rows did not find a partner. This is often fine and
@@ -672,8 +739,12 @@ count appears in parentheses so you can see what left.{p_end}
 through and the match will be wrong. This is the quietest way a merge fails.{p_end}
 
 {phang}
-{bf:!! also saved by} {space 2}Two do-files write the same file. Whichever runs
-last wins, which is rarely what anyone intended.{p_end}
+{bf:!! also saved by} {space 2}This {cmd:save} writes to a file that another
+line, named in the flag, also writes. When both run, the second save replaces
+the first save's output, and anything that reads the file gets whichever version
+was written most recently. Usually one of the two saves is left over from an
+older draft of the code: rename one target, or delete the save you no longer
+mean.{p_end}
 
 {phang}
 {bf:!! stale} {space 2}A saved dataset is older than something it was built from,
@@ -700,9 +771,10 @@ one key.{p_end}
 
 {pstd}
 For Word or LaTeX, use {cmd:draw, export(png)} or {cmd:export(svg)} and insert
-the file as a figure. Vertical layout suits a page; horizontal suits a slide; a
-long pipeline is better as one image per do-file, which {opt page(dofile)}
-produces and a dense one produces on its own.{p_end}
+the file as a figure. Vertical layout suits a page and horizontal suits a
+slide. A long pipeline reads better as one image per do-file: ask for that with
+{opt page(dofile)}, and {cmd:draw} does it unasked when one image would be too
+dense to read.{p_end}
 
 {pstd}
 For an HTML report, {cmd:export(html)} writes a self-contained page: no internet,
@@ -751,7 +823,7 @@ do-file is executed.{p_end}
 On Stata 16, run mode cannot hold the sort seed steady, because {cmd:c(sortseed)}
 came in after that release. The instrumentation's own bookkeeping advances
 Stata's sort RNG, so a later {cmd:sort} or {cmd:collapse} that breaks a tie at
-random can land differently than it would in a plain run. The gap shows up below
+random can resolve differently than it would in a plain run. The gap shows up below
 display precision, and run mode says so when it starts. Scan mode, the default,
 does not execute anything and is unaffected. On a newer Stata, run mode restores
 the seed and the output is identical to a plain run, which
@@ -783,7 +855,10 @@ reading of the file:
 {cmd:n_in k_in n_using k_using n_out k_out m1 m2 m3 m4 m5 dup_master dup_using}
 {cmd:force opts loop_n loop_first loop_last severity keytypes cover_master}
 {cmd:cover_using lifecycle flags}. {cmd:class} is one of
-{cmd:source join link transform filter save flow note}; a filter's
+{cmd:source join link transform filter save flow note} ({cmd:source} is a
+{cmd:use} or import, {cmd:link} an {cmd:frlink} or {cmd:frget}, {cmd:flow} a
+{cmd:do}, {cmd:preserve}, {cmd:restore}, or {cmd:cd}, and {cmd:note} anything
+else kept for context, such as a {cmd:#delimit} region); a filter's
 {cmd:subtype} is {cmd:if} for a row filter and empty for a variable list;
 {cmd:opts} holds a filter's condition; {cmd:m1} through {cmd:m5} are the
 {cmd:_merge} counts; {cmd:usingfile} and {cmd:result} hold file paths,
@@ -824,9 +899,10 @@ diagrams of how subjects were included and excluded. It charts participants wher
 
 {phang2}
 {bf:Note on merge wrappers.} If your code uses {cmd:mmerge}, {cmd:dmerge},
-{cmd:mergeall}, {cmd:pullin}, or a merge command of your own, {cmd:mergemap}
-records the wrapper and stops there. The join happens a level deeper than the
-scanner reads.{p_end}
+{cmd:mergeall}, {cmd:pullin}, or a merge command of your own, that join does
+not appear on the map at all: the scanner matches Stata's own command names,
+and a command it does not know contributes nothing. Nothing warns you, so on a
+project that uses a wrapper, expect the map to understate the joins.{p_end}
 
 {title:Also see}
 
