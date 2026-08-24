@@ -109,6 +109,13 @@ Coverage is reported as a **share of each side** because the same count means di
 
 Use scan when you want the shape of the pipeline. Use run when you want the numbers.
 
+A run drawn horizontally puts one row of boxes per do-file, with every observed count in the box it belongs to: what matched, what share of each side took part, and which step removed the rows.
+
+<img width="900" alt="A mergemap run-mode map drawn horizontally: four rows of boxes, one per do-file, tracing raw CPS files through an append, an m:1 county merge showing 209,101 matched and 99.7 percent master coverage, a drop that removed 6,519 rows, a collapse, then a participants panel, a reshape, a joinby that multiplied rows, an frlink, and a final flagged m:m merge." src="images/mergemap_run_horizontal.png" />
+
+*`mergemap run 0*.do` then `mergemap draw, export(png) layout(horizontal)`. Blue is a note worth reading; `!!` is a flag. The [gallery](https://ericabooth.github.io/code-portfolio/galleries/mergemap/) walks through every output on a smaller worked example you can reproduce with `mergemap demo`.*
+
+
 ## Drawing the map
 
 ```stata

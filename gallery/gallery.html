@@ -703,7 +703,7 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_td.mmd g_map_td
 <span class="stres">&gt; f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0</span>
 <span class="stres">&gt; b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%</span>
 <span class="stres">%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2</span>
-<span class="stres">&gt; 026 19:38:38 - Stata 19.5 MP - git main@09c9510</span>
+<span class="stres">&gt; 026 23:52:27 - Stata 19.5 MP - git main@bf72a15</span>
 <span class="stres">flowchart TD</span>
 <span class="stres">  accTitle: mergemap data-flow map of gallery_scan.tsv</span>
 <span class="stres">  accDescr {</span>
@@ -795,7 +795,7 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_td.mmd g_map_td
 <div style="background:#ffffff;border:1px solid #e4e4e4;border-radius:6px;padding:10px;margin:12px 0;overflow-x:auto;">
 <pre class="mermaid" style="background:none;border:none;margin:0;">
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px','primaryColor':'#ffffff','primaryTextColor':'#202020','primaryBorderColor':'#606060','lineColor':'#606060','secondaryColor':'#f4f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%
-%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2026 19:38:38 - Stata 19.5 MP - git main@09c9510
+%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2026 23:52:27 - Stata 19.5 MP - git main@bf72a15
 flowchart TD
   accTitle: mergemap data-flow map of gallery_scan.tsv
   accDescr {
@@ -887,13 +887,13 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_tb.dot g_map_lr
 
 <span class="stinp">. type g_map_tb.dot</span>
 <span class="stres">// mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2</span>
-<span class="stres">&gt; 026 19:38:38 - Stata 19.5 MP - git main@09c9510</span>
+<span class="stres">&gt; 026 23:52:27 - Stata 19.5 MP - git main@bf72a15</span>
 <span class="stres">// mergemap data-flow map of gallery_scan.tsv</span>
 <span class="stres">digraph mergemap {</span>
 <span class="stres">  rankdir=TB;</span>
 <span class="stres">  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontco</span>
 <span class="stres">&gt; lor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal gallery_scan.ts</span>
-<span class="stres">&gt; v - rendered 23 Aug 2026 19:38:38 - Stata 19.5 MP - git main@09c9510"];</span>
+<span class="stres">&gt; v - rendered 23 Aug 2026 23:52:27 - Stata 19.5 MP - git main@bf72a15"];</span>
 <span class="stres">  node  [shape=box, fontname="Helvetica", fontsize=10, color="#606060", fontcol</span>
 <span class="stres">&gt; or="#202020"];</span>
 <span class="stres">  edge  [fontname="Helvetica", fontsize=9, color="#606060", fontcolor="#202020"</span>
@@ -1048,9 +1048,35 @@ plus 4 flagged event(s) outside the joins.
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
 <iframe src="g_map_run.html" width="100%" height="680px" frameborder="0" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
-<p>One event in depth, straight from the journal:</p>
+<p>The run map also draws through Stata's own graph engine, laid out horizontally: one row of boxes per do-file, at a shape that drops into a slide or a wide page. A dense map splits itself into one page per do-file, and the page below is the second one, where the joins happen:</p>
 <div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8"> <small>Click to view code</small> </button></h2> <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-11" class="stlog"><samp><span class="stinp">. mergemap detail 6 gallery_run.tsv</span>
+<pre id="stlog-11" class="stlog"><samp><span class="stinp">. mergemap draw gallery_run.tsv, export(png) saving(g_run_h) layout(horizontal)
+&gt;  replace</span>
+_mm_rendertw: page 1 has 15 join+transform+filter events, above this renderer's
+&gt;  cap of 12.
+    a native-graph diagram this dense is not readable; use the HTML export inst
+&gt; ead:
+        . renderhtml using "gallery_run.tsv", saving(diagram.html)
+    (or split it with page(dofile), or raise the cap with maxnodes(#))
+mergemap draw: retrying with one page per do-file, page(dofile)
+_mm_rendertw: wrote g_run_h_01_cars.png and g_run_h_01_cars.svg (horizontal, 15
+&gt;  events, 6 join+transform+filter)
+_mm_rendertw: wrote g_run_h_02_join.png and g_run_h_02_join.svg (horizontal, 6 
+&gt; events, 4 join+transform+filter)
+_mm_rendertw: wrote g_run_h_03_report.png and g_run_h_03_report.svg (horizontal
+&gt; , 10 events, 5 join+transform+filter)
+_mm_rendertw: 3 pages, one per do-file
+
+
+</samp></pre>
+</div> </div> </div> </div> </div> <br>
+<figure>
+<img src="g_run_h_02_join.png">
+<figcaption>The joins from 02_join.do with their observed counts: what matched, what each side covered, and the rows a later drop removed. An SVG twin is written beside every page.</figcaption>
+</figure>
+<p>One event in depth, straight from the journal:</p>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9"> <small>Click to view code</small> </button></h2> <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-12" class="stlog"><samp><span class="stinp">. mergemap detail 6 gallery_run.tsv</span>
 
 <span class="stres">event 6: keep if</span>   (01_cars.do line 21)
   --------------------------------------------------------------
@@ -1068,8 +1094,8 @@ plus 4 flagged event(s) outside the joins.
 </div> </div> </div> </div> </div> <br>
 <h1 id="what-each-merge-form-does">What each merge form does</h1>
 <p>mergemap sql is for the moments when you, a student, or a collaborator from the R or Python side needs to see what a Stata merge form does to rows. It prints a table matching each Stata form to its name in SQL, dplyr, and pandas, and draws any form as a worked example: two toy tables, the command, and the result, with the rule for how many rows come out. The subcommand is named sql because that is where the shared join vocabulary comes from; nothing about it requires SQL, and it never touches your data.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9"> <small>Click to view code</small> </button></h2> <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-12" class="stlog"><samp><span class="stinp">. mergemap sql</span>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10"> <small>Click to view code</small> </button></h2> <div id="collapse10" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-13" class="stlog"><samp><span class="stinp">. mergemap sql</span>
 
 <span class="stres">mergemap sql: what each Stata form is, in three other languages</span>
 
@@ -1124,8 +1150,8 @@ plus 4 flagged event(s) outside the joins.
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
 <p>One form drawn as a worked example. The m:m case reads as a warning on purpose: merge m:m pairs rows by the order they happen to be in, and joinby is the true many-to-many:</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10"> <small>Click to view code</small> </button></h2> <div id="collapse10" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-13" class="stlog"><samp><span class="stinp">. mergemap sql joinby</span>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11"> <small>Click to view code</small> </button></h2> <div id="collapse11" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-14" class="stlog"><samp><span class="stinp">. mergemap sql joinby</span>
 
 <span class="stres">mergemap sql: joinby id using B  (the real many-to-many)</span>
 within each key, every master row is paired with every using row: a cross
@@ -1150,8 +1176,8 @@ product inside the key
 </samp></pre>
 </div> </div> </div> </div> </div> <br>
 <p>The same diagram is available for your own joins: mergemap detail with the draw option takes one event from the journal and draws its row pairing with the observed counts in place of the toy rows.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11"> <small>Click to view code</small> </button></h2> <div id="collapse11" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-14" class="stlog"><samp><span class="stinp">. mergemap detail 6 gallery_run.tsv, draw</span>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12"> <small>Click to view code</small> </button></h2> <div id="collapse12" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-15" class="stlog"><samp><span class="stinp">. mergemap detail 6 gallery_run.tsv, draw</span>
 
 <span class="stres">event 6: keep if</span>   (01_cars.do line 21)
   --------------------------------------------------------------
@@ -1170,8 +1196,8 @@ mergemap detail, draw diagrams join events; event 6 is a filter
 </div> </div> </div> </div> </div> <br>
 <h1 id="when-a-map-is-too-long">When a map is too long</h1>
 <p>A real build can record thousands of events, and most of them are not joins. The journal and the receipt always keep every event; the drawing is where you choose what to look at. Each option hides one kind of event, the options combine, and draw prints a line saying exactly what it hid. filesonly leaves the joins between named files; an if on the journal's own columns cuts any way the record can be sliced; paths(base) and root() shorten long file paths in the labels.</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12"> <small>Click to view code</small> </button></h2> <div id="collapse12" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-15" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_fi
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13"> <small>Click to view code</small> </button></h2> <div id="collapse13" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-16" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_fi
 &gt; les.html) replace noopen</span>
 
 <span class="stinp">. display as text "hidden: " r(hidden)</span>
@@ -1183,8 +1209,8 @@ hidden: hidden: 2 transforms, 8 filters (4 on rows, 4 on variables); 21 of 31 e
 </div> </div> </div> </div> </div> <br>
 <iframe src="g_map_files.html" width="100%" height="430px" frameborder="0" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
 <p>The record itself is never cut. Export it whole, as a dataset or as a three-sheet Excel workbook (every event; the joins with their counts; every keep and drop with the rows it removed), sortable and filterable in Excel:</p>
-<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13"> <small>Click to view code</small> </button></h2> <div id="collapse13" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-16" class="stlog"><samp><span class="stinp">. mergemap export gallery_run.tsv, saving(g_journal.xlsx) replace</span>
+<div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse14" aria-expanded="false" aria-controls="collapse14"> <small>Click to view code</small> </button></h2> <div id="collapse14" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
+<pre id="stlog-17" class="stlog"><samp><span class="stinp">. mergemap export gallery_run.tsv, saving(g_journal.xlsx) replace</span>
 mergemap export: 31 events from <span class="stres">gallery_run.tsv</span>
              to <span class="stres">g_journal.xlsx</span>
              sheets: events (31), joins (5), filters (8)

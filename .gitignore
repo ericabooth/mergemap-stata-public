@@ -29,5 +29,8 @@ gallery/g_map_tb.*
 gallery/g_map_03_report.*
 gallery/g_map_01_cars.svg
 gallery/g_map_02_join.svg
+gallery/g_run_h_01_cars.*
+gallery/g_run_h_03_report.*
+gallery/g_run_h_02_join.svg
 gallery/g_journal.xlsx
 gallery/*.dta
