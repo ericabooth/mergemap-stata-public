@@ -106,11 +106,11 @@ button
 quietly mergemap draw gallery_run.tsv, export(html) saving(g_map_run.html) replace noopen
 buttonclose
 wdiframe g_map_run.html, height(680px)
-wput The run map also draws through Stata's own graph engine, laid out horizontally: one row of boxes per do-file, at a shape that drops into a slide or a wide page. A dense map splits itself into one page per do-file, and the page below is the second one, where the joins happen:
+wput The run map also draws through Stata's own graph engine, laid out horizontally: one row of boxes per do-file, in a shape that fits a slide or a wide page. A dense map splits itself into one page per do-file, and the page below is the second one, where the joins happen:
 button
 mergemap draw gallery_run.tsv, export(png) saving(g_run_h) layout(horizontal) replace
 buttonclose
-wdimg g_run_h_02_join.png, caption(The joins from 02_join.do with their observed counts: what matched, what each side covered, and the rows a later drop removed. An SVG twin is written beside every page.)
+wdimg g_run_h_02_join.png, caption(The joins from 02_join.do with their observed counts: what matched, what each side covered, and the rows a later drop removed. A matching SVG is written beside every page.)
 
 wput One event in depth, straight from the journal:
 button
