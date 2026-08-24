@@ -50,12 +50,12 @@ wdclose
 wputh1 The map as an HTML page
 wput The HTML page is a single self-contained file: no internet connection, no JavaScript, no external assets. Hover any box for the full record of that event. The page below is embedded from the file the code panel writes; it scrolls in place.
 button
-mergemap draw gallery_scan.tsv, export(html) saving(g_map.html) replace noopen
+quietly mergemap draw gallery_scan.tsv, export(html) saving(g_map.html) replace noopen
 buttonclose
 wdiframe g_map.html, height(620px)
 wput A horizontal layout of the same map suits slides and wide screens:
 button
-mergemap draw gallery_scan.tsv, export(html) saving(g_map_h.html) layout(horizontal) replace noopen
+quietly mergemap draw gallery_scan.tsv, export(html) saving(g_map_h.html) layout(horizontal) replace noopen
 buttonclose
 wdiframe g_map_h.html, height(560px)
 
@@ -103,7 +103,7 @@ mergemap receipt gallery_run.tsv
 buttonclose
 wput The same map, drawn with the counts in it:
 button
-mergemap draw gallery_run.tsv, export(html) saving(g_map_run.html) replace noopen
+quietly mergemap draw gallery_run.tsv, export(html) saving(g_map_run.html) replace noopen
 buttonclose
 wdiframe g_map_run.html, height(680px)
 wput One event in depth, straight from the journal:
@@ -128,7 +128,8 @@ buttonclose
 wputh1 When a map is too long
 wput A real build can record thousands of events, and most of them are not joins. The journal and the receipt always keep every event; the drawing is where you choose what to look at. Each option hides one kind of event, the options combine, and draw prints a line saying exactly what it hid. filesonly leaves the joins between named files; an if on the journal's own columns cuts any way the record can be sliced; paths(base) and root() shorten long file paths in the labels.
 button
-mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_files.html) replace noopen
+quietly mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_files.html) replace noopen
+display as text "hidden: " r(hidden)
 buttonclose
 wdiframe g_map_files.html, height(430px)
 wput The record itself is never cut. Export it whole, as a dataset or as a three-sheet Excel workbook (every event; the joins with their counts; every keep and drop with the rows it removed), sortable and filterable in Excel:

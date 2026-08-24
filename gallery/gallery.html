@@ -643,13 +643,8 @@ mergemap diagram: gallery_scan.tsv
 <h1 id="the-map-as-an-html-page">The map as an HTML page</h1>
 <p>The HTML page is a single self-contained file: no internet connection, no JavaScript, no external assets. Hover any box for the full record of that event. The page below is embedded from the file the code panel writes; it scrolls in place.</p>
 <div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1"> <small>Click to view code</small> </button></h2> <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-4" class="stlog"><samp><span class="stinp">. mergemap draw gallery_scan.tsv, export(html) saving(g_map.html) replace noope
-&gt; n</span>
-(file<span class="stres"> /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St68694.000003</span> not
-    found)
-_mm_renderhtml: wrote <span class="stres">g_map.html</span> (scan mode, vertical, 33 events)
-    Open the diagram in your browser
-    /Users/ebooth/Documents/ClaudeProjects/mergemap/gallery/g_map.html
+<pre id="stlog-4" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_scan.tsv, export(html) saving(g_map.html) repla
+&gt; ce noopen</span>
 
 
 </samp></pre>
@@ -657,13 +652,8 @@ _mm_renderhtml: wrote <span class="stres">g_map.html</span> (scan mode, vertical
 <iframe src="g_map.html" width="100%" height="620px" frameborder="0" style="border:none; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin:1rem 0;"></iframe>
 <p>A horizontal layout of the same map suits slides and wide screens:</p>
 <div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2"> <small>Click to view code</small> </button></h2> <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-5" class="stlog"><samp><span class="stinp">. mergemap draw gallery_scan.tsv, export(html) saving(g_map_h.html) layout(hori
-&gt; zontal) replace noopen</span>
-(file<span class="stres"> /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St68694.000003</span> not
-    found)
-_mm_renderhtml: wrote <span class="stres">g_map_h.html</span> (scan mode, horizontal, 33 events)
-    Open the diagram in your browser
-    /Users/ebooth/Documents/ClaudeProjects/mergemap/gallery/g_map_h.html
+<pre id="stlog-5" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_scan.tsv, export(html) saving(g_map_h.html) lay
+&gt; out(horizontal) replace noopen</span>
 
 
 </samp></pre>
@@ -713,7 +703,7 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_td.mmd g_map_td
 <span class="stres">&gt; f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0</span>
 <span class="stres">&gt; b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%</span>
 <span class="stres">%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2</span>
-<span class="stres">&gt; 026 19:37:44 - Stata 19.5 MP - git main@9727234</span>
+<span class="stres">&gt; 026 19:38:38 - Stata 19.5 MP - git main@09c9510</span>
 <span class="stres">flowchart TD</span>
 <span class="stres">  accTitle: mergemap data-flow map of gallery_scan.tsv</span>
 <span class="stres">  accDescr {</span>
@@ -805,7 +795,7 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_td.mmd g_map_td
 <div style="background:#ffffff;border:1px solid #e4e4e4;border-radius:6px;padding:10px;margin:12px 0;overflow-x:auto;">
 <pre class="mermaid" style="background:none;border:none;margin:0;">
 %%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica, Arial, sans-serif','fontSize':'14px','primaryColor':'#ffffff','primaryTextColor':'#202020','primaryBorderColor':'#606060','lineColor':'#606060','secondaryColor':'#f4f4f4','tertiaryColor':'#fafafa','clusterBkg':'#fbfbfb','clusterBorder':'#b0b0b0','edgeLabelBackground':'#ffffff','titleColor':'#202020'}}}%%
-%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2026 19:37:44 - Stata 19.5 MP - git main@9727234
+%% mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2026 19:38:38 - Stata 19.5 MP - git main@09c9510
 flowchart TD
   accTitle: mergemap data-flow map of gallery_scan.tsv
   accDescr {
@@ -897,13 +887,13 @@ _mm_rendertext: gallery_scan.tsv -&gt; <span class="stres">g_map_tb.dot g_map_lr
 
 <span class="stinp">. type g_map_tb.dot</span>
 <span class="stres">// mergemap _mm_rendertext 0.2.0 - journal gallery_scan.tsv - rendered 23 Aug 2</span>
-<span class="stres">&gt; 026 19:37:44 - Stata 19.5 MP - git main@9727234</span>
+<span class="stres">&gt; 026 19:38:38 - Stata 19.5 MP - git main@09c9510</span>
 <span class="stres">// mergemap data-flow map of gallery_scan.tsv</span>
 <span class="stres">digraph mergemap {</span>
 <span class="stres">  rankdir=TB;</span>
 <span class="stres">  graph [fontname="Helvetica", fontsize=11, labeljust="l", labelloc="b", fontco</span>
 <span class="stres">&gt; lor="#707070", label="mergemap _mm_rendertext 0.2.0 - journal gallery_scan.ts</span>
-<span class="stres">&gt; v - rendered 23 Aug 2026 19:37:44 - Stata 19.5 MP - git main@9727234"];</span>
+<span class="stres">&gt; v - rendered 23 Aug 2026 19:38:38 - Stata 19.5 MP - git main@09c9510"];</span>
 <span class="stres">  node  [shape=box, fontname="Helvetica", fontsize=10, color="#606060", fontcol</span>
 <span class="stres">&gt; or="#202020"];</span>
 <span class="stres">  edge  [fontname="Helvetica", fontsize=9, color="#606060", fontcolor="#202020"</span>
@@ -1051,13 +1041,8 @@ plus 4 flagged event(s) outside the joins.
 </div> </div> </div> </div> </div> <br>
 <p>The same map, drawn with the counts in it:</p>
 <div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7"> <small>Click to view code</small> </button></h2> <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-10" class="stlog"><samp><span class="stinp">. mergemap draw gallery_run.tsv, export(html) saving(g_map_run.html) replace no
-&gt; open</span>
-(file<span class="stres"> /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St68694.000003</span> not
-    found)
-_mm_renderhtml: wrote <span class="stres">g_map_run.html</span> (run mode, vertical, 31 events)
-    Open the diagram in your browser
-    /Users/ebooth/Documents/ClaudeProjects/mergemap/gallery/g_map_run.html
+<pre id="stlog-10" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_run.tsv, export(html) saving(g_map_run.html) re
+&gt; place noopen</span>
 
 
 </samp></pre>
@@ -1186,15 +1171,12 @@ mergemap detail, draw diagrams join events; event 6 is a filter
 <h1 id="when-a-map-is-too-long">When a map is too long</h1>
 <p>A real build can record thousands of events, and most of them are not joins. The journal and the receipt always keep every event; the drawing is where you choose what to look at. Each option hides one kind of event, the options combine, and draw prints a line saying exactly what it hid. filesonly leaves the joins between named files; an if on the journal's own columns cuts any way the record can be sliced; paths(base) and root() shorten long file paths in the labels.</p>
 <div class="mb-4"> <div class="accordion" id="accordionExample"> <div class="accordion-item"> <h2 class="accordion-header"> <button class="accordion-button collapsed text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12"> <small>Click to view code</small> </button></h2> <div id="collapse12" class="accordion-collapse collapse" data-bs-parent="#accordionExample"><div class="accordion-body">
-<pre id="stlog-15" class="stlog"><samp><span class="stinp">. mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_files.html
-&gt; ) replace noopen</span>
-mergemap: hidden: 2 transforms, 8 filters (4 on rows, 4 on variables); 21 of 31
-&gt;  events drawn
-(file<span class="stres"> /var/folders/m5/kjpsn7r16wv1n3ndj6xvb70m0000gn/T//St68694.000003</span> not
-    found)
-_mm_renderhtml: wrote <span class="stres">g_map_files.html</span> (run mode, vertical, 21 events)
-    Open the diagram in your browser
-    /Users/ebooth/Documents/ClaudeProjects/mergemap/gallery/g_map_files.html
+<pre id="stlog-15" class="stlog"><samp><span class="stinp">. quietly mergemap draw gallery_run.tsv, filesonly export(html) saving(g_map_fi
+&gt; les.html) replace noopen</span>
+
+<span class="stinp">. display as text "hidden: " r(hidden)</span>
+hidden: hidden: 2 transforms, 8 filters (4 on rows, 4 on variables); 21 of 31 e
+&gt; vents drawn
 
 
 </samp></pre>
