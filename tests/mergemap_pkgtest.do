@@ -890,6 +890,43 @@ foreach spec in ///
     mm_assert `=(r(abs) == `want')' "_mm_isabs: `lab'"
 }
 
+* ---- block 20: header bytes never reach the macro parser ------------------
+* The staleness check reads .dta headers, whose binary fields can hold any
+* byte. 2,400 observations = 0x960: the little-endian <N> field starts with
+* a literal backtick, which in v0.5.2 entered a macro and killed any scan
+* made while the do-file's outputs sat on disk (scan -> run -> scan died
+* with a bare r(198)). The header now travels through Mata (_mm_hdrts), so
+* every byte class is inert; these fixtures cover the two worst.
+capture mkdir b20
+cd b20
+clear
+quietly set obs 2400
+generate int id = _n
+generate double wage = 1000 + mod(_n, 700)
+quietly save roster.dta, replace
+tempname fh20
+file open `fh20' using 10_build.do, write replace
+file write `fh20' "use roster.dta, clear" _n
+file write `fh20' "generate double lw = ln(wage)" _n
+file write `fh20' "save analysis.dta, replace" _n
+file close `fh20'
+capture noisily mergemap 10_build.do, out(j1.tsv)
+mm_assert `=(_rc == 0)' "scan with no outputs on disk completes"
+local e20 = r(N_events)
+capture noisily mergemap run 10_build.do, out(jr.tsv)
+mm_assert `=(_rc == 0)' "run mode completes on the 2,400-row fixture"
+capture noisily mergemap 10_build.do, out(j2.tsv)
+mm_assert `=(_rc == 0)' "scan after the run: the backtick byte in <N> stays out of macros"
+mm_assert `=(r(N_events) == `e20')' "the post-run scan finds the same events as the first"
+* a dquote byte unbalances compound quotes, a different failure from 0x60
+clear
+quietly set obs 2338
+generate int id = _n
+quietly save roster.dta, replace
+capture noisily mergemap 10_build.do, out(j3.tsv)
+mm_assert `=(_rc == 0)' "scan with a 0x22 (dquote) byte in the input header completes"
+cd ..
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///

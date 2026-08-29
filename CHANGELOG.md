@@ -2,6 +2,34 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.3 — 2026-08-29
+
+### Fixed
+
+- **A scan no longer dies on a dataset whose header holds a macro-hostile
+  byte.** The staleness check reads the `<timestamp>` element of each `.dta`
+  a do-file saves or reads, and the header's binary fields (the observation
+  count, the variable count, the label and timestamp lengths) can hold any
+  byte. A file with, say, 2,400 observations (0x960) plants a literal
+  backtick, and v0.5.2 accumulated the header into a macro one byte at a
+  time, so the scan died with a bare `invalid syntax` (r 198) whenever a
+  do-file's outputs already sat on disk. That broke the natural loop on its
+  third step: scan, run, scan again. The header now travels through Mata
+  (`_mm_hdrts`, end of `mergemap.ado`), where binary bytes are inert; only
+  the cleaned timestamp text ever reaches a macro. See
+  `BUGREPORT_scan_after_run.md` for the full diagnosis.
+- **Long dataset labels no longer switch staleness checking off.** The
+  header read grew from 220 to 512 bytes, which reaches the timestamp in
+  every dta format that has one; a label longer than 71 characters used to
+  push `</timestamp>` out of the window and the file's timestamp silently
+  read as unknown.
+
+### Added
+
+- Regression cover: `tests/mergemap_pkgtest.do` block 20 runs the
+  scan-run-scan loop over a 2,400-row fixture (backtick byte) and a
+  2,338-row fixture (double-quote byte).
+
 ## 0.5.2 — 2026-08-23
 
 ### Changed

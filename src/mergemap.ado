@@ -1,4 +1,4 @@
-*! version 0.5.2  23aug2026  Eric Booth
+*! version 0.5.3  29aug2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -1790,6 +1790,14 @@ end
 * Stata offers no file-modification-time function, so this reads the
 * <timestamp> element that -save- writes into the .dta header. Files that are
 * not .dta (including do-files) report missing and are skipped by callers.
+* The header interleaves its ASCII tags with raw binary fields (the
+* observation count, the variable count, the label and timestamp lengths),
+* and any of those bytes can be a character the macro parser acts on: 0x60
+* opens a macro reference nothing closes, 0x22 unbalances compound quotes.
+* A dataset with, say, 2,400 observations (0x960) plants a literal backtick
+* in its header, so the bytes must never pass through macro expansion.
+* _mm_hdrts (Mata, end of this file) reads and filters them; only the
+* cleaned timestamp text ever reaches a macro.
 program define _mm_ftime
     args p
     local t = .
@@ -1802,35 +1810,9 @@ program define _mm_ftime
         c_local ftime .
         exit
     }
-    tempname fh
-    capture file open `fh' using `"`p'"', read binary
-    if _rc {
-        c_local ftime .
-        exit
-    }
-    local hdr ""
-    forvalues i = 1/220 {
-        file read `fh' %1s ch1
-        if r(eof) continue, break
-        local hdr `"`hdr'`ch1'"'
-    }
-    capture file close `fh'
-    local p1 = strpos(`"`hdr'"', "<timestamp>")
-    local p2 = strpos(`"`hdr'"', "</timestamp>")
-    if `p1' & `p2' > `p1' {
-        local ts = substr(`"`hdr'"', `p1' + 11, `p2' - `p1' - 11)
-        local ok "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: "
-        local clean ""
-        local L = strlen(`"`ts'"')
-        forvalues i = 1/`L' {
-            local c1 = substr(`"`ts'"', `i', 1)
-            if `"`c1'"' != "" {
-                if strpos(`"`ok'"', `"`c1'"') local clean `"`clean'`c1'"'
-            }
-        }
-        local clean = strtrim(`"`clean'"')
-        if `"`clean'"' != "" local t = clock(`"`clean'"', "DMYhm")
-    }
+    local ts ""
+    capture mata: _mm_hdrts(st_local("p"))
+    if `"`ts'"' != "" local t = clock(`"`ts'"', "DMYhm")
     c_local ftime = `t'
 end
 
@@ -2419,4 +2401,41 @@ program define _mm_demofiles
     file write `fh' _n
     file write `fh' "save demo_analysis.dta, replace" _n
     file close `fh'
+end
+
+* ---------------------------------------------------------------- mata
+* _mm_hdrts: read the opening bytes of a .dta header where binary bytes are
+* inert, and hand back only the tag-safe characters of the <timestamp>
+* element through st_local("ts", ...). See _mm_ftime for why this read must
+* not go through -file read- into a macro. 512 bytes reaches the timestamp
+* element in every dta format that has one (release 117/118: the elements
+* before it total at most 149 bytes plus a label of at most 320 bytes);
+* older releases have no <timestamp> tag and correctly report no match.
+version 16
+mata:
+void _mm_hdrts(string scalar p)
+{
+    transmorphic  raw
+    real scalar   fh, p1, p2, i
+    string scalar hdr, ts, ok, c, clean
+
+    st_local("ts", "")
+    fh = _fopen(p, "r")
+    if (fh < 0) return
+    raw = fread(fh, 512)                 // short read near EOF is fine
+    fclose(fh)
+    if (eltype(raw) != "string" | rows(raw) != 1 | cols(raw) != 1) return
+    hdr = raw
+    p1 = strpos(hdr, "<timestamp>")
+    p2 = strpos(hdr, "</timestamp>")
+    if (p1 == 0 | p2 <= p1) return
+    ts = substr(hdr, p1 + 11, p2 - p1 - 11)
+    ok = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: "
+    clean = ""
+    for (i = 1; i <= strlen(ts); i++) {
+        c = substr(ts, i, 1)
+        if (strpos(ok, c)) clean = clean + c
+    }
+    st_local("ts", strtrim(clean))
+}
 end

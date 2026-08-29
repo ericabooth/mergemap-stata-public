@@ -1,5 +1,13 @@
 # Bug: `mergemap <folder>` fails with a bare "invalid syntax" after a run
 
+> **Fixed in v0.5.3 (2026-08-29).** `_mm_ftime` now reads the header through Mata
+> (`_mm_hdrts`, end of `mergemap.ado`): the timestamp element is located and
+> filtered there, and only the cleaned text ever reaches a macro. The read also
+> grew from 220 to 512 bytes, so a dataset label longer than 71 characters no
+> longer silently pushes `</timestamp>` out of reach and switches staleness
+> checking off for that file. Regression cover: `tests/mergemap_pkgtest.do`,
+> block 20. The two surveymap items at the bottom remain open.
+
 Found 2026-08-29 while building the book's Chapter 6 example. Reproducible from a
 clean directory in three commands.
 
@@ -112,9 +120,11 @@ end
 ```
 
 Everything downstream of `local hdr` then works unchanged, because `hdr` can no
-longer contain a character that breaks a macro. I did not push this: it replaces a
-routine in a public package and deserves your regression suite rather than my one
-worked example.
+longer contain a character that breaks a macro.
+
+*(The shipped v0.5.3 fix goes one step further than this sketch: `_mm_hdrts`
+finds and cleans the timestamp inside Mata and hands Stata only that text, so
+no header macro remains at all.)*
 
 ## Where it fails
 

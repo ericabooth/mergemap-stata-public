@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.2  23aug2026  Eric Booth}{...}
+{* *! version 0.5.3  29aug2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}

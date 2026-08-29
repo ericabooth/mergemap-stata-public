@@ -1,4 +1,4 @@
-*! version 0.5.2  23aug2026  Eric Booth
+*! version 0.5.3  29aug2026  Eric Booth
 *! _mm_detail -- the full record of one journal event, printed as a ledger.
 *! With -draw- (synonym: teach), a join event is also diagrammed as a row
 *! pairing in the style of -mergemap sql-, built from ITS observed counts.
