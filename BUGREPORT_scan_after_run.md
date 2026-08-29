@@ -40,6 +40,82 @@ the file that saves it. Scanning that same file on its own
 (`mergemap build/20_link.do`) succeeds, so the folder path and the `dir()` argument
 are implicated rather than the file's contents.
 
+## Root cause
+
+`_mm_ftime` (in `mergemap.ado`) reads the first 220 bytes of a `.dta` to pull the
+`<timestamp>` element out of the header, accumulating them one byte at a time:
+
+```stata
+forvalues i = 1/220 {
+    file read `fh' %1s ch1
+    if r(eof) continue, break
+    local hdr `"`hdr'`ch1'"'          // <- raw binary into a macro
+}
+```
+
+A `.dta` header interleaves ASCII tags with **raw binary counts**, so `ch1` is
+sometimes a byte that Stata's macro parser cannot survive. The observation count is
+the usual source. In the failing example, `raw/roster.dta` holds 2,400 rows, and
+2,400 = 0x960, so the little-endian count begins with byte `0x60`, which is a
+literal backtick:
+
+```
+offset 76..84:  3c 4e 3e | 60 09 00 00 00 00 00 00
+                 <  N  > | `
+```
+
+Appending a backtick opens a macro reference Stata cannot close, and the scan exits
+r(198) naming no file. Any dataset with `N mod 256 == 96` carries this byte, so about
+one file in 256 triggers it on the observation count alone, plus more from the
+variable count and the label.
+
+This also explains the run-then-scan trigger. The staleness check only reaches the
+input files when the output already exists on disk, so a scan before the run never
+reads `roster.dta`'s header and a scan after it does.
+
+## Why the one-line fixes do not hold
+
+Two minimal patches were tried and neither is sufficient:
+
+1. `local hdr `"`macval(hdr)'`macval(ch1)'"'` gets past the backtick, and the scan
+   then fails further down at r(132), because `hdr` is expanded again without
+   `macval` in the `strpos` and `substr` calls that follow.
+2. Filtering to safe characters at read time fails earlier still: testing the byte
+   requires expanding it, and a `0x22` byte (a double quote) breaks the test
+   expression itself with "too few quotes".
+
+Defending each byte class inside macro syntax is whack-a-mole. The underlying problem
+is routing arbitrary binary through Stata macros at all.
+
+## Suggested fix
+
+Read and filter the header in Mata, which handles binary strings safely, and hand
+Stata only characters that can appear in the tag:
+
+```stata
+mata:
+void mm_hdrscan(string scalar fn) {
+    real scalar fh, i
+    string scalar s, c, out, keep
+    keep = "<>/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz: "
+    fh  = fopen(fn, "r")
+    s   = fread(fh, 220)
+    fclose(fh)
+    out = ""
+    for (i = 1; i <= strlen(s); i++) {
+        c = substr(s, i, 1)
+        if (strpos(keep, c)) out = out + c
+    }
+    st_local("hdr", out)
+}
+end
+```
+
+Everything downstream of `local hdr` then works unchanged, because `hdr` can no
+longer contain a character that breaks a macro. I did not push this: it replaces a
+routine in a public package and deserves your regression suite rather than my one
+worked example.
+
 ## Where it fails
 
 `set trace on, tracedepth(2)` puts the last successful call at:
