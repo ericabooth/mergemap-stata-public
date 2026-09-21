@@ -6,7 +6,7 @@
 
 <img width="720" alt="mergemap diagram of a build do-file" src="images/mergemap_diagram.png" />
 
-## Why you'd reach for this
+## Rationale / use case for this package:
 
 **You inherited a project** with six numbered do-files, a `build/` folder, and no record of which file feeds which. Scanning them prints that record, before you have read a line of the code.
 
