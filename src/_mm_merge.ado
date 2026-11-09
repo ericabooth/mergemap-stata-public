@@ -1,4 +1,4 @@
-*! version 0.2.0  20aug2026  Eric Booth
+*! version 0.2.1  09nov2026  Eric Booth
 *! _mm_merge -- run-mode wrapper around merge.  Transparent by construction.
 *!
 *! No log is opened anywhere.  Stata caps simultaneous logs at five and
@@ -288,8 +288,10 @@ program define _mm_merge
             di as txt "    coverage: " as res "`covm'%" as txt " of master matched, " ///
                 as res "`covu'%" as txt " of using used"
         }
-        if `"`topk'"' != "" {
-            di as txt "    top unmatched keys: " as res `"`topk'"'
+        * key values are user data: macval() keeps a backtick or a dollar
+        * sign inside a key from being read as macro syntax
+        if `"`macval(topk)'"' != "" {
+            di as txt "    top unmatched keys: " as res `"`macval(topk)'"'
         }
         if `"`flags'"' != "" {
             di as txt "    " as res `"`flags'"'

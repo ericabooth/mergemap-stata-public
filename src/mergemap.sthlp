@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.3  29aug2026  Eric Booth}{...}
+{* *! version 0.5.4  09nov2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -840,6 +840,7 @@ the seed and the output is identical to a plain run, which
 {synopt:{cmd:r(N_joins)}}number of joins{p_end}
 {synopt:{cmd:r(N_flags)}}number of flagged events{p_end}
 {synopt:{cmd:r(N_stop)}}number of events at severity {bf:stop}{p_end}
+{synopt:{cmd:r(N_warn)}}after {cmd:run}: number of events at severity {bf:warn}{p_end}
 {p2col 5 22 26 2: Macros}{p_end}
 {synopt:{cmd:r(journal)}}path to the journal file{p_end}
 {synopt:{cmd:r(files)}}do-files scanned{p_end}
@@ -847,6 +848,13 @@ the seed and the output is identical to a plain run, which
 {synopt:{cmd:r(hidden)}}after {cmd:draw}: what the options and the {cmd:if} left out, in words{p_end}
 {synopt:{cmd:r(file)}}after {cmd:export}: the dataset or workbook it wrote{p_end}
 {p2colreset}{...}
+
+{pstd}
+{cmd:mergemap run} leaves these results in place even when it returns an
+error, whether the pipeline itself failed or an event crossed {opt stop()}, so
+a script can capture the run and then test {cmd:r(N_stop)}. The journal the run
+wrote also becomes the default for a later {cmd:mergemap draw}, {cmd:list},
+{cmd:detail} or {cmd:export}.{p_end}
 
 {pstd}
 The journal's columns, for an {cmd:if} on {cmd:mergemap draw} and for your own

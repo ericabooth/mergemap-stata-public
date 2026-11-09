@@ -1,4 +1,4 @@
-*! version 0.5.3  29aug2026  Eric Booth
+*! version 0.5.4  09nov2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -88,9 +88,19 @@ program define mergemap, rclass
         * the call below already opens the option list with ", out()"; a
         * second comma here made _mm_run's syntax reject every option that
         * came through this door (examples, warn, stop, nochecks, noreceipt)
-        global MM_LASTJ `"`out'"'
-        _mm_run `"`files'"', out(`"`out'"') `runopts'
-        exit
+        * the journal is remembered only after the run: _mm_rw scans each
+        * do-file into a tempfile first, and that inner scan sets MM_LASTJ
+        * to its own tempfile, which is gone by the time the run returns.
+        * _mm_run's results are passed up even when the run stops (a
+        * pipeline error, or the stop gate's r(9)), so r(N_stop) can gate.
+        local prevj : copy global MM_LASTJ
+        capture noisily _mm_run `"`files'"', out(`"`out'"') `runopts'
+        local rrc = _rc
+        return add
+        capture confirm file `"`out'"'
+        if !_rc global MM_LASTJ `"`out'"'
+        else    global MM_LASTJ `"`prevj'"'
+        exit `rrc'
     }
     else if `"`sub'"' == "draw" {
         _mm_draw `rest'

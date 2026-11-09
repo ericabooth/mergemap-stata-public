@@ -927,6 +927,98 @@ capture noisily mergemap 10_build.do, out(j3.tsv)
 mm_assert `=(_rc == 0)' "scan with a 0x22 (dquote) byte in the input header completes"
 cd ..
 
+* ---- block 21: mergemap run hands back its results and its journal ------
+* v0.5.3 lost both: the run's r() never left the rclass wrapper, and the
+* rewriter's inner scan pointed MM_LASTJ at a tempfile that was erased when
+* the run returned, so a bare draw/list/detail/export after a run said
+* r(601). A key value holding a backtick also stopped the user's pipeline
+* with r(132) when it was printed as a top unmatched key.
+mm_block 21 "mergemap run hands back its results and its journal"
+capture mkdir b21
+cd b21
+sysuse auto, clear
+keep make price mpg
+quietly save a21.dta, replace
+sysuse auto, clear
+keep make weight
+quietly keep in 1/60
+quietly save b21.dta, replace
+tempname fh21
+file open `fh21' using r21.do, write replace
+file write `fh21' "use a21.dta, clear" _n
+file write `fh21' "merge 1:1 make using b21.dta" _n
+file write `fh21' "save m21.dta, replace" _n
+file close `fh21'
+global MM_LASTJ ""
+capture noisily mergemap run r21.do, out(jr21.tsv) noreceipt
+mm_assert `=(_rc == 0)' "mergemap run completes"
+mm_assert `=(r(N_events) > 0 & r(N_events) < .)' "mergemap run returns r(N_events)"
+mm_assert `=(r(N_joins) == 1)' "mergemap run returns r(N_joins)"
+mm_assert `=(r(N_stop) == 0)' "mergemap run returns r(N_stop) = 0, not missing"
+mm_assert `=(r(N_flags) < .)' "mergemap run returns r(N_flags)"
+mm_assert `=(`"`r(journal)'"' == "jr21.tsv")' "mergemap run returns r(journal)"
+mm_assert `=(`"`r(files)'"' != "")' "mergemap run returns r(files)"
+mm_assert `=(`"$MM_LASTJ"' == "jr21.tsv")' "the run's own journal is remembered, not the inner scan's tempfile"
+capture noisily mergemap draw, noopen
+mm_assert `=(_rc == 0)' "a bare draw after a run finds the journal"
+capture noisily mergemap list
+mm_assert `=(_rc == 0)' "a bare list after a run finds the journal"
+capture noisily mergemap detail 2
+mm_assert `=(_rc == 0)' "a bare detail after a run finds the journal"
+capture noisily mergemap export, saving(x21.dta) replace
+mm_assert `=(_rc == 0)' "a bare export after a run finds the journal"
+* the stop gate still returns its error, and r() still carries the count
+capture noisily mergemap run r21.do, out(jr21s.tsv) noreceipt stop(.01)
+mm_assert `=(_rc == 9)' "the stop gate returns r(9) through mergemap run"
+mm_assert `=(r(N_stop) >= 1 & r(N_stop) < .)' "r(N_stop) survives the stop gate"
+mm_assert `=(`"$MM_LASTJ"' == "jr21s.tsv")' "a stopped run still remembers its journal"
+* a pipeline error comes back as the run's return code, journal and all
+file open `fh21' using e21.do, write replace
+file write `fh21' "use a21.dta, clear" _n
+file write `fh21' "merge 1:1 make using b21.dta" _n
+file write `fh21' "use no_such_file_21.dta, clear" _n
+file close `fh21'
+capture noisily mergemap run e21.do, out(jr21e.tsv) noreceipt
+mm_assert `=(_rc == 601)' "a failing pipeline returns its own error code"
+mm_assert `=(r(N_joins) == 1)' "r() holds the events up to the failure"
+mm_assert `=(`"$MM_LASTJ"' == "jr21e.tsv")' "a failed run remembers the partial journal"
+* key values with macro characters are data, not macro syntax
+clear
+quietly input str20 nm double v
+"a1" 1
+"a2" 2
+"a3" 3
+"a4" 4
+"a5" 5
+end
+quietly replace nm = "O" + char(96) + "Brien" in 2
+quietly replace nm = "x" + char(36) + "HOMEy" in 3
+quietly replace nm = "t" + char(9) + "ab" in 4
+quietly replace nm = "q" + char(34) + "uo" + char(39) + "te" in 5
+quietly save k21m.dta, replace
+quietly keep in 1
+quietly save k21u.dta, replace
+file open `fh21' using k21.do, write replace
+file write `fh21' "use k21m.dta, clear" _n
+file write `fh21' "merge 1:1 nm using k21u.dta" _n
+file write `fh21' "save k21o.dta, replace" _n
+file close `fh21'
+capture noisily mergemap run k21.do, out(jk21.tsv) noreceipt
+mm_assert `=(_rc == 0)' "a backtick, dollar, tab or quote in a key does not stop the pipeline"
+capture confirm file k21o.dta
+mm_assert `=(_rc == 0)' "the pipeline ran to its last line"
+* the backtick on its own: with no right quote later in the list to close
+* it, v0.5.3 died with r(132) here
+use k21m.dta, clear
+quietly drop in 4/5
+quietly save k21m.dta, replace
+capture erase k21o.dta
+capture noisily mergemap run k21.do, out(jk21b.tsv) noreceipt
+mm_assert `=(_rc == 0)' "a lone backtick in a key does not stop the pipeline"
+capture confirm file k21o.dta
+mm_assert `=(_rc == 0)' "the lone-backtick pipeline ran to its last line"
+cd ..
+
 * ---------------------------------------------------------------- summary ----
 display as text _n "{hline 78}"
 display as text "mergemap battery: " as result "$MM_PASS passed" as text ", " ///

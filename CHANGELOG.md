@@ -2,6 +2,34 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.4 — 2026-11-09
+
+### Fixed
+
+- **A bare `mergemap draw` (or `list`, `detail`, `export`) works after
+  `mergemap run`.** Run mode scans each do-file into a tempfile before it
+  rewrites it, and that inner scan left the remembered journal pointing at
+  the tempfile, which was erased when the run returned; every follow-up
+  without a journal name stopped with r(601). The run now remembers its own
+  journal after it finishes, including a partial journal from a pipeline
+  that failed.
+- **`mergemap run` returns its stored results.** `r(N_events)`,
+  `r(N_joins)`, `r(N_flags)`, `r(N_stop)`, `r(N_warn)`, `r(journal)` and
+  `r(files)` were computed but never passed out of the command, so
+  `r(N_stop)` read as missing and a gate such as `if r(N_stop) > 0` was
+  always true. They are returned now, also when the run stops with an error.
+- **A key value holding a backtick or a dollar sign no longer breaks run
+  mode.** Printing the top unmatched keys expanded the key text as macro
+  syntax, so a key such as ``O`Brien`` stopped the user's pipeline with
+  r(132) and `x$HOMEy` printed as `x`. The keys print as they are, and a tab
+  or line break inside a key prints as a space.
+
+### Added
+
+- Regression cover: `tests/mergemap_pkgtest.do` block 21 calls
+  `mergemap run` itself and checks its results, the remembered journal, the
+  stop gate, a failing pipeline, and keys with macro characters.
+
 ## 0.5.3 — 2026-08-29
 
 ### Fixed

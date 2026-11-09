@@ -1,4 +1,4 @@
-*! version 0.2.0  20aug2026  Eric Booth
+*! version 0.2.1  09nov2026  Eric Booth
 *! _mm_keys -- duplicate counts, coverage, and top-k unmatched keys for a
 *! join, computed in Mata with a hash table.
 *!
@@ -69,6 +69,16 @@ string colvector _mm_kvec(string rowvector vars)
     return(out)
 }
 
+// a key value goes on one display line: tabs and line breaks become spaces
+string scalar _mm_kclean(string scalar v)
+{
+    string scalar t
+    t = subinstr(v, char(9),  " ", .)
+    t = subinstr(t, char(10), " ", .)
+    t = subinstr(t, char(13), " ", .)
+    return(t)
+}
+
 string scalar _mm_klab(string rowvector vars, real scalar row)
 {
     real scalar   j, idx
@@ -77,7 +87,7 @@ string scalar _mm_klab(string rowvector vars, real scalar row)
     for (j = 1; j <= cols(vars); j++) {
         idx = st_varindex(vars[j])
         if (j > 1) s = s + " "
-        if (st_isstrvar(idx)) s = s + st_sdata(row, idx)
+        if (st_isstrvar(idx)) s = s + _mm_kclean(st_sdata(row, idx))
         else s = s + strofreal(st_data(row, idx))
     }
     return(s)
