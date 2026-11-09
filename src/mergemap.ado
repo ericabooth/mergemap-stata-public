@@ -1,4 +1,4 @@
-*! version 0.5.4  09nov2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -98,8 +98,14 @@ program define mergemap, rclass
         local rrc = _rc
         return add
         capture confirm file `"`out'"'
-        if !_rc global MM_LASTJ `"`out'"'
-        else    global MM_LASTJ `"`prevj'"'
+        if !_rc {
+            * absolute, so a cd cannot point a bare draw elsewhere
+            _mm_isabs `"`out'"'
+            local jabs `"`r(path)'"'
+            if !r(abs) local jabs `"`c(pwd)'/`jabs'"'
+            global MM_LASTJ `"`jabs'"'
+        }
+        else global MM_LASTJ `"`prevj'"'
         exit `rrc'
     }
     else if `"`sub'"' == "draw" {
@@ -184,8 +190,12 @@ program define mergemap, rclass
     di as txt "mergemap: $MM_SEQ events written to " as res `"`out'"'
 
     _mm_stats using `"`out'"'
-    * remembered (in a global, so it survives -clear all-) for -mergemap draw-
-    global MM_LASTJ `"`out'"'
+    * remembered (in a global, so it survives -clear all-) for -mergemap
+    * draw-, as an absolute path so a cd cannot point it elsewhere
+    _mm_isabs `"`out'"'
+    local jabs `"`r(path)'"'
+    if !r(abs) local jabs `"`c(pwd)'/`jabs'"'
+    global MM_LASTJ `"`jabs'"'
     return local files   `"`files'"'
     return local journal `"`out'"'
     return scalar N_stop   = `s_nstop'
@@ -217,6 +227,9 @@ end
 program define _mm_expand
     args spec fold
     local out ""
+    * folder() is declared string asis, so a quoted name (one with a space
+    * must be quoted) arrives with its quotes; take them off
+    if inlist(substr(`"`fold'"', 1, 1), char(34), char(96)) gettoken fold : fold
     if `"`fold'"' != "" {
         _mm_dirfiles `"`fold'"' "*.do"
         if `"`dflist'"' == "" {
@@ -1642,6 +1655,8 @@ program define _mm_cdapply
     if substr(`"`t'"', 1, 1) == "/" local abs = 1
     if substr(`"`t'"', 1, 1) == char(92) local abs = 1
     if substr(`"`t'"', 2, 1) == ":" local abs = 1
+    * cd ~/x starts again from the home folder, as written
+    if substr(`"`t'"', 1, 1) == "~" local abs = 1
     if `abs' {
         if !inlist(substr(`"`t'"', -1, 1), "/", char(92)) local t `"`t'/"'
         global MM_CD `"`t'"'
@@ -1673,6 +1688,7 @@ program define _mm_canon
     if substr(`"`q'"', 1, 1) == "/" local abs = 1
     if substr(`"`q'"', 1, 1) == char(92) local abs = 1
     if substr(`"`q'"', 2, 1) == ":" local abs = 1
+    if substr(`"`q'"', 1, 1) == "~" local abs = 1
     if !`abs' {
         local cd : copy global MM_CD
         if `"`cd'"' != "" local q `"`cd'`q'"'
@@ -1838,7 +1854,7 @@ program define _mm_stats
     local nstop = 0
     frame _mm_st {
         qui import delimited using `"`using'"', delimiter(tab) varnames(1) ///
-            stringcols(_all) bindquote(nobind) clear
+            stringcols(_all) bindquote(nobind) encoding("utf-8") clear
         local nev = _N
         capture confirm variable class
         if !_rc {
@@ -1871,7 +1887,7 @@ program define _mm_receipt
     frame create _mm_rcpt
     frame _mm_rcpt {
         qui import delimited using `"`using'"', delimiter(tab) varnames(1) ///
-            stringcols(_all) bindquote(nobind) clear
+            stringcols(_all) bindquote(nobind) encoding("utf-8") clear
         capture confirm variable usingfile
         local notv2 = (_rc != 0)
     }
@@ -1933,12 +1949,12 @@ program define _mm_receipt
         local wni = 0
         local wno = 0
         forvalues i = 1/`N' {
-            local wsq = max(`wsq', strlen(strtrim(seq[`i'])))
-            local wfi = max(`wfi', strlen(strtrim(dofile[`i'])))
-            local wln = max(`wln', strlen(strtrim(line[`i'])))
-            local wcm = max(`wcm', strlen(_cm[`i']))
-            local wky = max(`wky', strlen(_ky[`i']))
-            local wus = max(`wus', strlen(_us[`i']))
+            local wsq = max(`wsq', ustrlen(strtrim(seq[`i'])))
+            local wfi = max(`wfi', ustrlen(strtrim(dofile[`i'])))
+            local wln = max(`wln', ustrlen(strtrim(line[`i'])))
+            local wcm = max(`wcm', ustrlen(_cm[`i']))
+            local wky = max(`wky', ustrlen(_ky[`i']))
+            local wus = max(`wus', ustrlen(_us[`i']))
             if `isrun' {
                 local vni = n_in[`i']
                 local vno = n_out[`i']
@@ -2152,7 +2168,7 @@ program define _mm_receipt
         local row `"`row' `fr'"'
         * flags: wrap on word boundaries onto continuation lines
         local restf `"`c9'"'
-        local pad = strlen(`"`row'"') + 1
+        local pad = ustrlen(`"`row'"') + 1
         local ind = `pad' * " "
         local first = 1
         while `first' | `"`restf'"' != "" {
@@ -2183,19 +2199,21 @@ program define _mm_takew
         c_local rest2 ""
         exit
     }
-    if strlen(`"`s'"') <= `w' {
+    * counted in characters, not bytes, so a UTF-8 name is never split
+    * inside a character
+    if ustrlen(`"`s'"') <= `w' {
         c_local chunk `"`s'"'
         c_local rest2 ""
         exit
     }
     local cut = 0
     forvalues i = 1/`w' {
-        if substr(`"`s'"', `i', 1) == " " local cut = `i'
+        if usubstr(`"`s'"', `i', 1) == " " local cut = `i'
     }
     * a single word longer than the column: hard cut, nothing better exists
     if `cut' == 0 local cut = `w' + 1
-    c_local chunk = strtrim(substr(`"`s'"', 1, `cut' - 1))
-    c_local rest2 = strtrim(substr(`"`s'"', `cut', .))
+    c_local chunk = strtrim(usubstr(`"`s'"', 1, `cut' - 1))
+    c_local rest2 = strtrim(usubstr(`"`s'"', `cut', .))
 end
 
 * format a count string with thousands separators -> c_local numf
@@ -2218,27 +2236,29 @@ end
 * pad-left-justify (truncate with ..) -> c_local padded
 program define _mm_padl
     args s w
-    if strlen(`"`s'"') > `w' {
-        c_local padded = substr(`"`s'"', 1, `w' - 2) + ".."
+    local L = ustrlen(`"`s'"')
+    if `L' > `w' {
+        c_local padded = usubstr(`"`s'"', 1, `w' - 2) + ".."
         exit
     }
-    c_local padded = substr(`"`s'"' + `w' * " ", 1, `w')
+    c_local padded = `"`s'"' + (`w' - `L') * " "
 end
 
 * pad-right-justify (truncate with ..) -> c_local padded
 program define _mm_padr
     args s w
-    if strlen(`"`s'"') > `w' {
-        c_local padded = substr(`"`s'"', 1, `w' - 2) + ".."
+    local L = ustrlen(`"`s'"')
+    if `L' > `w' {
+        c_local padded = usubstr(`"`s'"', 1, `w' - 2) + ".."
         exit
     }
-    c_local padded = substr(`w' * " " + `"`s'"', -`w', `w')
+    c_local padded = (`w' - `L') * " " + `"`s'"'
 end
 
 * middle-ellipsis truncation, applied only when the column overflows
 program define _mm_mell
     args s w
-    local L = strlen(`"`s'"')
+    local L = ustrlen(`"`s'"')
     if `L' <= `w' {
         c_local melled `"`s'"'
         exit
@@ -2246,7 +2266,7 @@ program define _mm_mell
     local keep = `w' - 3
     local lft = ceil(`keep' / 2)
     local rgt = `keep' - `lft'
-    c_local melled = substr(`"`s'"', 1, `lft') + "..." + substr(`"`s'"', `L' - `rgt' + 1, `rgt')
+    c_local melled = usubstr(`"`s'"', 1, `lft') + "..." + usubstr(`"`s'"', `L' - `rgt' + 1, `rgt')
 end
 
 * ---------------------------------------------------------------- demo (C1)
@@ -2257,6 +2277,7 @@ program define _mm_demo
         gettoken d : dname
     }
     if `"`d'"' == "" local d "mergemap_demo"
+    if inlist(substr(`"`d'"', 1, 1), char(34), char(96)) gettoken d : d
     local isdir = 0
     mata: st_local("isdir", strofreal(direxists(st_local("d"))))
     if `isdir' & "`replace'" == "" {
@@ -2303,11 +2324,17 @@ program define _mm_demo
     di as txt "    do 02_join.do"
     di as txt "    do 03_report.do"
     di as txt "    cd .."
-    * draw it too, and leave the journal as the draw default
-    global MM_LASTJ `"`d'/demo_journal.tsv"'
+    * draw it too, and leave the journal as the draw default (absolute, so
+    * the cd the demo suggests does not lose it)
+    _mm_isabs `"`d'/demo_journal.tsv"'
+    local jabs `"`r(path)'"'
+    if !r(abs) local jabs `"`c(pwd)'/`jabs'"'
+    global MM_LASTJ `"`jabs'"'
     capture which _mm_rendersmcl
     if !_rc {
-        _mm_rendersmcl using `"`d'/demo_journal.tsv"'
+        * through the draw dispatcher, so a diagram too large for the
+        * Results window is written as the HTML page the note promises
+        _mm_draw `"`d'/demo_journal.tsv"', saving(`"`d'/demo_map.html"') noopen
         di as txt ""
         di as txt "Redraw it any time, in other shapes:"
         di as txt `"    {stata mergemap draw:. mergemap draw}"'

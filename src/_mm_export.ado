@@ -1,4 +1,4 @@
-*! version 0.5.0  23aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_export -- the journal as a dataset, for your own auditing.  Count and
 *! percentage columns arrive numeric; text columns stay text.  The point is
 *! that the record of your joins is data like any other: keep the flagged
@@ -41,6 +41,28 @@ program define _mm_export, rclass
         & strlower(substr(`"`saving'"', -4, .)) != ".xls" {
         local saving `"`saving'.xlsx"'
     }
+    * save and export delimited add .dta or .csv to a name with no
+    * extension; add it here so the message and r(file) name the file
+    if inlist("`format'", "dta", "csv") {
+        local base `"`saving'"'
+        local p = max(strrpos(`"`base'"', "/"), strrpos(`"`base'"', char(92)))
+        if `p' local base = substr(`"`base'"', `p' + 1, .)
+        if strpos(`"`base'"', ".") == 0 local saving `"`saving'.`format'"'
+    }
+    * Stata 19 writes the first sheet of a workbook whose path holds a
+    * non-ASCII character but cannot reopen it for the next one (r(603);
+    * plain export excel fails the same way).  Such a workbook is built
+    * under an ASCII temporary name and copied into place at the end.
+    local xfinal `"`saving'"'
+    if "`format'" == "xlsx" & ustrlen(`"`saving'"') != strlen(`"`saving'"') {
+        capture confirm file `"`xfinal'"'
+        if !_rc & "`replace'" == "" {
+            di as err `"mergemap export: file `xfinal' already exists; specify replace"'
+            exit 602
+        }
+        tempfile xtmp
+        local saving `"`xtmp'.xlsx"'
+    }
 
     * shorten the labels first, if asked; the cut is a tempfile
     local src `"`jfile'"'
@@ -71,6 +93,7 @@ program define _mm_export, rclass
         }
         else {
             * ---- sheet 1: every event, every column ----
+            local nc_events = c(k)
             quietly export excel using `"`saving'"', sheet("events")      ///
                 firstrow(variables) `replace'
             * ---- sheet 2: the joins ----
@@ -91,8 +114,8 @@ program define _mm_export, rclass
                 }
                 quietly keep `keepv'
                 quietly order `keepv'
-                quietly export excel using `"`saving'"', sheet("joins")  ///
-                    firstrow(variables) sheetreplace
+                local nc_joins : word count `keepv'
+                _mm_xsheet `"`saving'"' joins `"`keepv'"'
             }
             frame drop _mmexpj
             * ---- sheet 3: the filters, with what each one removed ----
@@ -118,18 +141,28 @@ program define _mm_export, rclass
                 }
                 quietly keep `keepv'
                 quietly order `keepv'
-                quietly export excel using `"`saving'"', sheet("filters") ///
-                    firstrow(variables) sheetreplace
+                local nc_filters : word count `keepv'
+                _mm_xsheet `"`saving'"' filters `"`keepv'"'
             }
             frame drop _mmexpf
             * a bold header row on each sheet, so it reads as a table; no
             * harm done if this Stata cannot style cells
+            * only each sheet's own header cells: styling empty ones makes
+            * import excel read them back as extra variables
             foreach sh in events joins filters {
+                local n = `nc_`sh''
+                if `n' <= 26 local hc = char(64 + `n')
+                else local hc = char(64 + floor((`n' - 1) / 26)) + char(65 + mod(`n' - 1, 26))
                 capture putexcel set `"`saving'"', sheet("`sh'") modify
                 if !_rc {
-                    capture putexcel A1:AH1, bold
+                    capture putexcel A1:`hc'1, bold
                     capture putexcel clear
                 }
+            }
+            if `"`xfinal'"' != `"`saving'"' {
+                copy `"`saving'"' `"`xfinal'"', replace
+                capture erase `"`saving'"'
+                local saving `"`xfinal'"'
             }
         }
     }
@@ -147,4 +180,27 @@ program define _mm_export, rclass
         return scalar N_joins   = `nj'
         return scalar N_filters = `nf'
     }
+end
+
+* one sheet of the workbook from the data in memory.  export excel refuses
+* an empty frame (r(2000), "no observations"), so a journal with no joins or
+* no filters gets a header-only sheet instead, keeping the three-sheet
+* contract.
+program define _mm_xsheet
+    args book sheet vlist
+    if _N > 0 {
+        quietly export excel using `"`book'"', sheet("`sheet'") ///
+            firstrow(variables) sheetreplace
+        exit
+    }
+    quietly putexcel set `"`book'"', sheet("`sheet'") modify open
+    local j = 0
+    foreach v of local vlist {
+        local ++j
+        if `j' <= 26 local c = char(64 + `j')
+        else local c = char(64 + floor((`j' - 1) / 26)) + char(65 + mod(`j' - 1, 26))
+        quietly putexcel `c'1 = "`v'"
+    }
+    quietly putexcel save
+    putexcel clear
 end

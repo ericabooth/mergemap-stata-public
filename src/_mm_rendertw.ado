@@ -1,4 +1,4 @@
-*! version 0.2.0  19aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_rendertw : draw a mergemap journal (schema v2) as a native twoway
 *!            boxes-and-arrows diagram
 *!
@@ -23,7 +23,7 @@
 *! Capped at maxnodes() join+transform+filter events per page (default 12);
 *! denser pages are referred to the HTML renderer.
 
-program define _mm_rendertw
+program define _mm_rendertw, sclass
     version 16
 
     syntax using/, SAVing(string) [LAYout(string) PAGE(string)      ///
@@ -50,8 +50,8 @@ program define _mm_rendertw
     tempname jrn
     frame create `jrn'
     frame `jrn' {
-        qui import delimited using "`using'", delimiter(tab) varnames(1) ///
-            stringcols(_all) clear
+        qui import delimited using `"`using'"', delimiter(tab) varnames(1) ///
+            stringcols(_all) bindquote(nobind) encoding("utf-8") clear
 
         * schema v2 column 9 is usingfile; the v1 name (using) is a reserved
         * word that import delimited turns into a positional variable, so a
@@ -570,7 +570,8 @@ program define _mm_rendertw
                 " events, above this renderer's cap of `maxnodes'."
             di as err "    a native-graph diagram this dense is not readable;" ///
                 " use the HTML export instead:"
-            di as err `"        . renderhtml using "`using'", saving(diagram.html)"'
+            di as err `"        . mergemap draw [journal], export(html) saving(diagram.html)"'
+            di as err "      (the same draw command, with export(html) in place of png or svg)"
             di as err "    (or split it with page(dofile), or raise the cap" ///
                 " with maxnodes(#))"
             exit 134
@@ -857,6 +858,8 @@ program define _mm_rendertw
         qui graph export `"`savp'.png"', width(1600) replace
         qui graph export `"`savp'.svg"', replace
         graph drop _rtw
+        local q = cond(strpos(`"`savp'"', " "), char(34), "")
+        local written `"`written' `q'`savp'.png`q' `q'`savp'.svg`q'"'
 
         local evw = cond(`NP' == 1, "event", "events")
         di as txt "_mm_rendertw: wrote `savp'.png and `savp'.svg" ///
@@ -866,6 +869,8 @@ program define _mm_rendertw
     if `npages' > 1 {
         di as txt "_mm_rendertw: `npages' pages, one per do-file"
     }
+    sreturn local files = strtrim(`"`written'"')
+    sreturn local n_pages "`npages'"
 end
 
 

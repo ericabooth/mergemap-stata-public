@@ -1,4 +1,4 @@
-*! version 0.5.0  23aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_jcut -- cut a journal down before a renderer reads it.
 *!
 *! One implementation behind every option that hides events or shortens the
@@ -183,7 +183,10 @@ program define _mm_jcut, sclass
             local N1 = r(N)
             tempfile jcut
             local jcut `"`jcut'.tsv"'
-            quietly export delimited using `"`jcut'"', delimiter(tab) replace datafmt
+            * written as raw TSV, the way the scanner writes a journal:
+            * export delimited would wrap a field holding a quote in quotes
+            * and double it, which a bindquote(nobind) reader keeps as text
+            mata: _mm_jcut_write(st_local("jcut"))
         }
     }
     frame drop _mmcut
@@ -249,6 +252,24 @@ end
 *           as it was.
 *   depth : 0 = keep all; k > 0 = keep the last k components.
 mata:
+// one journal row per observation, fields joined by tabs, header first
+void _mm_jcut_write(string scalar fn)
+{
+    real scalar fh, i, j, k
+    string rowvector nm
+    string matrix X
+
+    k = st_nvar()
+    nm = J(1, k, "")
+    for (j = 1; j <= k; j++) nm[j] = st_varname(j)
+    X = st_sdata(., .)
+    if (fileexists(fn)) unlink(fn)
+    fh = fopen(fn, "w")
+    fput(fh, invtokens(nm, char(9)))
+    for (i = 1; i <= rows(X); i++) fput(fh, invtokens(X[i, .], char(9)))
+    fclose(fh)
+}
+
 void _mm_shortpaths(string scalar var, string scalar root, real scalar depth)
 {
     real scalar    i, n, k, p, q, j, rlen, isname

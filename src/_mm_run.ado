@@ -1,4 +1,4 @@
-*! version 0.2.0  19aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_run -- instrumented execution for mergemap (PLAN section 2.2).
 *!
 *! Called by mergemap as:
@@ -21,13 +21,12 @@
 
 program define _mm_run, rclass
     version 16
+    * only the options run mode acts on: drawing options such as export()
+    * or saving() were once accepted here and silently did nothing, so
+    * they are refused now; draw the run's journal with mergemap draw
     syntax anything(name=files id="do-file list") [,                          ///
         out(string) EXAMPLEs(integer 0) noCHECKS warn(string) stop(string)    ///
-        noFOLD noLEDger noRECEIPT DEBUG                                       ///
-        COMPACT noELLipsis noTRANSforms noKEYS noCOUNTs DETAILS               ///
-        WRAP(integer 0) TITLE(string) LAYOUT(string) EXPORT(string)           ///
-        SAVING(string) REPLACE MAXNodes(integer 8) FORCESMCL noOPEN           ///
-        STYLE(string) FOLDER(string)]
+        noFOLD noLEDger noRECEIPT DEBUG]
 
     if `"`out'"' == "" local out "journal.tsv"
 

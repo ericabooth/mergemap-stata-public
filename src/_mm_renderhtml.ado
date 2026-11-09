@@ -1,4 +1,4 @@
-*! _mm_renderhtml.ado 0.5.1 23aug2026 Eric Booth
+*! _mm_renderhtml.ado 0.5.5 09nov2026 Eric Booth
 *! render a mergemap v2 journal (TSV, 34 columns) as HTML + inline SVG
 * syntax: _mm_renderhtml using journal.tsv, saving(x.html)
 *         [layout(vertical|horizontal) accent(hex) details embed idprefix(name)
@@ -66,8 +66,8 @@ program define _mm_renderhtml
     tempname J
     frame create `J'
     frame `J' {
-        quietly import delimited using "`using'", delimiter(tab) ///
-            varnames(1) stringcols(_all) clear
+        quietly import delimited using `"`using'"', delimiter(tab) ///
+            varnames(1) stringcols(_all) bindquote(nobind) encoding("utf-8") clear
         * v2 reads BY NAME. Column 9 is usingfile: "using" is a reserved word
         * and silently became v9 under the v1 header (JOURNAL_SCHEMA.md).
         capture confirm variable usingfile

@@ -1,5 +1,5 @@
 *! _mm_rendersmcl.ado  --  SMCL diagram renderer for mergemap journals
-*! version 0.2  19aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *
 * _mm_rendersmcl using <journal.tsv> [, style(boxes|rail) layout(vertical|horizontal)
 *                                   wrap(#) maxnodes(#) forcesmcl compact
@@ -68,7 +68,8 @@ program define _mm_rendersmcl
     cap frame drop _rsmj
     frame create _rsmj
     qui frame _rsmj: import delimited using `"`using'"', ///
-        delimiter(tab) varnames(1) stringcols(_all) clear
+        delimiter(tab) varnames(1) stringcols(_all) bindquote(nobind) ///
+        encoding("utf-8") clear
     frame _rsmj {
         cap confirm variable usingfile
         if _rc {

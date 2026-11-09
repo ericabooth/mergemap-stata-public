@@ -125,7 +125,7 @@ mergemap draw, export(html) saving(pipeline.html)        // a self-contained pag
 mergemap draw, export(mermaid) saving(pipeline)          // text GitHub renders itself
 ```
 
-With no argument, `draw` renders the most recent journal, which it remembers across `clear all` and across sessions in the same directory. So `mergemap build/` followed by `mergemap draw` covers the usual case.
+With no argument, `draw` renders the most recent journal, which it remembers for the rest of the Stata session, across `clear all` and a `cd`. A new session falls back to `journal.tsv` in the working directory. So `mergemap build/` followed by `mergemap draw` covers the usual case.
 
 <img width="720" alt="mergemap HTML output" src="images/mergemap_html.png" />
 
@@ -288,7 +288,7 @@ Categories a `keep()` dropped appear in parentheses, so the box's arithmetic agr
 
 **What to write.** `out(filename)` puts the journal where you want it (default `journal.tsv`); `noreceipt` skips the table. The journal is tab-separated with one line per event, and every other output is built from it. Stata reads it straight back in, so you can keep it as your own audit record.
 
-**How loudly to complain.** `warn(#)` and `stop(#)` take either a count (`warn(500)`) or a share (`warn(.05)`, the default). Events sort into `note`, `warn` and `stop`, because 2% unmatched is worth a note and 40% is a crisis and one warning symbol cannot say which. **A `stop` makes `mergemap run` exit with an error**, so you can put it in a master do-file as a gate that halts the build. The run's counts stay in `r()` after that error (`r(N_stop)`, `r(N_warn)`, `r(N_joins)`, `r(journal)`), so `capture mergemap run build/` followed by a test of `r(N_stop)` works too, and a bare `mergemap draw` afterwards draws the journal the run just wrote.
+**How loudly to complain.** `warn(#)` and `stop(#)` are `mergemap run` options (a scan counts no rows) and take either a count (`warn(500)`) or a share (`warn(.05)`, the default; `stop()` has none). Events sort into `note`, `warn` and `stop`, because 2% unmatched is worth a note and 40% is a crisis and one warning symbol cannot say which. **A `stop` makes `mergemap run` exit with an error**, so you can put it in a master do-file as a gate that halts the build. A `merge m:m` with `force` is always a `stop`, whatever the thresholds say. The run's counts stay in `r()` after that error (`r(N_stop)`, `r(N_warn)`, `r(N_joins)`, `r(journal)`), so `capture mergemap run build/` followed by a test of `r(N_stop)` works too, and a bare `mergemap draw` afterwards draws the journal the run just wrote.
 
 **Run mode only.** `examples(#)` lists a few sample rows per join, showing the keys and `_merge` only. `nochecks` skips the duplicate-key scan of using files, which is the expensive part on large data.
 

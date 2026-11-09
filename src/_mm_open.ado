@@ -1,4 +1,4 @@
-*! version 0.3.3  21aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_open -- open a file mergemap just wrote, using the operating system's
 *! own handler.  Called from the click-to-run link that -mergemap draw- prints
 *! after writing an HTML page.
@@ -26,6 +26,7 @@ program define _mm_open
     }
     * absolute path, so the handler resolves it whatever the working directory.
     _mm_isabs `"`f'"'
+    local f `"`r(path)'"'
     if !r(abs) local f `"`c(pwd)'/`f'"'
     local q = char(34)
     if "`c(os)'" == "MacOSX" {

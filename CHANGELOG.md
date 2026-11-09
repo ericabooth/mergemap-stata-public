@@ -2,6 +2,82 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.5 — 2026-11-09
+
+### Fixed
+
+- **A quoted `folder()` works.** `mergemap demo, folder("my demo")` and
+  `mergemap, folder("my build")` kept the quotes and stopped with r(603) or
+  r(601), so a folder whose name holds a space could only be given
+  positionally. The quotes are now removed first.
+- **The remembered journal is an absolute path.** After the `cd` the demo
+  itself suggests, or any other, a bare `mergemap draw`, `list`, `detail` or
+  `export` stopped with r(601). Scan, run and demo now remember the journal
+  by its full path.
+- **A double quote inside a recorded condition no longer empties the rest
+  of the row.** Every journal reader now uses `bindquote(nobind)`, as the
+  receipt already did, and a cut journal (any draw with `if`, `nofilters`,
+  `paths()` and the like) is written as raw TSV rather than through
+  `export delimited`, which quoted and doubled such a field. Before, the
+  event's severity and flags vanished from `list`, `detail`, `export` and
+  the drawings while the receipt still showed them.
+- **UTF-8 file names and conditions read back intact.** Journal imports now
+  say `encoding("utf-8")`, so `données.dta` no longer prints as
+  `donnÃ©es.dta`, and the receipt and `list` truncate and pad by character,
+  so a cut never splits a character.
+- **Paths beginning with `~` resolve to the home folder** in the printed
+  link, `$MM_LASTOUT` and the open-in-browser link, and a scanned `cd ~/x`
+  starts again from the home folder instead of being appended to the
+  previous `cd`.
+- **Run mode no longer reports row multiplication on a 1:1 merge that only
+  kept using-only rows.** The fan-out test leaves out the using-only rows
+  `keep()` retains, and those rows are reported as `N using-only kept`.
+- **`mergemap draw, notrans` is accepted**, as the help documents
+  (`notrans:forms`), and `noell` for `noellipsis`, as run mode allows.
+- **`r(output)` after `draw` names a file that exists.** With png or svg and
+  one page per do-file it is the first page's image, and with mermaid, dot or
+  erdiagram the first file written; the new `r(files)` lists every file and
+  `r(n_pages)` counts the images.
+- **`export` names the file it wrote.** `saving(joins)` with `format(csv)`
+  writes `joins.csv`, and the message and `r(file)` now say so.
+- **The xlsx export works when the journal has no joins or no filters.**
+  `export excel` refuses an empty frame, which stopped the export with
+  r(2000) and no `filters` sheet; such a sheet is now written with its header
+  row only. Each sheet's bold header also stops at its own last column, so
+  `import excel ..., firstrow` reads no empty columns back.
+- **An xlsx export can be written to a path holding a non-ASCII character
+  on Stata 19**, which writes the first sheet of such a workbook but cannot
+  reopen it. The workbook is built under a temporary ASCII name and copied
+  into place.
+- **`mergemap demo` writes the HTML page its note promises.** The demo
+  diagram is larger than the Results window draws, and the note said it was
+  written as HTML, but the demo called the SMCL renderer directly and wrote
+  nothing. It now draws through `mergemap draw`, into `demo_map.html` in the
+  demo folder, without opening a browser.
+- **`mergemap run` refuses drawing options.** `export()`, `saving()`,
+  `layout()` and the rest were accepted and silently did nothing; draw the
+  run's journal with `mergemap draw` instead.
+- A merge against an empty using file prints "the using file is empty"
+  instead of `.%` coverage.
+- The too-dense-PNG message pointed at a `renderhtml` command that does not
+  exist; it now gives the `mergemap draw ..., export(html)` form.
+
+### Documentation
+
+- `warn()` and `stop()` are documented as run-mode options, `stop()` as
+  having no default, and `merge m:m` with `force` as always a stop.
+- The help says the `dofile` column holds the name without its folder, and
+  its paging examples slice by name.
+- Limitations lists `keep if`/`drop if` behind a `by` prefix, which neither
+  mode records.
+- README: the remembered journal lasts for the session, not across sessions.
+
+### Tests
+
+- The battery's adopath entries are absolute, so blocks that `cd` into a
+  subfolder keep testing this copy rather than an installed one, and its
+  remembered-journal checks expect the absolute path.
+
 ## 0.5.4 — 2026-11-09
 
 ### Fixed

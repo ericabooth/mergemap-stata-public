@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.4  09nov2026  Eric Booth}{...}
+{* *! version 0.5.5  09nov2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -334,7 +334,7 @@ reading the map knows it is a chosen view of the record, not the record:{p_end}
 {phang2}{cmd:. mergemap draw, novarfilters}{p_end}
 {phang2}{cmd:. mergemap draw, notempfiles}{p_end}
 {phang2}{cmd:. mergemap draw, filesonly}{p_end}
-{phang2}{cmd:. mergemap draw if line < 400 & strpos(dofile, "build")}{p_end}
+{phang2}{cmd:. mergemap draw if line < 400 & strpos(dofile, "01_")}{p_end}
 
 {pstd}
 {opt nofilters} hides every {cmd:keep} and {cmd:drop}; {opt norowfilters} hides
@@ -357,7 +357,9 @@ as numbers and the text columns as text, so it can page a long pipeline any
 way the journal can be sliced: by do-file ({cmd:if strpos(dofile, "mask")}), by
 line range ({cmd:if line >= 400}), by event kind
 ({cmd:if inlist(class, "join", "save")}), or by what happened
-({cmd:if n_out < n_in}). Column names are listed under
+({cmd:if n_out < n_in}). The {cmd:dofile} column holds the do-file's name
+without its folder ({cmd:01_clean.do}, not {cmd:build/01_clean.do}), so slice
+by name. Column names are listed under
 {help mergemap##results:Stored results} and in the header of the journal
 file.{p_end}
 
@@ -475,6 +477,13 @@ events into {bf:note}, {bf:warn} and {bf:stop}. A {bf:stop} makes
 {cmd:mergemap run} exit with an error, which lets you put it in a master do-file
 as a gate that halts the build.{p_end}
 
+{pstd}
+Both options belong to {cmd:mergemap run}: a scan counts no rows, so it takes
+neither. {opt stop()} has no default, so without it no threshold produces a
+{bf:stop}. One event is a {bf:stop} whatever the thresholds say: a
+{cmd:merge m:m} with {opt force}, which pairs rows by position and lets the key
+types disagree, so a run containing one always ends with r(9).{p_end}
+
 {dlgtab:Run mode only}
 
 {synoptset 26 tabbed}{...}
@@ -535,14 +544,15 @@ them.{p_end}
 {dlgtab:Demo only}
 
 {synoptset 26 tabbed}{...}
-{synopt :{opt fold:er(path)}}write the example here; default {cmd:mergemap_demo}{p_end}
+{synopt :{opt fold:er(path)}}write the example here; default {cmd:mergemap_demo}; quote a name that holds a space{p_end}
 {p2colreset}{...}
 
 {pstd}
 Running {cmd:mergemap demo} a second time refreshes the example in place, so you
 can retype it as often as you like. If the folder holds anything {cmd:mergemap}
 did not write, it stops and leaves your files alone; {opt replace} proceeds
-anyway.{p_end}
+anyway. The demo's diagram is larger than the Results window draws, so it is
+written to {cmd:demo_map.html} in the same folder.{p_end}
 
 {synoptset 26 tabbed}{...}
 {synopt :{opt replace}}write the example into an existing folder that {cmd:mergemap} did not create{p_end}
@@ -596,9 +606,9 @@ anyway.{p_end}
 {pstd}{bf:The files on disk and how they relate: no filters, no reshapes, no tempfiles}{p_end}
 {phang2}{cmd:. mergemap draw, filesonly export(html) saving(files.html) replace}{p_end}
 
-{pstd}{bf:A long pipeline one page at a time, cut by do-file and line}{p_end}
-{phang2}{cmd:. mergemap draw if strpos(dofile, "build") & line < 400, filesonly export(html) saving(step1.html) replace}{p_end}
-{phang2}{cmd:. mergemap draw if !(strpos(dofile, "build") & line < 400), filesonly export(html) saving(main.html) replace}{p_end}
+{pstd}{bf:A long pipeline one page at a time, cut by do-file name and line}{p_end}
+{phang2}{cmd:. mergemap draw if strpos(dofile, "01_") & line < 400, filesonly export(html) saving(step1.html) replace}{p_end}
+{phang2}{cmd:. mergemap draw if !(strpos(dofile, "01_") & line < 400), filesonly export(html) saving(main.html) replace}{p_end}
 
 {pstd}{bf:Only the joins that lost rows}{p_end}
 {phang2}{cmd:. mergemap draw if class == "join" & n_out < n_in}{p_end}
@@ -811,6 +821,12 @@ stays off the map. That covers a join performed inside a command you wrote
 yourself, and a join built up as text and then executed.{p_end}
 
 {phang2}
+A {cmd:keep if} or {cmd:drop if} behind a {cmd:by}, {cmd:bys} or {cmd:bysort}
+prefix ({cmd:bysort id: keep if _n == 1}) is not recorded, in scan mode or run
+mode, so the rows it removes show up only as a lower count at the next event.
+The pipeline itself runs unchanged.{p_end}
+
+{phang2}
 {cmd:mergemap run} rewrites your do-files into temporary copies with instrumented
 command names, keeping your line numbers. It does not alter your files. If a
 do-file uses {cmd:#delimit ;}, the scan is best-effort and says so.{p_end}
@@ -841,12 +857,14 @@ the seed and the output is identical to a plain run, which
 {synopt:{cmd:r(N_flags)}}number of flagged events{p_end}
 {synopt:{cmd:r(N_stop)}}number of events at severity {bf:stop}{p_end}
 {synopt:{cmd:r(N_warn)}}after {cmd:run}: number of events at severity {bf:warn}{p_end}
+{synopt:{cmd:r(n_pages)}}after {cmd:draw, export(png|svg)}: images written, one per page{p_end}
 {p2col 5 22 26 2: Macros}{p_end}
 {synopt:{cmd:r(journal)}}path to the journal file{p_end}
 {synopt:{cmd:r(files)}}do-files scanned{p_end}
-{synopt:{cmd:r(output)}}after {cmd:draw}: the file it wrote{p_end}
+{synopt:{cmd:r(output)}}after {cmd:draw}: the file it wrote; with several, the first of the format asked for{p_end}
+{synopt:{cmd:r(files)}}after {cmd:draw} to png, svg, mermaid, dot or erdiagram: every file written, such as {it:stub}{cmd:_td.mmd} and {it:stub}{cmd:_lr.mmd}, or one {it:stub}{cmd:_}{it:dofile}{cmd:.png} per page{p_end}
 {synopt:{cmd:r(hidden)}}after {cmd:draw}: what the options and the {cmd:if} left out, in words{p_end}
-{synopt:{cmd:r(file)}}after {cmd:export}: the dataset or workbook it wrote{p_end}
+{synopt:{cmd:r(file)}}after {cmd:export}: the dataset or workbook it wrote, with its extension{p_end}
 {p2colreset}{...}
 
 {pstd}

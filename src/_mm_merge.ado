@@ -1,4 +1,4 @@
-*! version 0.2.1  09nov2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_merge -- run-mode wrapper around merge.  Transparent by construction.
 *!
 *! No log is opened anywhere.  Stata caps simultaneous logs at five and
@@ -237,9 +237,19 @@ program define _mm_merge
             local flags = cond("`flags'" == "", "`ff'", "`flags'; `ff'")
         }
     }
+    * using-only rows that keep() retains add rows without multiplying any;
+    * they are reported as such and left out of the fan-out test
+    local m2k = 0
+    if "`m2'" != "." {
+        if `m2' > 0 & strpos(" `kept' ", " 2 ") {
+            local m2k = `m2'
+            local ff = trim(string(`m2', "%20.0fc")) + " using-only kept"
+            local flags = cond("`flags'" == "", "`ff'", "`flags'; `ff'")
+        }
+    }
     if `nin' > 0 {
-        if `nout' > `nin' * 1.005 {
-            local ff = "row multiplication x" + string(`nout' / `nin', "%4.2f")
+        if `nout' - `m2k' > `nin' * 1.005 {
+            local ff = "row multiplication x" + string((`nout' - `m2k') / `nin', "%4.2f")
             local flags = cond("`flags'" == "", "`ff'", "`flags'; `ff'")
         }
     }
@@ -285,8 +295,18 @@ program define _mm_merge
             as txt " {c |} matched " as res "`mtot'" ///
             as txt " {c |} result " as res trim(string(`nout', "%20.0fc"))
         if "`covm'" != "." {
-            di as txt "    coverage: " as res "`covm'%" as txt " of master matched, " ///
-                as res "`covu'%" as txt " of using used"
+            if "`covu'" == "." & "`nusing'" == "0" {
+                di as txt "    coverage: " as res "`covm'%" as txt " of master matched; " ///
+                    as txt "the using file is empty"
+            }
+            else if "`covu'" == "." {
+                di as txt "    coverage: " as res "`covm'%" as txt " of master matched, " ///
+                    as txt "using coverage n/a"
+            }
+            else {
+                di as txt "    coverage: " as res "`covm'%" as txt " of master matched, " ///
+                    as res "`covu'%" as txt " of using used"
+            }
         }
         * key values are user data: macval() keeps a backtick or a dollar
         * sign inside a key from being read as macro syntax

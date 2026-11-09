@@ -1,4 +1,4 @@
-*! version 0.5.0  23aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_list -- the journal as a table.  The receipt is the curated view; this
 *! is the data view: one line per event with the count columns run mode fills,
 *! and -full- for every column via -list- when you want to audit the record.
@@ -54,8 +54,8 @@ program define _mm_list, rclass
                 if "`no'" == "." local no ""
                 local sv  = severity[`i']
                 if "`sv'" == "note" local sv ""
-                if strlen("`fl'") > 15 local fl = substr("`fl'", 1, 14) + "~"
-                if strlen("`ky'") > 13 local ky = substr("`ky'", 1, 12) + "~"
+                if ustrlen("`fl'") > 15 local fl = usubstr("`fl'", 1, 14) + "~"
+                if ustrlen("`ky'") > 13 local ky = usubstr("`ky'", 1, 12) + "~"
                 di as txt "  " %3s "`sq'" " " %-15s "`fl'" " " %4s "`ln'" "  " ///
                     as res %-10s "`cm'" as txt " " %-7s "`st'" " " %-13s "`ky'" " " ///
                     %9s "`ni'" " " %9s "`no'" "  " as err %-4s "`sv'"

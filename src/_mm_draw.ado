@@ -1,4 +1,4 @@
-*! version 0.5.0  23aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_draw -- dispatcher behind -mergemap draw-.  Resolves which journal to
 *! draw, picks the renderer from export(), forwards only the options that
 *! renderer understands, and handles the SMCL-to-HTML auto-escalation plus
@@ -21,7 +21,7 @@ program define _mm_draw, rclass
     local ifexp `"`s(ifexp)'"'
     syntax [anything(name=jspec)] [, EXPort(string) SAVing(string)          ///
         STYLE(string) LAYout(string) WRAP(integer -1) MAXnodes(integer -1)  ///
-        FORCEsmcl COMPact noCOUNTS noKEYS noTRANSFORMS noELLIPSIS           ///
+        FORCEsmcl COMPact noCOUNTS noKEYS noTRANSforms noELLipsis           ///
         noFILTERS noROWfilters noVARfilters noTEMPfiles JOINSonly FILESonly ///
         PATHS(string) ROOT(string asis)                                     ///
         DETails EMBed ACCent(string) PAGE(string) replace NOOPen]
@@ -143,7 +143,20 @@ program define _mm_draw, rclass
             _mm_rendertw using `"`jfile'"', saving(`"`stub'"') `o' page(dofile)
         }
         else if _rc exit _rc
-        return local output `"`stub'.`export'"'
+        * r(output) is the first file of the format asked for (one page per
+        * do-file writes stub_<dofile>.png and so on); r(files) lists all
+        local files `"`s(files)'"'
+        local npg "`s(n_pages)'"
+        local first ""
+        foreach w of local files {
+            if `"`first'"' == "" & strlower(substr(`"`w'"', -4, .)) == ".`export'" {
+                local first `"`w'"'
+            }
+        }
+        if `"`first'"' == "" local first `"`stub'.`export'"'
+        return local output `"`first'"'
+        return local files  `"`files'"'
+        if "`npg'" != "" return scalar n_pages = `npg'
         exit
     }
 
@@ -156,7 +169,13 @@ program define _mm_draw, rclass
     if `"`layout'"' != "" local o `"`o' layout(`layout')"'
     if `wrap' >= 0        local o `"`o' wrap(`wrap')"'
     _mm_rendertext using `"`jfile'"', saving(`"`stub'"') `o'
-    return local output `"`stub'"'
+    * r(output) is the first file written (stub_td.mmd and so on); r(files)
+    * lists every file
+    local files `"`s(files)'"'
+    gettoken first : files
+    if `"`first'"' == "" local first `"`stub'"'
+    return local output `"`first'"'
+    return local files  `"`files'"'
 end
 
 * ---------------------------------------------------------------- html leg
@@ -179,9 +198,9 @@ program define _mm_draw_html, sclass
     * directory.  Note the missing-file case also gets an absolute path:
     * an earlier version only absolutised when the file existed, which left
     * a relative path in the link on the one occasion it mattered.
-    local abs `"`hf'"'
-    _mm_isabs `"`abs'"'
-    if !r(abs) local abs `"`c(pwd)'/`hf'"'
+    _mm_isabs `"`hf'"'
+    local abs `"`r(path)'"'
+    if !r(abs) local abs `"`c(pwd)'/`abs'"'
     global MM_LASTOUT `"`abs'"'
     * A {stata ...} link runs a Stata command.  Do NOT go back to
     * {browse "file://..."}: SMCL hands that to the platform URL parser, and

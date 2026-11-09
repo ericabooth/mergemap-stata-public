@@ -122,9 +122,12 @@ capture mkdir pkgtest_tmp
 cd pkgtest_tmp
 capture erase journal.tsv
 
-* make the scanner findable whether or not mergemap is installed
-adopath ++ ".."
-adopath ++ "../../src"
+* make the scanner findable whether or not mergemap is installed.  The
+* entries are absolute: a relative one is resolved against the working
+* directory at lookup time, so after a cd into a block's subfolder it would
+* point nowhere and an installed copy would be picked up instead.
+adopath ++ "`c(pwd)'/.."
+adopath ++ "`c(pwd)'/../../src"
 capture discard
 
 capture which mergemap
@@ -958,7 +961,7 @@ mm_assert `=(r(N_stop) == 0)' "mergemap run returns r(N_stop) = 0, not missing"
 mm_assert `=(r(N_flags) < .)' "mergemap run returns r(N_flags)"
 mm_assert `=(`"`r(journal)'"' == "jr21.tsv")' "mergemap run returns r(journal)"
 mm_assert `=(`"`r(files)'"' != "")' "mergemap run returns r(files)"
-mm_assert `=(`"$MM_LASTJ"' == "jr21.tsv")' "the run's own journal is remembered, not the inner scan's tempfile"
+mm_assert `=(`"$MM_LASTJ"' == "`c(pwd)'/jr21.tsv")' "the run's own journal is remembered, not the inner scan's tempfile"
 capture noisily mergemap draw, noopen
 mm_assert `=(_rc == 0)' "a bare draw after a run finds the journal"
 capture noisily mergemap list
@@ -971,7 +974,7 @@ mm_assert `=(_rc == 0)' "a bare export after a run finds the journal"
 capture noisily mergemap run r21.do, out(jr21s.tsv) noreceipt stop(.01)
 mm_assert `=(_rc == 9)' "the stop gate returns r(9) through mergemap run"
 mm_assert `=(r(N_stop) >= 1 & r(N_stop) < .)' "r(N_stop) survives the stop gate"
-mm_assert `=(`"$MM_LASTJ"' == "jr21s.tsv")' "a stopped run still remembers its journal"
+mm_assert `=(`"$MM_LASTJ"' == "`c(pwd)'/jr21s.tsv")' "a stopped run still remembers its journal"
 * a pipeline error comes back as the run's return code, journal and all
 file open `fh21' using e21.do, write replace
 file write `fh21' "use a21.dta, clear" _n
@@ -981,7 +984,7 @@ file close `fh21'
 capture noisily mergemap run e21.do, out(jr21e.tsv) noreceipt
 mm_assert `=(_rc == 601)' "a failing pipeline returns its own error code"
 mm_assert `=(r(N_joins) == 1)' "r() holds the events up to the failure"
-mm_assert `=(`"$MM_LASTJ"' == "jr21e.tsv")' "a failed run remembers the partial journal"
+mm_assert `=(`"$MM_LASTJ"' == "`c(pwd)'/jr21e.tsv")' "a failed run remembers the partial journal"
 * key values with macro characters are data, not macro syntax
 clear
 quietly input str20 nm double v

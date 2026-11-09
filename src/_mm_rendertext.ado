@@ -1,4 +1,4 @@
-*! version 0.2.0  19aug2026  Eric Booth
+*! version 0.5.5  09nov2026  Eric Booth
 *! _mm_rendertext: emit mermaid flowcharts (.mmd/.md), a mermaid erDiagram, and
 *! Graphviz DOT (.dot) from a mergemap journal (schema v2, 34 columns).
 *!
@@ -25,7 +25,7 @@
 *!
 *! column 9 is read BY NAME as usingfile; there is no positional fallback.
 
-program define _mm_rendertext
+program define _mm_rendertext, sclass
     version 16
     syntax using/, SAVing(string) ///
         [ Format(string) LAYout(string) WRAP(integer 44) replace NAME(string) ]
@@ -49,8 +49,8 @@ program define _mm_rendertext
     tempname jrn nodes edges attrs rels
     frame create `jrn'
     frame `jrn' {
-        quietly import delimited using "`using'", delimiter(tab) ///
-            varnames(1) stringcols(_all) clear
+        quietly import delimited using `"`using'"', delimiter(tab) ///
+            varnames(1) stringcols(_all) bindquote(nobind) encoding("utf-8") clear
         capture confirm variable usingfile
         if _rc {
             di as err "journal has no usingfile column: this is not journal"
@@ -183,6 +183,7 @@ program define _mm_rendertext
     }
 
     di as txt "_mm_rendertext: `jname' -> " as res trim("`written'")
+    sreturn local files = trim(`"`written'"')
 end
 
 * ---------------------------------------------------------------------------
