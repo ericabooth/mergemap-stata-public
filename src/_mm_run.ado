@@ -1,4 +1,4 @@
-*! version 0.5.5  09nov2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! _mm_run -- instrumented execution for mergemap (PLAN section 2.2).
 *!
 *! Called by mergemap as:
@@ -32,7 +32,7 @@ program define _mm_run, rclass
 
     * the rewritten do-files call the wrappers by name, so fail early and
     * plainly if the package was installed without them
-    foreach w in _mm_merge _mm_use _mm_save _mm_post _mm_rw {
+    foreach w in _mm_merge _mm_use _mm_save _mm_post _mm_rw _mm_pfx {
         capture which `w'
         if _rc {
             di as err "mergemap run: `w'.ado is not on the adopath; " ///

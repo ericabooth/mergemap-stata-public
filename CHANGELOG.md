@@ -2,6 +2,46 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.6 — 2026-11-10
+
+### Changed
+
+- **`r(journal)` after `draw` is always your journal.** After a filtered
+  draw (`if`, `nofilters`, `notempfiles`, `joinsonly`, `paths()`, `root()`
+  and the like) it used to name the temporary cut copy. The new `r(drawn)`
+  names the file the renderer actually read: the cut copy after a filter,
+  otherwise the journal itself. A script that read the cut through
+  `r(journal)` should read `r(drawn)` instead.
+- **Using-only rows count toward `warn`/`stop` when `keep()` keeps them.**
+  In run mode, a `merge` whose `keep()` explicitly retains using rows
+  (`keep(2)`, `keep(using)`, `keep(match using)`, or any abbreviation
+  `merge` accepts) now counts those rows as unmatched, over master rows
+  plus those rows. Without `keep()`, nothing changes: only master-only rows
+  count. **A pipeline that uses `keep(using ...)` may now see different
+  `warn`/`stop` results**, including a new r(9) from `stop()`.
+  `keep()` words are also read the way `merge` reads them, so `keep(us mat)`
+  is understood as `keep(using match)`.
+- **PNG/SVG export no longer writes over an image you named.**
+  `mergemap draw, export(png) saving(fig)` stops with r(602) if `fig.png` or
+  `fig.svg` (or, with one page per do-file, any page's file) exists and
+  `replace` was not given, as HTML, mermaid and `export` already did. The
+  check runs before any page is drawn. The default `mergemap_map` images,
+  used without `saving()`, are still overwritten on every draw, the rule
+  surveymap uses.
+
+### Fixed
+
+- **Commands behind `by`, `bys`, `bysort` and `frame name:` prefixes are on
+  the map.** The scanner used to skip `bysort id: keep if _n == 1` and
+  `frame f: merge 1:1 id using x` entirely. Scan mode now records the
+  command behind the prefix and names the prefix in its flags. Run mode does
+  not instrument such a line (the wrappers are not byable): it runs the line
+  unchanged through `_mm_pfx` and journals a `note` event in its place, so
+  the line is no longer silently missing. Statements inside a
+  `frame name { ... }` block are flagged `inside a frame name block`. The
+  Limitations sections of the help and README say what is and is not
+  covered.
+
 ## 0.5.5 — 2026-11-09
 
 ### Fixed

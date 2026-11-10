@@ -1,4 +1,4 @@
-*! version 0.5.5  09nov2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! _mm_draw -- dispatcher behind -mergemap draw-.  Resolves which journal to
 *! draw, picks the renderer from export(), forwards only the options that
 *! renderer understands, and handles the SMCL-to-HTML auto-escalation plus
@@ -72,7 +72,11 @@ program define _mm_draw, rclass
     local jorig `"`jfile'"'
     _mm_jcut using `"`jfile'"', `cutopts'
     local jfile `"`s(jfile)'"'
-    return local journal `"`jfile'"'
+    * r(journal) is always the journal you gave (or the remembered one);
+    * r(drawn) is the file the renderer read, which after a filter is the
+    * temporary cut and otherwise the journal itself
+    return local journal `"`jorig'"'
+    return local drawn   `"`jfile'"'
     return local hidden  `"`s(note)'"'
     * the page, the mermaid header and the graph footer name the journal;
     * when a cut copy is drawn they should still name the journal you gave
@@ -131,7 +135,12 @@ program define _mm_draw, rclass
                 local stub = substr(`"`stub'"', 1, strlen(`"`stub'"') - 4)
             }
         }
-        local o `"`nameopt'"'
+        * the default stub (no saving()) is mergemap's own scratch and is
+        * overwritten on every draw; an image you name with saving() needs
+        * replace, as html, mermaid and export already did
+        local drep "`replace'"
+        if `"`saving'"' == "" local drep "replace"
+        local o `"`nameopt' `drep'"'
         if `"`layout'"' != "" local o `"`o' layout(`layout')"'
         if `"`page'"'   != "" local o `"`o' page(`page')"'
         if `maxnodes' >= 0    local o `"`o' maxnodes(`maxnodes')"'

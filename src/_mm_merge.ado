@@ -1,4 +1,4 @@
-*! version 0.5.5  09nov2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! _mm_merge -- run-mode wrapper around merge.  Transparent by construction.
 *!
 *! No log is opened anywhere.  Stata caps simultaneous logs at five and
@@ -74,20 +74,28 @@ program define _mm_merge
     * ---------------- which categories survive the user's keep()? ---------
     local kept "1 2 3 4 5"
     local kdrop ""
+    local kexp "0"
     if `"`okeep'"' != "" {
         local codes ""
+        * the words and abbreviations merge itself accepts (its Mata
+        * result() function): mas(ters), us(ings), mat(ches|ched),
+        * match_up(dates), match_con(flicts), or the codes 1-5
         foreach w of local okeep {
             local w = strlower("`w'")
-            if "`w'" == "master"              local w "1"
-            else if "`w'" == "using"          local w "2"
-            else if "`w'" == "match"          local w "3"
-            else if "`w'" == "match_update"   local w "4"
-            else if "`w'" == "match_conflict" local w "5"
-            capture confirm number `w'
-            if !_rc local codes "`codes' `w'"
+            local l = strlen("`w'")
+            if inlist("`w'", "1", "2", "3", "4", "5") local c "`w'"
+            else if substr("masters", 1, max(3, `l')) == "`w'"          local c "1"
+            else if substr("usings", 1, max(2, `l')) == "`w'"           local c "2"
+            else if substr("matches", 1, max(3, `l')) == "`w'"          local c "3"
+            else if substr("matched", 1, max(3, `l')) == "`w'"          local c "3"
+            else if substr("match_updates", 1, max(8, `l')) == "`w'"    local c "4"
+            else if substr("match_conflicts", 1, max(8, `l')) == "`w'"  local c "5"
+            else local c ""
+            if "`c'" != "" local codes "`codes' `c'"
         }
         local codes = strtrim("`codes'")
         if "`codes'" != "" {
+            local kexp "1"
             local kept ""
             forvalues j = 1/5 {
                 if strpos(" `codes' ", " `j' ") local kept "`kept' `j'"
@@ -254,9 +262,20 @@ program define _mm_merge
         }
     }
 
+    * severity counts master-only rows.  Using-only rows count too, but only
+    * when keep() was given and retains them (keep(2), keep(using), keep(match
+    * using) and so on): then they are rows the user chose to carry forward
+    * unmatched, and the share is taken over master rows plus those rows.
+    * Without keep() the default result also holds using-only rows, but
+    * severity stays on the master side, as it always has.
     local unm = 0
+    local den = `nin'
     if "`m1'" != "." local unm = `m1'
-    _mm_sev `unm' `nin'
+    if `m2k' > 0 & "`kexp'" == "1" {
+        local unm = `unm' + `m2k'
+        local den = `nin' + `m2k'
+    }
+    _mm_sev `unm' `den'
     local sev "$MM_R_SEV"
     if "`sub'" == "m:m" | "`oforce'" == "1" | "`kdrift'" == "1" {
         if "`sev'" == "note" local sev "warn"

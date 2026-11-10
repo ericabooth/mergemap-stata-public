@@ -1,10 +1,10 @@
-*! version 0.5.5  09nov2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! _mm_rendertw : draw a mergemap journal (schema v2) as a native twoway
 *!            boxes-and-arrows diagram
 *!
 *! syntax:  _mm_rendertw using <journal.tsv>, saving(stub)
 *!              [layout(vertical|horizontal) page(none|dofile)
-*!               maxnodes(#) noprovenance]
+*!               maxnodes(#) noprovenance replace]
 *!
 *! Builds ONE twoway call per page: boxes from pci segments, arrows from
 *! pcarrowi, labels from text().  Exports <stub>.png (width 1600) and
@@ -27,7 +27,7 @@ program define _mm_rendertw, sclass
     version 16
 
     syntax using/, SAVing(string) [LAYout(string) PAGE(string)      ///
-        MAXnodes(integer 12) noPROVenance NAME(string)]
+        MAXnodes(integer 12) noPROVenance NAME(string) replace]
 
     if "`layout'" == "" local layout vertical
     if !inlist("`layout'", "vertical", "horizontal") {
@@ -575,6 +575,21 @@ program define _mm_rendertw, sclass
             di as err "    (or split it with page(dofile), or raise the cap" ///
                 " with maxnodes(#))"
             exit 134
+        }
+    }
+
+    * an image that already exists is overwritten only with replace (the
+    * caller, _mm_draw, passes replace for its own default stub); every
+    * page is checked before any is drawn, so a refusal writes nothing
+    if "`replace'" == "" {
+        forvalues p = 1/`npages' {
+            foreach e in png svg {
+                capture confirm file `"`stub`p''.`e'"'
+                if !_rc {
+                    display as error `"file `macval(stub`p')'.`e' already exists; specify replace"'
+                    exit 602
+                }
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-*! version 0.2.0  19aug2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! _mm_rw -- source-to-source rewriter for mergemap run.
 *!
 *! The tokenizer is NOT re-implemented here.  The scanner is called first and
@@ -11,7 +11,10 @@
 *! name its own do-file and line in the journal without guessing.
 *!
 *! Lines inside a "#delimit ;" region are left alone; a single warning is
-*! issued.  do/run of a literal file name is followed recursively: the child
+*! issued.  A recognised command behind a by:, bysort: or frame: prefix
+*! (the scan flags it "behind prefix ...") is not wrapped, because the
+*! wrappers are not byable: _mm_pfx is put in front of the prefix instead,
+*! journals a note, and runs the line unchanged.  do/run of a literal file name is followed recursively: the child
 *! is registered and rewritten too, and its index is stamped into the marker.
 *!
 *! Backticks, dollar signs, and right quotes are swapped for char(1)/(2)/(3)
@@ -85,8 +88,12 @@ program define _mm_rw
                     else {
                         local x : copy global MM_RW_X`e'
                         local c : copy global MM_RW_C`e'
+                        local tag `"#`idx':`lineno'`x'#"'
+                        * _mm_pfx goes in front of the prefix word, which
+                        * stays: by grp: -> _mm_pfx #1:5:keep# by grp:
+                        if "`w'" == "_mm_pfx" local tag `"`tag' `c'"'
                         global MM_R_LINE : copy local line
-                        _mm_rwtok `"`c'"' `"`w'"' `"#`idx':`lineno'`x'#"'
+                        _mm_rwtok `"`c'"' `"`w'"' `"`tag'"'
                         local line : copy global MM_R_LINE
                         if "$MM_R_HIT" == "1" {
                             local hit = 1
@@ -151,6 +158,7 @@ program define _mm_rwread
         if "`f'" == "cmd"       local ccmd = `nc'
         if "`f'" == "usingfile" local cuf  = `nc'
         if "`f'" == "using"     local cuf  = `nc'
+        if "`f'" == "flags"     local cflg = `nc'
         if !`q' continue, break
     }
     if "`cdof'" == "" local cdof = 2
@@ -158,6 +166,7 @@ program define _mm_rwread
     if "`ccls'" == "" local ccls = 4
     if "`ccmd'" == "" local ccmd = 5
     if "`cuf'"  == "" local cuf  = 9
+    if "`cflg'" == "" local cflg = 34
 
     file read `jh' line
     while r(eof) == 0 {
@@ -171,6 +180,7 @@ program define _mm_rwread
         local vcls ""
         local vcmd ""
         local vuf  ""
+        local vflg ""
         while 1 {
             local q = strpos(`"`s'"', "`T'")
             local ++nc
@@ -186,12 +196,24 @@ program define _mm_rwread
             if `nc' == `ccls' local vcls `"`f'"'
             if `nc' == `ccmd' local vcmd `"`f'"'
             if `nc' == `cuf'  local vuf  `"`f'"'
+            if `nc' == `cflg' local vflg `"`f'"'
             if !`q' continue, break
         }
         if `"`vdof'"' == `"`base'"' {
             _mm_rwmap `"`vcmd'"' `"`vcls'"'
             local w "$MM_R_WRAP"
             local x ""
+            * behind a by:/bysort:/frame: prefix: the wrapper is _mm_pfx, the
+            * word to find on the line is the prefix's own first word, and
+            * the command travels in the marker's extra field
+            local pp = strpos(`"`vflg'"', "behind prefix ")
+            if `pp' & "`w'" != "" {
+                local pw = substr(`"`vflg'"', `pp' + 14, .)
+                gettoken pw : pw, parse(" :,")
+                local x ":`vcmd'"
+                local vcmd `"`pw'"'
+                local w "_mm_pfx"
+            }
             if "`w'" == "_mm_do" {
                 local x "d"
                 if `"`vcmd'"' == "run" local x "r"

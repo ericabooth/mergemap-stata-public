@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.5.5  09nov2026  Eric Booth}{...}
+{* *! version 0.5.6  10nov2026  Eric Booth}{...}
 {vieweralsosee "[D] merge" "help merge"}{...}
 {vieweralsosee "[D] append" "help append"}{...}
 {vieweralsosee "[D] joinby" "help joinby"}{...}
@@ -484,6 +484,16 @@ neither. {opt stop()} has no default, so without it no threshold produces a
 {cmd:merge m:m} with {opt force}, which pairs rows by position and lets the key
 types disagree, so a run containing one always ends with r(9).{p_end}
 
+{pstd}
+For a {cmd:merge}, the unmatched rows that count are the master-only rows.
+Using-only rows count as well when you ask for them: if {opt keep()} retains
+them ({cmd:keep(2)}, {cmd:keep(using)}, {cmd:keep(match using)}, or any
+abbreviation {cmd:merge} accepts), they are rows you chose to carry forward
+unmatched, and the share is then taken over the master rows plus those
+using-only rows. Without {opt keep()} the result also holds using-only rows,
+but they do not count toward {bf:warn} or {bf:stop}; the flag still reports
+them as {it:N} {cmd:using-only kept}.{p_end}
+
 {dlgtab:Run mode only}
 
 {synoptset 26 tabbed}{...}
@@ -517,10 +527,20 @@ types disagree, so a run containing one always ends with r(9).{p_end}
 {synopt :{opt acc:ent(hex)}}the one colour used for flags and arrowheads{p_end}
 {synopt :{opt page(dofile)}}PNG/SVG as one image per do-file{p_end}
 {synopt :{opt wrap(#)}}label wrap width{p_end}
-{synopt :{opt replace}}overwrite existing output files{p_end}
+{synopt :{opt replace}}overwrite a file named in {opt saving()}; the default {cmd:mergemap_map} images are always overwritten{p_end}
 {synopt :{opt noopen}}write the HTML but do not open the browser{p_end}
 {synoptline}
 {p2colreset}{...}
+
+{pstd}
+An image you name with {opt saving()} is yours: {cmd:export(png)} and
+{cmd:export(svg)} will not write over an existing {it:stub}{cmd:.png} or
+{it:stub}{cmd:.svg} (or any page's file, with one image per do-file) unless
+you add {opt replace}, and stop with r(602) instead, before any page is
+drawn. HTML, mermaid, dot and {cmd:mergemap export} already worked this way.
+Without {opt saving()} the images go to {cmd:mergemap_map.png} and
+{cmd:mergemap_map.svg}, which are overwritten on every draw so that you can
+redraw as often as you like.{p_end}
 
 {dlgtab:Receipt, list and export}
 
@@ -821,10 +841,18 @@ stays off the map. That covers a join performed inside a command you wrote
 yourself, and a join built up as text and then executed.{p_end}
 
 {phang2}
-A {cmd:keep if} or {cmd:drop if} behind a {cmd:by}, {cmd:bys} or {cmd:bysort}
-prefix ({cmd:bysort id: keep if _n == 1}) is not recorded, in scan mode or run
-mode, so the rows it removes show up only as a lower count at the next event.
-The pipeline itself runs unchanged.{p_end}
+A command behind a {cmd:by}, {cmd:bys}, {cmd:bysort} or {cmd:frame} {it:name}
+prefix ({cmd:bysort id: keep if _n == 1}, {cmd:frame f: merge 1:1 id using x})
+is recorded in scan mode like any other, with the prefix named in its flags.
+Run mode does not instrument it, because the wrappers that count rows are not
+byable and do not follow another frame: it runs the line unchanged and
+journals a {bf:note} event in its place, with no counts, so the rows a
+{cmd:bysort id: keep if} removes show up only as a lower count at the next
+event. Statements inside a {cmd:frame} {it:name} {cmd:{c -(} ... {c )-}} block
+are recorded and, in run mode, instrumented as usual, flagged
+{cmd:inside a frame} {it:name} {cmd:block}; neither mode tracks which frame
+holds the data, so the map draws them as steps on the working data.
+{cmd:frame change}, {cmd:cwf} and {cmd:frame copy} are not followed.{p_end}
 
 {phang2}
 {cmd:mergemap run} rewrites your do-files into temporary copies with instrumented
@@ -859,7 +887,8 @@ the seed and the output is identical to a plain run, which
 {synopt:{cmd:r(N_warn)}}after {cmd:run}: number of events at severity {bf:warn}{p_end}
 {synopt:{cmd:r(n_pages)}}after {cmd:draw, export(png|svg)}: images written, one per page{p_end}
 {p2col 5 22 26 2: Macros}{p_end}
-{synopt:{cmd:r(journal)}}path to the journal file{p_end}
+{synopt:{cmd:r(journal)}}path to the journal file; after {cmd:draw}, always the journal you named (or the remembered one), even when a filter drew a cut copy{p_end}
+{synopt:{cmd:r(drawn)}}after {cmd:draw}: the journal the renderer actually read. After {cmd:if}, {opt nofilters}, {opt notempfiles}, {opt joinsonly}, {opt paths()}, {opt root()} and the like, this is a cut copy of {cmd:r(journal)} written to {cmd:c(tmpdir)}, so copy it if you want to keep it; otherwise it equals {cmd:r(journal)}{p_end}
 {synopt:{cmd:r(files)}}do-files scanned{p_end}
 {synopt:{cmd:r(output)}}after {cmd:draw}: the file it wrote; with several, the first of the format asked for{p_end}
 {synopt:{cmd:r(files)}}after {cmd:draw} to png, svg, mermaid, dot or erdiagram: every file written, such as {it:stub}{cmd:_td.mmd} and {it:stub}{cmd:_lr.mmd}, or one {it:stub}{cmd:_}{it:dofile}{cmd:.png} per page{p_end}

@@ -1,4 +1,4 @@
-*! version 0.5.5  09nov2026  Eric Booth
+*! version 0.5.6  10nov2026  Eric Booth
 *! mergemap: static scanner for join pipelines in do-files
 *! scans do-files for source/join/link/transform/filter/save/flow events and
 *! writes a tab-separated journal (schema v2, 34 columns; see
@@ -158,6 +158,8 @@ program define mergemap, rclass
     global MM_CDBAD = 0
     global MM_NSV = 0
     global MM_INP ""
+    global MM_PFX ""
+    global MM_FBLK ""
     capture macro drop MM_TFO_*
     capture macro drop MM_LINK_*
     capture macro drop MM_SVP*
@@ -182,6 +184,7 @@ program define mergemap, rclass
     }
     file close `jh'
     macro drop MM_JH
+    capture macro drop MM_PFX MM_FBLK
 
     * ---- receipt (default on; noreceipt arrives in local receipt) ----
     if "`receipt'" != "noreceipt" {
@@ -694,6 +697,42 @@ program define _mm_process
         if `"`w'"' != "" {
             if strpos("forvalues", `"`w'"') == 1 & strlen(`"`w'"') >= 4 local isloop = 1
         }
+        * a frame block, frame name { ... }: the statements inside run in
+        * that frame, so they are walked as usual and each is flagged with
+        * the frame's name (global MM_FBLK, restored after the block)
+        local isfblk = 0
+        if inlist(`"`w'"', "frame", "frames") {
+            if regexm(`"`s'"', "^frames?[ ]+([^ {:,]+)[ ]*[{]$") {
+                local isfblk = 1
+                local fbname = regexs(1)
+            }
+        }
+        if `isfblk' {
+            global MM_STMT `"`s'"'
+            _mm_nbraces
+            local depth = `nb'
+            if `depth' <= 0 local depth = 1
+            local j = `i'
+            while `depth' > 0 & `j' < `to' {
+                local ++j
+                frame `frame': local s2 = st[`j']
+                global MM_STMT `"`s2'"'
+                _mm_nbraces
+                local depth = `depth' + `nb'
+            }
+            local bend = `j' - 1
+            if `depth' > 0 local bend = `to'
+            local fbold : copy global MM_FBLK
+            global MM_FBLK : copy local fbname
+            if `i' + 1 <= `bend' {
+                _mm_process, frame(`frame') from(`=`i'+1') to(`bend')       ///
+                    dofile(`dofile') dir(`dir') lv(`lv') lkind(`lkind')     ///
+                    lln(`lln') lfirst(`lfirst') llast(`llast')
+            }
+            global MM_FBLK : copy local fbold
+            local i = `j' + 1
+            continue
+        }
         if `isloop' {
             * find matching closing brace
             global MM_STMT `"`s'"'
@@ -728,9 +767,14 @@ program define _mm_process
     }
 end
 
-* ------------------------------------------------ peel prefix chains off $MM_STMT
+* ------------------------------------------------- peel prefix chains off $MM_STMT
+* quietly, noisily, capture and version # are peeled silently.  A by, bys,
+* bysort or frame name prefix (everything up to its top-level colon) is
+* peeled too, so the command behind it is recognised, and the prefix text is
+* kept in global MM_PFX for _mm_stmt to flag.
 program define _mm_peel
     local s : copy global MM_STMT
+    global MM_PFX ""
     local go = 1
     while `go' {
         local s = strltrim(`"`s'"')
@@ -752,9 +796,75 @@ program define _mm_peel
             if strpos("capture", `"`tok'"') == 1 & strlen(`"`tok'"') >= 3 local peel = 1
         }
         if `peel' local s `"`rest'"'
-        else local go = 0
+        else {
+            local ispfx = 0
+            if inlist(`"`tok'"', "by", "frame", "frames") local ispfx = 1
+            else if `"`tok'"' != "" {
+                if strpos("bysort", `"`tok'"') == 1 & strlen(`"`tok'"') >= 3 local ispfx = 1
+            }
+            local pc = 0
+            if `ispfx' {
+                _mm_pfxcolon `"`s'"'
+                local pc = `r(pos)'
+            }
+            if `pc' > 1 {
+                local pfx = strtrim(substr(`"`s'"', 1, `pc' - 1))
+                local all : copy global MM_PFX
+                local all = strtrim(`"`all' `pfx':"')
+                global MM_PFX : copy local all
+                local s = substr(`"`s'"', `pc' + 1, .)
+            }
+            else local go = 0
+        }
     }
     global MM_STMT `"`s'"'
+end
+
+* --------------------- position of the first top-level colon (0 if none)
+* skips double-quoted and compound-quoted text and anything in parentheses,
+* so by grp (t): and frame f: are found and a colon inside a string is not
+program define _mm_pfxcolon, rclass
+    args s
+    local L = strlen(`"`s'"')
+    local i   = 1
+    local dq  = 0
+    local cqd = 0
+    local par = 0
+    local pos = 0
+    while `i' <= `L' & `pos' == 0 {
+        if `dq' {
+            if substr(`"`s'"', `i', 1) == char(34) local dq = 0
+            local ++i
+            continue
+        }
+        if `cqd' > 0 {
+            if substr(`"`s'"', `i', 2) == char(1) + char(34) {
+                local cqd = `cqd' + 1
+                local i = `i' + 2
+                continue
+            }
+            if substr(`"`s'"', `i', 2) == char(34) + char(3) {
+                local cqd = `cqd' - 1
+                local i = `i' + 2
+                continue
+            }
+            local ++i
+            continue
+        }
+        if substr(`"`s'"', `i', 2) == char(1) + char(34) {
+            local cqd = 1
+            local i = `i' + 2
+            continue
+        }
+        local c = substr(`"`s'"', `i', 1)
+        if `"`c'"' == char(34) local dq = 1
+        else if `"`c'"' == "(" local ++par
+        else if `"`c'"' == ")" local --par
+        else if `"`c'"' == "{" continue, break
+        else if `"`c'"' == ":" & `par' <= 0 local pos = `i'
+        local ++i
+    }
+    return scalar pos = `pos'
 end
 
 * -------------------------------------- net brace count of $MM_STMT (skip strings)
@@ -1307,6 +1417,27 @@ program define _mm_stmt
     }
 
     if "`class'" == "" exit
+
+    * ---------------- by:, bysort: and frame: prefixes ----------------
+    * the event is recorded as usual and the prefix is named in its flags.
+    * Run mode does not instrument such a line: it runs it unchanged and
+    * journals a note in its place (see _mm_pfx), and the flag says so.
+    local pfx : copy global MM_PFX
+    if `"`pfx'"' != "" {
+        local pf `"behind prefix `pfx' (run mode notes it without counts)"'
+        local flags = cond(`"`flags'"' == "", `"`pf'"', `"`flags'; `pf'"')
+        if `"`xtra'"' != "" {
+            local xflags = cond(`"`xflags'"' == "", `"`pf'"', `"`xflags'; `pf'"')
+        }
+    }
+    local fb : copy global MM_FBLK
+    if `"`fb'"' != "" {
+        local pf `"inside a frame `fb' block"'
+        local flags = cond(`"`flags'"' == "", `"`pf'"', `"`flags'; `pf'"')
+        if `"`xtra'"' != "" {
+            local xflags = cond(`"`xflags'"' == "", `"`pf'"', `"`xflags'; `pf'"')
+        }
+    }
 
     * ---------------- loop collapse ----------------
     local loopn "."

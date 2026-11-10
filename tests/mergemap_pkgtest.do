@@ -574,7 +574,7 @@ capture program drop mm_cls
 * filters hidden separately, tempfile traffic hidden, an if on the journal's
 * columns, and file labels shortened or made relative to the project folder.
 * Everything here cuts the journal before a renderer reads it, so one set of
-* checks on the cut journal (r(journal)) covers every export.
+* checks on the cut journal (r(drawn)) covers every export.
 mm_block 18 "shortening a long map"
 capture mkdir dm18
 capture mkdir dm18/raw
@@ -637,19 +637,19 @@ mm_assert `=(`nrow' == 3 & `nvar' == 3 & `ntmp' == 2 & `ntr' == 2)' ///
 * each option removes its own kind and nothing else
 capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) norowfilters
 mm_assert `=(_rc == 0)' "norowfilters is accepted"
-mm_cnt `"`r(journal)'"' `"class == "filter" & subtype == "if""'
+mm_cnt `"`r(drawn)'"' `"class == "filter" & subtype == "if""'
 local a = r(n)
 local b = r(N)
 mm_assert `=(`a' == 0 & `b' == `N0' - `nrow')' "norowfilters removes exactly the keep if / drop if events"
 
 capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) novarfilters
-mm_cnt `"`r(journal)'"' `"class == "filter" & subtype != "if""'
+mm_cnt `"`r(drawn)'"' `"class == "filter" & subtype != "if""'
 local a = r(n)
 local b = r(N)
 mm_assert `=(`a' == 0 & `b' == `N0' - `nvar')' "novarfilters removes exactly the keep/drop varlist events"
 
 capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) notempfiles
-mm_cnt `"`r(journal)'"' `"strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
+mm_cnt `"`r(drawn)'"' `"strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
 local a = r(n)
 local b = r(N)
 mm_assert `=(`a' == 0 & `b' == `N0' - `ntmp')' "notempfiles removes exactly the tempfile save and merge"
@@ -657,7 +657,7 @@ mm_assert `=(`a' == 0 & `b' == `N0' - `ntmp')' "notempfiles removes exactly the 
 capture noisily mergemap draw j18.tsv, forcesmcl maxnodes(99) filesonly
 mm_assert `=(_rc == 0)' "filesonly is accepted"
 local hid `"`r(hidden)'"'
-mm_cnt `"`r(journal)'"' `"inlist(class, "filter", "transform") | strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
+mm_cnt `"`r(drawn)'"' `"inlist(class, "filter", "transform") | strpos(usingfile, "tempfile:") == 1 | strpos(result, "tempfile:") == 1"'
 local a = r(n)
 local b = r(N)
 mm_assert `=(`a' == 0 & `b' == `N0' - `nrow' - `nvar' - `ntmp' - `ntr')' "filesonly = joinsonly + notempfiles"
@@ -666,11 +666,11 @@ mm_assert `=(strpos(`"`hid'"', "tempfile") > 0 & strpos(`"`hid'"', "filters") > 
 * the if: numbers as numbers, text as text, commas inside functions
 capture noisily mergemap draw j18.tsv if line < 9, forcesmcl maxnodes(99)
 mm_assert `=(_rc == 0)' "an if on the line number is accepted"
-mm_cnt `"`r(journal)'"' `"real(line) >= 9"'
+mm_cnt `"`r(drawn)'"' `"real(line) >= 9"'
 mm_assert `=(r(n) == 0 & r(N) > 0)' "if line < 9 keeps only events before line 9"
 capture noisily mergemap draw j18.tsv if inlist(class, "join", "save") & strpos(dofile, "cut"), export(mermaid) saving(dm18_if) replace
 mm_assert `=(_rc == 0)' "an if with commas inside inlist() and a string compare is accepted"
-mm_cnt `"`r(journal)'"' `"!inlist(class, "join", "save")"'
+mm_cnt `"`r(drawn)'"' `"!inlist(class, "join", "save")"'
 mm_assert `=(r(n) == 0)' "that if left only joins and saves"
 capture noisily mergemap draw j18.tsv if nosuchcolumn == 1, forcesmcl
 mm_assert `=(_rc == 111)' "an if on an unknown column fails with r(111) and a message, not a crash"
@@ -719,7 +719,7 @@ file write `fh' "4" _tab "a.do" _tab "4" _tab "source" _tab "use" _tab "." _tab 
 file close `fh'
 capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) paths(base)
 mm_assert `=(_rc == 0)' "paths(base) is accepted"
-local jc `"`r(journal)'"'
+local jc `"`r(drawn)'"'
 mm_jfld `"`jc'"' 1 usingfile
 mm_assert `=("`r(val)'" == "x.dta")' "paths(base): a unix path becomes its file name"
 mm_jfld `"`jc'"' 2 usingfile
@@ -729,13 +729,13 @@ mm_assert `=("`r(val)'" == "z.dta")' "paths(base): a UNC path becomes its file n
 mm_jfld `"`jc'"' 4 usingfile
 mm_assert `=("`r(val)'" == "tempfile:St1.000001")' "paths(base) leaves a tempfile label alone"
 capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) paths(parent)
-local jc `"`r(journal)'"'
+local jc `"`r(drawn)'"'
 mm_jfld `"`jc'"' 1 usingfile
 mm_assert `=("`r(val)'" == "raw/x.dta")' "paths(parent): parent folder and file name, separators kept"
 mm_jfld `"`jc'"' 2 usingfile
 mm_assert `=("`r(val)'" == "raw`bs'y.dta")' "paths(parent) keeps a Windows path's own backslash"
 capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(proj)
-local jc `"`r(journal)'"'
+local jc `"`r(drawn)'"'
 mm_jfld `"`jc'"' 1 usingfile
 local v1 "`r(val)'"
 mm_jfld `"`jc'"' 2 usingfile
@@ -745,10 +745,10 @@ local v3 "`r(val)'"
 mm_assert `=("`v1'" == "data/raw/x.dta" & "`v2'" == "data`bs'raw`bs'y.dta" & "`v3'" == "data`bs'built`bs'z.dta")' ///
     "root(proj): every path becomes relative to the proj folder, whatever sat above it"
 capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(nosuchfolder)
-mm_jfld `"`r(journal)'"' 1 usingfile
+mm_jfld `"`r(drawn)'"' 1 usingfile
 mm_assert `=("`r(val)'" == "/home/me/work/proj/data/raw/x.dta")' "root() leaves a path that does not contain the folder as it was"
 capture noisily mergemap draw jpath.tsv, forcesmcl maxnodes(99) root(/home/me/work)
-mm_jfld `"`r(journal)'"' 1 usingfile
+mm_jfld `"`r(drawn)'"' 1 usingfile
 mm_assert `=("`r(val)'" == "proj/data/raw/x.dta")' "root() also accepts a path prefix"
 capture noisily mergemap draw jpath.tsv, forcesmcl paths(nonsense)
 mm_assert `=(_rc == 198)' "paths(nonsense) is refused with r(198)"
@@ -1020,6 +1020,156 @@ capture noisily mergemap run k21.do, out(jk21b.tsv) noreceipt
 mm_assert `=(_rc == 0)' "a lone backtick in a key does not stop the pipeline"
 capture confirm file k21o.dta
 mm_assert `=(_rc == 0)' "the lone-backtick pipeline ran to its last line"
+cd ..
+
+* ---- block 22: 0.5.6 design changes ---------------------------------------
+* (a) r(journal) after a draw is the user's journal and r(drawn) the cut;
+* (b) using-only rows count toward warn/stop only when keep() keeps them;
+* (c) a png/svg named with saving() needs replace, the default stub does not;
+* (d) commands behind by/bysort/frame prefixes are recorded in scan mode and
+*     journaled as uninstrumented notes in run mode.
+mm_block 22 "0.5.6: r(drawn), keep(using) severity, png replace, by/frame prefixes"
+capture mkdir b22
+cd b22
+program define mm_cnt22, rclass
+    args jfile cond
+    tempname fr
+    capture frame drop `fr'
+    frame create `fr'
+    local n = 0
+    frame `fr' {
+        quietly import delimited using `"`jfile'"', delimiter(tab) varnames(1) ///
+            stringcols(_all) bindquote(nobind) clear
+        quietly count if `cond'
+        local n = r(N)
+    }
+    frame drop `fr'
+    return scalar n = `n'
+end
+sysuse auto, clear
+keep make price foreign
+quietly keep in 1/20
+quietly save a22.dta, replace
+sysuse auto, clear
+keep make weight
+quietly save b22.dta, replace
+tempname fh22
+
+* (a) r(journal) and r(drawn)
+file open `fh22' using s22.do, write replace
+file write `fh22' "use a22.dta, clear" _n
+file write `fh22' "keep if price > 4000" _n
+file write `fh22' "merge 1:1 make using b22.dta, nogenerate" _n
+file write `fh22' "save o22.dta, replace" _n
+file close `fh22'
+capture noisily mergemap s22.do, out(j22.tsv) noreceipt
+mm_assert `=(_rc == 0)' "the block-22 fixture scans"
+capture noisily mergemap draw j22.tsv, forcesmcl nofilters
+mm_assert `=(_rc == 0)' "a filtered draw runs"
+local dr `"`r(drawn)'"'
+mm_assert `=(`"`r(journal)'"' == "j22.tsv")' "after a filtered draw r(journal) is the user's journal"
+mm_assert `=(`"`dr'"' != "j22.tsv" & `"`dr'"' != "")' "after a filtered draw r(drawn) names the cut copy"
+capture confirm file `"`dr'"'
+mm_assert `=(_rc == 0)' "the cut named by r(drawn) exists after the draw"
+mm_cnt22 `"`dr'"' `"class == "filter""'
+mm_assert `=(r(n) == 0)' "r(drawn) holds the cut journal (no filter events)"
+capture noisily mergemap draw j22.tsv, forcesmcl
+mm_assert `=(`"`r(journal)'"' == "j22.tsv" & `"`r(drawn)'"' == "j22.tsv")' "an unfiltered draw: r(drawn) equals r(journal)"
+
+* (b) using-only rows and severity
+foreach k in none "keep(using match)" "keep(us mat)" "keep(2 3)" "keep(master match)" {
+    local kk `"`k'"'
+    if `"`k'"' == "none" local kk ""
+    file open `fh22' using k22.do, write replace
+    file write `fh22' "use a22.dta, clear" _n
+    file write `fh22' "merge 1:1 make using b22.dta, nogenerate `kk'" _n
+    file close `fh22'
+    capture noisily mergemap run k22.do, out(jk22.tsv) noreceipt
+    local rc22 = _rc
+    local w22 = r(N_warn)
+    if `"`k'"' == "none" | `"`k'"' == "keep(master match)" {
+        mm_assert `=(`rc22' == 0 & `w22' == 0)' `"no warn when keep() does not retain using rows: `k'"'
+    }
+    else {
+        mm_assert `=(`rc22' == 0 & `w22' == 1)' `"using-only rows kept by `k' count toward warn"'
+    }
+}
+mm_cnt22 jk22.tsv `"class == "join" & severity == "note""'
+mm_assert `=(r(n) == 1)' "keep(master match): the merge stays at severity note"
+file open `fh22' using k22.do, write replace
+file write `fh22' "use a22.dta, clear" _n
+file write `fh22' "merge 1:1 make using b22.dta, nogenerate keep(using match)" _n
+file close `fh22'
+capture noisily mergemap run k22.do, out(jk22s.tsv) noreceipt stop(.5)
+mm_assert `=(_rc == 9 & r(N_stop) == 1)' "keep(using match): 54 of 74 using-only rows breach stop(.5)"
+file open `fh22' using k22.do, write replace
+file write `fh22' "use a22.dta, clear" _n
+file write `fh22' "merge 1:1 make using b22.dta, nogenerate" _n
+file close `fh22'
+capture noisily mergemap run k22.do, out(jk22t.tsv) noreceipt stop(.5)
+mm_assert `=(_rc == 0 & r(N_stop) == 0)' "without keep() the same merge passes stop(.5)"
+
+* (c) png/svg and replace
+capture erase p22.png
+capture erase p22.svg
+capture noisily mergemap draw j22.tsv, export(png) saving(p22)
+mm_assert `=(_rc == 0)' "a named png is written the first time"
+capture noisily mergemap draw j22.tsv, export(png) saving(p22)
+mm_assert `=(_rc == 602)' "a named png that exists is refused with r(602) without replace"
+capture noisily mergemap draw j22.tsv, export(svg) saving(p22.svg)
+mm_assert `=(_rc == 602)' "the same for export(svg) with a pasted extension"
+capture noisily mergemap draw j22.tsv, export(png) saving(p22) replace
+mm_assert `=(_rc == 0)' "replace overwrites a named png"
+capture noisily mergemap draw j22.tsv, export(png)
+capture noisily mergemap draw j22.tsv, export(png)
+mm_assert `=(_rc == 0)' "the default mergemap_map image is overwritten without replace"
+capture erase p22pg_s22.png
+capture erase p22pg_s22.svg
+capture noisily mergemap draw j22.tsv, export(png) saving(p22pg) page(dofile)
+capture noisily mergemap draw j22.tsv, export(png) saving(p22pg) page(dofile)
+mm_assert `=(_rc == 602)' "one page per do-file: an existing page image is refused too"
+
+* (d) by, bysort and frame prefixes
+file open `fh22' using f22.do, write replace
+file write `fh22' "use a22.dta, clear" _n
+file write `fh22' "bysort foreign: keep if _n <= 8" _n
+file write `fh22' "by foreign, sort: drop if _n > 6" _n
+file write `fh22' "quietly bys foreign (price): drop if _n == _N" _n
+file write `fh22' "capture bysort foreign: keep if nosuchvar == 1" _n
+file write `fh22' "frame default: merge 1:1 make using b22.dta, nogenerate keep(match)" _n
+file write `fh22' "capture frame drop g22" _n
+file write `fh22' "frame create g22" _n
+file write `fh22' "frame g22 {" _n
+file write `fh22' "    use b22.dta, clear" _n
+file write `fh22' "    keep if weight > 3000" _n
+file write `fh22' "}" _n
+file write `fh22' "save f22o.dta, replace" _n
+file close `fh22'
+capture noisily mergemap f22.do, out(jf22.tsv) noreceipt
+mm_assert `=(_rc == 0)' "a do-file with by/bysort/frame prefixes scans"
+mm_cnt22 jf22.tsv `"strpos(flags, "behind prefix") > 0"'
+mm_assert `=(r(n) == 5)' "scan: all five prefixed commands are recorded with their prefix"
+mm_cnt22 jf22.tsv `"class == "filter" & subtype == "if" & strpos(flags, "behind prefix b") > 0"'
+mm_assert `=(r(n) == 4)' "scan: the by/bys/bysort filters are keep if / drop if events"
+mm_cnt22 jf22.tsv `"class == "join" & cmd == "merge" & strpos(flags, "behind prefix frame default:") > 0"'
+mm_assert `=(r(n) == 1)' "scan: the merge behind frame default: is a join"
+mm_cnt22 jf22.tsv `"strpos(flags, "inside a frame g22 block") > 0"'
+mm_assert `=(r(n) == 2)' "scan: statements inside a frame block are flagged with its name"
+* the plain run, for comparison
+capture noisily do f22.do
+local plainN = _N
+capture erase f22o.dta
+capture noisily mergemap run f22.do, out(jrf22.tsv) noreceipt
+mm_assert `=(_rc == 0)' "run mode executes the prefixed lines (and capture still catches an error)"
+use f22o.dta, clear
+mm_assert `=(_N == `plainN')' "the prefixed lines change the data exactly as a plain run does"
+mm_cnt22 jrf22.tsv `"class == "note" & strpos(flags, "not instrumented") > 0"'
+mm_assert `=(r(n) == 5)' "run: each prefixed line is journaled as an uninstrumented note"
+mm_cnt22 jrf22.tsv `"class == "note" & cmd == "merge" & strpos(flags, "frame prefix") > 0"'
+mm_assert `=(r(n) == 1)' "run: the frame-prefixed merge note names its command and prefix"
+mm_cnt22 jrf22.tsv `"class == "filter" & cmd == "keep" & real(line) == 11"'
+mm_assert `=(r(n) == 1)' "run: a filter inside a frame block is still instrumented"
+capture program drop mm_cnt22
 cd ..
 
 * ---------------------------------------------------------------- summary ----
