@@ -877,7 +877,7 @@ capture program drop mm_fcount
 * same on every platform because the predicate is pure string work.
 local bs = char(92)
 foreach spec in ///
-    "/home/eric/out.html|1|unix absolute" ///
+    "/home/user/out.html|1|unix absolute" ///
     "C:`bs'project`bs'out.html|1|Windows drive letter" ///
     "`bs'`bs'server`bs'share`bs'out.html|1|Windows UNC share" ///
     "`bs'project`bs'out.html|1|Windows root-relative" ///

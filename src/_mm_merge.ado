@@ -294,7 +294,7 @@ program define _mm_merge
         severity(`sev') keytypes(`"`ktype'"') covermaster(`covm')            ///
         coverusing(`covu') flags(`"`flags'"')
 
-    * ---------------- the ledger (PLAN section 5) ------------------------
+    * ---------------- the ledger -----------------------------------------
     if "$MM_R_NOLED" == "" {
         di as txt "mergemap: merge `sub' `keys' using " as res `"`ulbl'"' ///
             as txt "   (`dof' line `mml')"

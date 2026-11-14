@@ -36,7 +36,7 @@
 *
 * THE RECEIPT IS NOT IN THIS FILE ANY MORE.  It used to live here as
 * _rsm_receipt.  The package now has exactly one receipt and mergemap.ado
-* prints it (see the receipt section of src/mergemap.ado).  This file draws
+* prints it (see the receipt section of mergemap.ado).  This file draws
 * diagrams only; when the diagram auto-escalates it prints the defer notice
 * and nothing else, because mergemap.ado has already printed the receipt.
 *
@@ -687,7 +687,7 @@ end
 * =======================================================================
 * receipt: REMOVED.  _rsm_receipt used to print a compact ruled table here.
 * The package now has exactly one receipt, the lighter aligned one, and it
-* lives in src/mergemap.ado (Agent A).  _mm_rendersmcl draws diagrams only.
+* lives in mergemap.ado.  _mm_rendersmcl draws diagrams only.
 * =======================================================================
 
 * ---- helpers ----------------------------------------------------------

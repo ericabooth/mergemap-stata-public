@@ -1,5 +1,5 @@
 *! version 0.5.6  10nov2026  Eric Booth
-*! _mm_run -- instrumented execution for mergemap (PLAN section 2.2).
+*! _mm_run -- instrumented execution for mergemap.
 *!
 *! Called by mergemap as:
 *!     _mm_run `"`files'"', out(`"`out'"') [examples(#) nochecks warn(#) stop(#)]

@@ -52,7 +52,7 @@ program define _mm_renderhtml
 
     * ------------------------------------------------ per-diagram id namespace
     * ids and the CSS scope class both live under this prefix, so two diagrams
-    * on one page never share an arrowhead marker or a style rule (DECISIONS 20e)
+    * on one page never share an arrowhead marker or a style rule
     if `"`idprefix'"' == "" {
         local stem = substr("`out'", strrpos(subinstr("`out'","\","/",.), "/") + 1, .)
         local stem = subinstr("`stem'", ".html", "", .)
@@ -231,7 +231,7 @@ program define _mm_renderhtml
         file write `H' `"<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 `svgw' `svgh'" width="`svgw'" height="`svgh'">"' _n
     }
     else {
-        * embed: viewBox only, no width/height (DECISIONS 21). Horizontal keeps
+        * embed: viewBox only, no width/height. Horizontal keeps
         * its natural width through a scoped CSS rule inside .mm-wrap.
         file write `H' `"<svg xmlns="http://www.w3.org/2000/svg" class="mm-svg" role="img" viewBox="0 0 `svgw' `svgh'">"' _n
     }
@@ -284,7 +284,7 @@ end
 * ============================================================ stylesheet
 * Every rule is scoped under the per-diagram class and every selector is a
 * class selector. No body/h1/h2/pre/details/summary/bare-svg: those restyled
-* the host report in testing (DECISIONS 20d).
+* the host report in testing.
 program define _rh_css
     args H pfx accent layout svgw embed
 
@@ -306,7 +306,7 @@ program define _rh_css
     }
     if "`layout'" == "horizontal" {
         * a horizontal diagram squeezed into a text column drops its labels
-        * below 2px (DECISIONS 20h): keep native width, scroll sideways
+        * below 2px: keep native width, scroll sideways
         file write `H' `"`P' .mm-svg { width: `svgw'px; max-width: none; height: auto; display: block; }"' _n
     }
     else {
@@ -1178,7 +1178,7 @@ program define _rh_usinglines, sclass
         local loopn 0
     }
     * a path still holding a macro is a designed boundary, not a bug
-    * (NOVICE_UX B8); the box carries the ~ marker, the legend explains it
+    * by design; the box carries the ~ marker, the legend explains it
     local mk ""
     if !`loopn' & strpos(`"`lbl'"', char(6)) {
         local mk " ~"
@@ -2053,7 +2053,7 @@ end
 
 * ============================================================ svg writers
 * Shapes carry presentation attributes as well as classes, so a fragment whose
-* stylesheet is stripped still renders as legible boxes (DECISIONS 21).
+* stylesheet is stripped still renders as legible boxes.
 
 program define _rh_rect
     args B x y w h cls sev

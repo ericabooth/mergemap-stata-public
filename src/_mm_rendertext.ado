@@ -12,7 +12,7 @@
 *!   stub_er.mmd stub_er.md                          (mermaid erDiagram)
 *!   stub_tb.dot stub_lr.dot                         (DOT rankdir TB / LR)
 *!
-*! conventions (JOURNAL_SCHEMA.md v2 + PLAN sections 3-6):
+*! conventions (journal schema v2):
 *!   boxes = datasets; command + keys + counts ride the edges; one subgraph
 *!   per do-file; collapsed loops render as ONE stacked node
 *!   ("x3: raw/cps_2020.dta ... raw/cps_2022.dta"); class=filter renders as a
@@ -993,7 +993,7 @@ end
 * in Quarto and in VS Code. Greyscale here; the accent enters through
 * classDef and linkStyle, which is where the flags are.
 * No "click ... href" anywhere: GitHub renders mermaid in a framed context
-* whose CSP blocks it (DECISIONS 18a). Nothing here is newer than the
+* whose CSP blocks it. Nothing here is newer than the
 * mermaid 10.0.2 that GitHub pins.
 * ---------------------------------------------------------------------------
 program define _rt_mminit

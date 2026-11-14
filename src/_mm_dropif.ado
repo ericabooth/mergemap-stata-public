@@ -1,6 +1,6 @@
 *! version 0.2.0  19aug2026  Eric Booth
 *! _mm_dropif -- run-mode wrapper around drop.  Filters are events because
-*! most row loss happens in a drop if, not in a merge (DECISIONS 16a); a
+*! most row loss happens in a drop if, not in a merge; a
 *! diagram that omits them hands the blame to the wrong step.  Reported
 *! tidylog style: "removed 6,519 rows (3.1%), 203,115 remaining".
 

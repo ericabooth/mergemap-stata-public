@@ -366,11 +366,11 @@ file.{p_end}
 {pstd}
 {bf:When the labels are too long.} Run mode records the file paths it actually
 opened, so a map of a project stored under
-{cmd:C:\Users\me\Documents\projects\ccmr\data\...} repeats that prefix in
+{cmd:C:\Users\me\Documents\projects\myproject\data\...} repeats that prefix in
 every box. {opt paths(base)} shows file names alone, {opt paths(parent)} the
 parent folder and the file name, and {opt paths(#)} the last {it:#} components.
 {opt root(folder)} cuts everything above a folder you name, so a path becomes
-relative to your project: with {opt root(ccmr)} the example above reads
+relative to your project: with {opt root(myproject)} the example above reads
 {cmd:data\...}. Naming the project folder, instead of typing a prefix, means
 the same command gives the same labels on every machine the project is copied
 to, whatever folders hold it there. The same two options work for
@@ -582,6 +582,10 @@ written to {cmd:demo_map.html} in the same folder.{p_end}
 {marker examples}{...}
 {title:Examples}
 
+{pstd}
+The examples that write into a subfolder ({cmd:audit/}, {cmd:figures/}) assume
+that folder already exists; {cmd:mergemap} does not create folders.{p_end}
+
 {pstd}{bf:See it work, with no setup}{p_end}
 {phang2}{stata "mergemap demo":. mergemap demo}{p_end}
 
@@ -635,7 +639,7 @@ written to {cmd:demo_map.html} in the same folder.{p_end}
 
 {pstd}{bf:Short labels: file names only, or relative to the project folder}{p_end}
 {phang2}{cmd:. mergemap draw, paths(base)}{p_end}
-{phang2}{cmd:. mergemap draw, root(ccmr) export(html) saving(map.html) replace}{p_end}
+{phang2}{cmd:. mergemap draw, root(myproject) export(html) saving(map.html) replace}{p_end}
 
 {pstd}{bf:The HTML map with the count lines left out}{p_end}
 {phang2}{cmd:. mergemap draw, export(html) compact nokeys saving(thin.html) replace}{p_end}
@@ -673,7 +677,7 @@ written to {cmd:demo_map.html} in the same folder.{p_end}
 {phang2}{cmd:. mergemap export, saving(joins.dta) replace}{p_end}
 
 {pstd}{bf:The same as a workbook: every event, the joins, and the filters on three sheets}{p_end}
-{phang2}{cmd:. mergemap export, saving(joins.xlsx) replace root(ccmr)}{p_end}
+{phang2}{cmd:. mergemap export, saving(joins.xlsx) replace root(myproject)}{p_end}
 
 {pstd}{bf:A receipt with file names only}{p_end}
 {phang2}{cmd:. mergemap receipt audit/joins.tsv, paths(base)}{p_end}
@@ -871,7 +875,8 @@ random can resolve differently than it would in a plain run. The gap shows up be
 display precision, and run mode says so when it starts. Scan mode, the default,
 does not execute anything and is unaffected. On a newer Stata, run mode restores
 the seed and the output is identical to a plain run, which
-{cmd:tests/runmode/transparency.do} checks.{p_end}
+the transparency test in the package's GitHub repository
+({cmd:tests/runmode/transparency.do}) checks.{p_end}
 
 {marker results}{...}
 {title:Stored results}

@@ -5,7 +5,7 @@
 *! something like /var/folders/.../St12345.000003.tmp.  Such a path is
 *! labelled tempfile:<name> for the journal, and save-to-use provenance is
 *! tracked by exact path within the run so that a later use of the same
-*! tempfile can say where it came from (PLAN 2.3).
+*! tempfile can say where it came from.
 *!
 *! _mm_lbl , path(p)                 -> globals MM_R_LBL, MM_R_PROV
 *! _mm_lbl , path(p) register(txt)   -> also records txt as p's producer

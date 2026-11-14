@@ -3,7 +3,7 @@
 *!
 *! Thresholds live in globals MM_R_WARN and MM_R_STOP and accept either a
 *! count (a number >= 1) or a share of the total (strictly between 0 and 1),
-*! following DECISIONS 16b; the default is warn(.05) unmatched.  Severity is
+*! the default is warn(.05) unmatched.  Severity is
 *! never colour-only downstream: warn and stop both print "!!".
 *!
 *! Usage : _mm_sev <count> <total>      Output: global MM_R_SEV

@@ -1287,7 +1287,7 @@ program define _mm_stmt
         if `"`optstr'"' != "" local opts `"`optstr'"'
     }
     else if "`cmd'" == "keep" | "`cmd'" == "drop" {
-        * row filters and variable-list filters (DECISIONS 16a)
+        * row filters and variable-list filters
         local class "filter"
         local ufile "."
         local cond = strtrim(`"`rest'"')
@@ -1884,7 +1884,7 @@ program define _mm_noteinput
     global MM_INP `"$MM_INP "`rpath'""'
 end
 
-* lifecycle + clobber + staleness for a save target (DECISIONS 16f)
+* lifecycle + clobber + staleness for a save target
 * -> c_local lcyc (create|overwrite|.), lflag (clobber), sflag (staleness)
 program define _mm_lifecycle
     args p dof ln d
@@ -1920,7 +1920,7 @@ program define _mm_lifecycle
     * timestamp -save- writes into a .dta header. That covers data inputs; the
     * producing do-file is plain text and carries no timestamp Stata can read
     * without shelling out, so it is not compared. Reported, never acted on:
-    * rebuild orchestration belongs to -project- (DECISIONS 16f, 18c).
+    * rebuild orchestration belongs to -project-.
     _mm_resolve `"`p'"' `"`d'"'
     if `"`rpath'"' == "" exit
     _mm_ftime `"`rpath'"'
@@ -2166,7 +2166,7 @@ program define _mm_receipt
     if `wfl' < 10 local wfl 10
     local tw = `fixed' + `wfl'
 
-    * ---- headline (DECISIONS 16d) ----
+    * ---- headline ----
     di as txt ""
     if `njoin' == 0 {
         di as res "mergemap: no joins found in `Nall' events."

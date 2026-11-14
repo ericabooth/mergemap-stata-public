@@ -1,6 +1,6 @@
 *! version 0.2.0  19aug2026  Eric Booth
 *! _mm_ex -- examples(#): list a few sample rows of a join, showing the key
-*! variables and the _merge category only, never whole rows (DECISIONS 9).
+*! variables and the _merge category only, never whole rows.
 *! The rows are copied into a scratch frame first, so the data in memory is
 *! neither sorted nor altered.
 

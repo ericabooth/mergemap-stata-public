@@ -1,6 +1,6 @@
 *! version 0.2.0  19aug2026  Eric Booth
 *! _mm_save -- run-mode wrapper around save.  Records the sink node, whether
-*! the path is being created or overwritten (lifecycle, DECISIONS 16f), and
+*! the path is being created or overwritten (lifecycle), and
 *! registers the path so that a later use of the same file -- a tempfile in
 *! particular -- can name its producer.
 

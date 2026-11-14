@@ -1,7 +1,7 @@
 *! version 0.2.0  20aug2026  Eric Booth
 *! _mm_fold -- collapse a loop's repeated events into one stacked journal row.
 *!
-*! PLAN section 6: consecutive events with an identical command template --
+*! Consecutive events with an identical command template --
 *! same do-file, line, class, command, subtype, keys and options, only the
 *! file token differing -- become one row labelled with the iteration count
 *! and the first and last resolved names, with the row counts summed.  Scan
@@ -9,7 +9,7 @@
 *! executes the loop body once per iteration, so the folding happens here,
 *! after the run, over the journal this run wrote.
 *!
-*! Threshold: 3 or more repeats, as in PLAN section 6.  The journal is only
+*! Threshold: 3 or more repeats.  The journal is only
 *! replaced once the folded copy has been written in full, so a failure
 *! anywhere leaves the unfolded journal untouched.
 
