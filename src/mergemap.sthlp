@@ -323,7 +323,7 @@ Scanning a build like that can record a few thousand events, and most of them
 are not joins. In one pipeline used to test this package, 3,092 events broke
 down as 2,527 {cmd:keep} and {cmd:drop} statements, 240 saves and re-reads of
 tempfiles inside a single program, and 63 joins, and the map of all of it came
-out 220,000 pixels tall. Nothing needs to be thrown away to fix that: the
+out about 208,000 pixels tall. Nothing needs to be thrown away to fix that: the
 journal and the receipt always keep every event, and what you control is the
 drawing. Each option below hides one kind of event from the map, the options
 combine, and {cmd:draw} prints a line saying exactly what it hid, so anyone

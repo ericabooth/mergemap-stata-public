@@ -146,7 +146,7 @@ The HTML page is **self-contained**: no internet, no JavaScript, no external ass
 
 ### When the map is too long
 
-Suppose your build is a real one: a dozen do-files that read raw files, trim them, and merge them into an analysis file. Scanning a build like that can record a few thousand events, and most of them are not joins. In one pipeline used to test this package, 3,092 events broke down as 2,527 `keep` and `drop` statements, 240 saves and re-reads of tempfiles inside a single program, and 63 joins, and the map of all of it came out 220,000 pixels tall. Nothing needs to be thrown away to fix that: the journal and the receipt always keep every event, and what you control is the drawing. Each option below hides one kind of event, the options combine, and `draw` prints a line saying exactly what it hid, so anyone reading the map knows it is a chosen view of the record, not the record:
+Suppose your build is a real one: a dozen do-files that read raw files, trim them, and merge them into an analysis file. Scanning a build like that can record a few thousand events, and most of them are not joins. In one pipeline used to test this package, 3,092 events broke down as 2,527 `keep` and `drop` statements, 240 saves and re-reads of tempfiles inside a single program, and 63 joins, and the map of all of it came out about 208,000 pixels tall. Nothing needs to be thrown away to fix that: the journal and the receipt always keep every event, and what you control is the drawing. Each option below hides one kind of event, the options combine, and `draw` prints a line saying exactly what it hid, so anyone reading the map knows it is a chosen view of the record, not the record:
 
 ```stata
 mergemap draw, nofilters        // no keep/drop at all
@@ -163,12 +163,12 @@ Measured on that 3,092-event journal, as HTML:
 
 | `mergemap draw ...` | events drawn | map height |
 |---|---|---|
-| (default) | 3,092 | 221,997 px |
-| `nofilters` | 565 | 51,756 px |
-| `joinsonly` | 407 | 35,404 px |
-| `filesonly` | 167 | 14,144 px |
-| `filesonly compact` | 167 | 11,700 px |
-| `if !(strpos(dofile,"build") & line < 400), filesonly` | 129 | 11,268 px |
+| (default) | 3,092 | 208,092 px |
+| `nofilters` | 565 | 42,851 px |
+| `joinsonly` | 407 | 26,955 px |
+| `filesonly` | 167 | 10,419 px |
+| `filesonly compact` | 167 | 8,451 px |
+| `if !(strpos(dofile,"build") & line < 400), filesonly` | 129 | 8,295 px |
 
 The `if` is evaluated on the journal's own columns, with the count columns as numbers, so a long pipeline can be paged by do-file, by line range, by kind of event, or by what happened. `compact` and `nokeys` thin each HTML node to its label. `mergemap draw if ...` has the same column names you see in `mergemap export`.
 

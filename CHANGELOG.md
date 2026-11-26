@@ -2,6 +2,15 @@
 
 All notable changes to mergemap. Dates are the day the work landed locally.
 
+## 0.5.6 documentation update — 2026-11-26
+
+### Fixed
+
+- README and help: the map heights for the 3,092-event pipeline were measured
+  under 0.5.0. Remeasured under 0.5.6: default 208,092 px, `nofilters` 42,851,
+  `joinsonly` 26,955, `filesonly` 10,419, `filesonly compact` 8,451, and the
+  paged `if ..., filesonly` view 8,295. Code unchanged.
+
 ## 0.5.6 — 2026-11-10
 
 ### Changed
